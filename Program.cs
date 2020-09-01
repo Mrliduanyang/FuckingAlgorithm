@@ -226,59 +226,149 @@ namespace FuckingAlgorithm {
             private static int Min(int a, int b, int c) {
                 return Math.Min(Math.Min(a, b), c);
             }
+
+            public static double SuperEggDrop(int k, int n) {
+                Dictionary<string, double> memo = new Dictionary<string, double>();
+                double dp(int k, int n) {
+                    // base如果只有1个鸡蛋，只能线性扫描
+                    if (k == 1) {
+                        return n;
+                    }
+                    // 如果是0层，尝试0次
+                    if (n == 0) {
+                        return 0;
+                    }
+                    // 备忘录
+                    string key = k + "," + n;
+                    if (memo.ContainsKey(key)) {
+                        return memo[key];
+                    }
+                    var res = double.PositiveInfinity;
+                    // 存在重叠子问题，比如n-i = i-1
+                    // 如果在i层没碎，鸡蛋数k不变，搜索楼层变为i+1 - n，如果鸡蛋碎了，k减1，搜索楼层变为1 - i-1。
+                    // 也很好理解，如果在i层还没碎，那么还需要多少次能找到楼层就取决于在i层之后的楼层区间内要试验多少次。
+                    for (int i = 1; i < n + 1; i++) {
+                        res = Math.Min(res, Math.Max(dp(k, n - i), dp(k - 1, i - 1)) + 1);
+                    }
+                    memo.Add(key, res);
+                    return res;
+                }
+                return dp(k, n);
+            }
         }
 
         class DataStructure {
-            class Node {
-                public Node(int k, int v) {
-                    key = k;
-                    val = v;
-                }
-                public int key, val;
-                public Node next, prev;
 
-            }
-
-            class DoubleList {
-                private Node head, tail;
-                private int size;
-                public DoubleList() {
-                    head = new Node(0, 0);
-                    tail = new Node(0, 0);
-                    head.next = tail;
-                    tail.prev = head;
-                    size = 0;
-                }
-                public void AddLast(Node x) {
-                    // 把x插入到tail之前
-                    x.prev = tail.prev;
-                    x.next = tail;
-                    tail.prev.next = x;
-                    tail.prev = x;
-                    size++;
-                }
-
-                public void Remove(Node x) {
-                    x.prev.next = x.next;
-                    x.next.prev = x.prev;
-                    size--;
-                }
-
-                public Node RemoveFirst() {
-                    if (head.next == tail) {
-                        return null;
+            class LRU {
+                class Node {
+                    public Node(int k, int v) {
+                        key = k;
+                        val = v;
                     }
-                    Node first = head.next;
-                    Remove(first);
-                    return first;
+                    public int key, val;
+                    public Node next, prev;
                 }
 
-                public int Size() {
-                    return size;
+                class DoubleList {
+                    private Node head, tail;
+                    private int size;
+                    public DoubleList() {
+                        head = new Node(0, 0);
+                        tail = new Node(0, 0);
+                        head.next = tail;
+                        tail.prev = head;
+                        size = 0;
+                    }
+                    public void AddLast(Node x) {
+                        // 把x插入到tail之前
+                        x.prev = tail.prev;
+                        x.next = tail;
+                        tail.prev.next = x;
+                        tail.prev = x;
+                        size++;
+                    }
+
+                    public void Remove(Node x) {
+                        x.prev.next = x.next;
+                        x.next.prev = x.prev;
+                        size--;
+                    }
+
+                    public Node RemoveFirst() {
+                        if (head.next == tail) {
+                            return null;
+                        }
+                        Node first = head.next;
+                        Remove(first);
+                        return first;
+                    }
+
+                    public int Size() {
+                        return size;
+                    }
+                }
+
+                class LRUCache {
+                    private Dictionary<int, Node> map;
+                    private DoubleList cache;
+                    private int cap;
+                    public LRUCache(int capacity) {
+                        cap = capacity;
+                        map = new Dictionary<int, Node>();
+                        cache = new DoubleList();
+                    }
+                    // 将key对应node提升为最近使用的，也就是把node从表头删除，插入到表尾
+                    private void MakeRecently(int key) {
+                        Node x = map[key];
+                        cache.Remove(x);
+                        cache.AddLast(x);
+                    }
+
+                    // 添加最近使用的node，初始化一个node，并插入到表尾，同时在map中添加映射
+                    private void AddRecently(int key, int val) {
+                        Node x = new Node(key, val);
+                        cache.AddLast(x);
+                        map.Add(key, x);
+                    }
+
+                    // 删除某一个key，从表中删除，从map中删除
+                    private void DeleteKey(int key) {
+                        Node x = map[key];
+                        cache.Remove(x);
+                        map.Remove(key);
+                    }
+
+                    // 删除最久未使用的，即表头节点
+                    private void RemoveLeastRecently() {
+                        Node deleteNode = cache.RemoveFirst();
+                        int key = deleteNode.key;
+                        map.Remove(key);
+                    }
+
+                    public int get(int key) {
+                        if (!map.ContainsKey(key)) {
+                            return -1;
+                        }
+                        // 如果存在，将该节点提升为最近使用的
+                        MakeRecently(key);
+                        return map[key].val;
+                    }
+
+                    public void put(int key, int val) {
+                        // 如果key存在，将key对应的val修改，并提到最近使用
+                        if (map.ContainsKey(key)) {
+                            map[key].val = val;
+                            MakeRecently(key);
+                        }
+                        // 如果缓存满了，删除掉最近最少使用的元素
+                        if (cap == cache.Size()) {
+                            RemoveLeastRecently();
+                        }
+                        // 添加最近使用元素
+                        AddRecently(key, val);
+                    }
                 }
             }
-            // 最近最少使用
-            // public static LRU
         }
 
         static void Main(string[] args) {
