@@ -255,6 +255,52 @@ namespace FuckingAlgorithm {
                 }
                 return dp(k, n);
             }
+
+            public static int SuperEggDrop_1(int k, int n) {
+                // dp定义为给定k个鸡蛋，可以尝试扔m次鸡蛋，最坏情况下能确切测试一栋n层的楼
+                // base dp[0][..] = 0 dp[..][0] = 0
+                // m最大为n，线性扫描
+                int[, ] dp = new int[k + 1, n + 1];
+                int m = 0;
+                while (dp[k, m] < n) {
+                    m++;
+                    for (int i = 1; i <= k; i++) {
+                        // dp[i, m - 1]是楼上的楼层数，鸡蛋没碎，k不变，扔鸡蛋次数m-1，dp[k - 1, m - 1]是楼下楼层数，鸡蛋碎了k-1，扔鸡蛋次数m-1
+                        dp[i, m] = dp[i, m - 1] + dp[k - 1, m - 1] + 1;
+                    }
+                }
+                return m;
+            }
+
+            public static int Rob_1(int[] nums) {
+                int n = nums.Length;
+                // dp定义为从第i间房开始抢劫，最多能抢到的钱
+                // base dp[n] = 0
+                int[] dp = new int[n + 2];
+                // 从n-1间房开始
+                for (int i = n - 1; i >= 0; i--) {
+                    // 
+                    dp[i] = Math.Max(dp[i + 1], dp[i + 2] + nums[i]);
+                }
+                return dp[0];
+            }
+
+            public static int Rob_2(int[] nums) {
+                int RobRange(int[] nums, int start, int end) {
+                    int n = nums.Length;
+                    int[] dp = new int[n + 2];
+                    for (int i = end; i >= start; i--) {
+                        dp[i] = Math.Max(dp[i + 1], dp[i + 2] + nums[i]);
+                    }
+                    return dp[0];
+                }
+
+                int n = nums.Length;
+                if (n == 1) {
+                    return nums[0];
+                }
+                return Math.Max(RobRange(nums, 1, n - 1), RobRange(nums, 0, n - 2));
+            }
         }
 
         class DataStructure {
