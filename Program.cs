@@ -301,6 +301,54 @@ namespace FuckingAlgorithm {
                 }
                 return Math.Max(RobRange(nums, 1, n - 1), RobRange(nums, 0, n - 2));
             }
+
+            public static int LongestPalindromeSubseq(string s) {
+                int n = s.Length;
+                // 涉及两个字符串，用二维dp数组
+                // dp定义为在array[i..j]中，最长回文子序列的长度为dp[i][j]
+                int[, ] dp = new int[n, n];
+                // base如果只有一个字符，最长回文子序列长度为1
+                for (int i = 0; i < n; i++) {
+                    dp[i, i] = 1;
+                }
+                // 要求dp[0,n-1]，斜着遍历或者反着遍历
+                for (int i = n - 1; i >= 0; i--) {
+                    // j比i大
+                    for (int j = i + 1; i < n; i++) {
+                        if (s[i] == s[j]) {
+                            // 如果s[i]和s[j]字符相同，最长回文子序列长度加2
+                            dp[i, j] = dp[i + 1, j - 1] + 2;
+                        } else {
+                            // 反之，将两个字符分别添加上，比较长度
+                            dp[i, j] = Math.Max(dp[i + 1, j], dp[i, j - 1]);
+                        }
+                    }
+                }
+                return dp[0, n - 1];
+            }
+
+            public static int IntervalSchedule(int[][] intvs) {
+                if (intvs.Length == 0) {
+                    return 0;
+                }
+                // 按结束时间升序排列
+                Array.Sort(intvs, (a, b) => a[1].CompareTo(b[1]));
+                int count = 1;
+                int x_end = intvs[0][1];
+                foreach (var item in intvs) {
+                    int start = item[0];
+                    if (start >= x_end) {
+                        count++;
+                        x_end = item[1];
+                    }
+                }
+                return count;
+            }
+
+            public static int EraseOverlapIntervals(int[][] intvs) {
+                int n = intvs.Length;
+                return n - IntervalSchedule(intvs);
+            }
         }
 
         class DataStructure {
@@ -418,7 +466,11 @@ namespace FuckingAlgorithm {
         }
 
         static void Main(string[] args) {
-            List<int[]> res = DynamicProgram.Permute(new int[] { 1, 2, 3, 4 });
+            int res = DynamicProgram.IntervalSchedule(new int[][] {
+                new int[] { 2, 4 },
+                    new int[] { 1, 3 },
+                    new int[] { 3, 6 }
+            });
             System.Console.WriteLine(res);
         }
     }
