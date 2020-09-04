@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace FuckingAlgorithm {
     class Program {
 
@@ -227,9 +228,9 @@ namespace FuckingAlgorithm {
                 return Math.Min(Math.Min(a, b), c);
             }
 
-            public static double SuperEggDrop(int k, int n) {
-                Dictionary<string, double> memo = new Dictionary<string, double>();
-                double dp(int k, int n) {
+            public static int SuperEggDrop(int k, int n) {
+                Dictionary<string, int> memo = new Dictionary<string, int>();
+                int dp(int k, int n) {
                     // base如果只有1个鸡蛋，只能线性扫描
                     if (k == 1) {
                         return n;
@@ -243,7 +244,7 @@ namespace FuckingAlgorithm {
                     if (memo.ContainsKey(key)) {
                         return memo[key];
                     }
-                    var res = double.PositiveInfinity;
+                    var res = Int32.MaxValue;
                     // 存在重叠子问题，比如n-i = i-1
                     // 如果在i层没碎，鸡蛋数k不变，搜索楼层变为i+1 - n，如果鸡蛋碎了，k减1，搜索楼层变为1 - i-1。
                     // 也很好理解，如果在i层还没碎，那么还需要多少次能找到楼层就取决于在i层之后的楼层区间内要试验多少次。
@@ -349,10 +350,91 @@ namespace FuckingAlgorithm {
                 int n = intvs.Length;
                 return n - IntervalSchedule(intvs);
             }
+
+            public static int MaxProfit_1(int[] prices) {
+                // 交易次数k=1
+                int n = prices.Length;
+                int[, ] dp = new int[n, 2];
+                // dp定义为第i天持有/未持有股票的收益
+                // base dp[-1, 0] = 0，还没开始交易，利润是0 dp[-1, 1] = -prices[i]，没开始交易，不可能持有股票
+                // 
+                for (int i = 0; i < n; i++) {
+                    if (i - 1 == -1) {
+                        dp[i, 0] = 0;
+                        dp[i, 1] = -prices[i];
+                        continue;
+                    }
+                    // 第i天未持有股票，可能是i-1天就未持有，也可能是i-1天持有股票，然后卖了
+                    dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
+                    // 第i天持有股票，可能是i-1天就持有，也可能是i-1天未持有，但买入了，因为只交易一次，所以收益直接-prices[i]
+                    dp[i, 1] = Math.Max(dp[i - 1, 1], -prices[i]);
+                }
+                return dp[n - 1, 0];
+            }
+
+            public static int MaxProfit_2(int[] prices) {
+                // 交易次数k=无穷
+                int n = prices.Length;
+                // 为了避免处理i-1导致的数组越界，将状态压缩
+                int dp_i_0 = 0, dp_i_1 = Int32.MinValue;
+                for (int i = 0; i < n; i++) {
+                    int temp = dp_i_0;
+                    dp_i_0 = Math.Max(dp_i_0, dp_i_1 + prices[i]);
+                    dp_i_1 = Math.Max(dp_i_1, temp - prices[i]);
+                }
+                return dp_i_0;
+            }
+
+            public static int MaxProfit_3(int[] prices) {
+                // 交易次数k=无穷，加入冷冻期，间隔一天才能交易
+                int n = prices.Length;
+                int dp_i_0 = 0, dp_i_1 = Int32.MinValue;
+                int dp_pre_0 = 0;
+                for (int i = 0; i < n; i++) {
+                    int temp = dp_i_0;
+                    dp_i_0 = Math.Max(dp_i_0, dp_i_1 + prices[i]);
+                    dp_i_1 = Math.Max(dp_i_1, dp_pre_0 - prices[i]);
+                    // 旧的i-1在下次循环时就相当于i-2
+                    dp_pre_0 = temp;
+                }
+                return dp_i_0;
+            }
+
+            public static int MaxProfit_4(int[] prices, int fee) {
+                // 交易次数k=无穷，假如交易手续费，相当于买入股票价格高了，或者卖出股票价格减小了
+                int n = prices.Length;
+                int dp_i_0 = 0, dp_i_1 = Int32.MinValue;
+                for (int i = 0; i < n; i++) {
+                    int temp = dp_i_0;
+                    dp_i_0 = Math.Max(dp_i_0, dp_i_1 + prices[i]);
+                    dp_i_1 = Math.Max(dp_i_1, temp - prices[i] - fee);
+                }
+                return dp_i_0;
+            }
+
+            // public static int MaxProfit_5(int[] prices) {
+            //     int max_k = 2;
+            //     int n = prices.Length;
+            //     int[, , ] dp = new int[n, max_k + 1, 2];
+            //     // dp定义为第i天持有/未持有股票的收益
+            //     // base dp[-1, 0] = 0，还没开始交易，利润是0 dp[-1, 1] = -prices[i]，没开始交易，不可能持有股票
+            //     // 
+            //     for (int i = 0; i < n; i++) {
+            //         if (i - 1 == -1) {
+            //             dp[i, 0] = 0;
+            //             dp[i, 1] = -prices[i];
+            //             continue;
+            //         }
+            //         // 第i天未持有股票，可能是i-1天就未持有，也可能是i-1天持有股票，然后卖了
+            //         dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
+            //         // 第i天持有股票，可能是i-1天就持有，也可能是i-1天未持有，但买入了，因为只交易一次，所以收益直接-prices[i]
+            //         dp[i, 1] = Math.Max(dp[i - 1, 1], -prices[i]);
+            //     }
+            //     return dp[n - 1, 0];
+            // }
         }
 
         class DataStructure {
-
             class LRU {
                 class Node {
                     public Node(int k, int v) {
@@ -466,12 +548,7 @@ namespace FuckingAlgorithm {
         }
 
         static void Main(string[] args) {
-            int res = DynamicProgram.IntervalSchedule(new int[][] {
-                new int[] { 2, 4 },
-                    new int[] { 1, 3 },
-                    new int[] { 3, 6 }
-            });
-            System.Console.WriteLine(res);
+
         }
     }
 }
