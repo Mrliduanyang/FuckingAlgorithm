@@ -432,6 +432,49 @@ namespace FuckingAlgorithm {
             //     }
             //     return dp[n - 1, 0];
             // }
+
+            public static string Palindrome(string s, int l, int r) {
+                while (l >= 0 && r <= s.Length && s[l] == s[r]) {
+                    l--;
+                    r++;
+                }
+                return s.Substring(l, r);
+            }
+
+            public static string LongestPalindrome(string s) {
+                string res = "";
+                for (int i = 0; i < s.Length; i++) {
+                    // 以s[i]为中心的最长回文子串
+                    string s1 = Palindrome(s, i, i);
+                    // 以s[i]和s[i+1]为中心的最长回文子串
+                    string s2 = Palindrome(s, i, i + 1);
+                    res = res.Length > s1.Length ? res.Length > s2.Length ? res : s2 : s1;
+                }
+                return res;
+            }
+
+            public class ListNode {
+                public char val;
+                public ListNode next;
+            }
+
+            static ListNode left;
+            public static bool IsPalindrome(ListNode head) {
+                left = head;
+                return Traverse(head);
+            }
+
+            public static bool Traverse(ListNode right) {
+                if (right == null) {
+                    return true;
+                }
+                // 利用后序遍历，通过递归，深入到链表最后一个节点，然后比较right和left。
+                // 之后right返回到递归的上一层，相当于右指针左移，left=left.next等于左指针右移，巧妙实现双指针。
+                bool res = Traverse(right.next);
+                res = res && (left.val == right.val);
+                left = left.next;
+                return res;
+            }
         }
 
         class DataStructure {
