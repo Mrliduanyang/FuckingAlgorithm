@@ -476,15 +476,14 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int trap(int[] height) {
+            public static int Trap_1(int[] height) {
                 if (height.Length == 0) {
                     return 0;
                 }
                 int n = height.Length;
                 int ans = 0;
-                int[] l_max = new int[n];
-                int[] r_max = new int[n];
-                // base
+                int[] l_max = new int[n], r_max = new int[n];
+                // base。l_max表示位置i左侧最高柱子的高度，r_max表示位置右侧最高柱子的高度
                 l_max[0] = height[0];
                 r_max[n - 1] = height[n - 1];
                 // 从左向右计算 l_max
@@ -498,6 +497,164 @@ namespace FuckingAlgorithm {
                 for (int i = 1; i < n - 1; i++)
                     ans += Math.Min(l_max[i], r_max[i]) - height[i];
                 return ans;
+            }
+
+            public static int Trap_2(int[] height) {
+                int n = height.Length;
+                int left = 0, right = n - 1;
+                int l_max = height[0], r_max = height[n - 1];
+                int ans = 0;
+                while (left <= right) {
+                    // left表示0-left的最高柱子高度，right表示right-end的最高柱子高度。
+                    // 和备忘录方法中的left，right含义稍有区别，只用关心l_max和r_max的大小，不用管r_max是否是最。反正一样
+                    l_max = Math.Max(l_max, height[left]);
+                    r_max = Math.Max(r_max, height[right]);
+                    if (l_max < r_max) {
+                        ans += l_max - height[left];
+                        left++;
+                    } else {
+                        ans += r_max - height[right];
+                        right--;
+                    }
+                }
+                return ans;
+            }
+
+            class UF {
+                private int count;
+                private int[] parent;
+                // 记录数组重量
+                private int[] size;
+                public UF(int n) {
+                    count = n;
+                    parent = new int[n];
+                    for (int i = 0; i < parent.Length; i++) {
+                        parent[i] = i;
+                    }
+                }
+
+                public UF(int n, int flag) {
+                    count = n;
+                    parent = new int[n];
+                    size = new int[n];
+                    for (int i = 0; i < parent.Length; i++) {
+                        parent[i] = i;
+                        size[i] = 1;
+                    }
+                }
+
+                public void Union(int p, int q) {
+                    int rootP = Find(p);
+                    int rootQ = Find(q);
+                    if (rootP == rootQ) {
+                        return;
+                    }
+                    // 将两棵树合并为一棵
+                    parent[rootP] = rootQ;
+                    count--;
+                }
+
+                public void Union_1(int p, int q) {
+                    int rootP = Find(p);
+                    int rootQ = Find(q);
+                    if (rootP == rootQ) {
+                        return;
+                    }
+                    if (size[rootP] > size[rootQ]) {
+                        // 重量小的树接到重量大的树下面，避免头重脚轻，更平衡
+                        parent[rootQ] = rootP;
+                        size[rootP] += size[rootQ];
+                    } else {
+                        parent[rootP] = rootQ;
+                        size[rootQ] += size[rootP];
+                    }
+                    count--;
+                }
+
+                // 找节点x的根节点
+                public int Find(int x) {
+                    while (parent[x] != x) {
+                        x = parent[x];
+                    }
+                    return x;
+                }
+                public int Find_1(int x) {
+                    while (parent[x] != x) {
+                        // 路径压缩，最终树高不会超过3
+                        parent[x] = parent[parent[x]];
+                        x = parent[x];
+                    }
+                    return x;
+                }
+
+                public int Count() {
+                    return count;
+                }
+
+                public bool Connected(int p, int q) {
+                    int rootP = Find(p);
+                    int rootQ = Find(q);
+                    return rootP == rootQ;
+                }
+            }
+
+            public static bool EuqationsPossible(string[] euqations) {
+                UF uf = new UF(26);
+                // 让相同的字母形成联通分量
+                foreach (string eq in euqations) {
+                    if (eq[1] == '=') {
+                        var x = eq[0];
+                        var y = eq[3];
+                        uf.Union(x - 'a', y - 'a');
+                    }
+                }
+                foreach (string eq in euqations) {
+                    if (eq[1] == '!') {
+                        var x = eq[0];
+                        var y = eq[3];
+                        // 如果在并查集中x和y已经存在联通关系，即x==y，那么就跟该不等关系冲突
+                        if (uf.Connected(x - 'a', y - 'a')) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            public static List<int> PancakeSort(int[] cakes) {
+                List<int> res = new List<int>();
+                void Reverse(int[] arr, int i, int j) {
+                    while (i < j) {
+                        int temp = arr[i];
+                        arr[i] = arr[j];
+                        arr[j] = temp;
+                        i++;
+                        j--;
+                    }
+                }
+                void Sort(int[] cakes, int n) {
+                    if (n == 1) {
+                        return;
+                    }
+                    int maxCake = 0;
+                    int maxCakeIndex = 0;
+                    for (int i = 0; i < n; i++) {
+                        if (cakes[i] > maxCake) {
+                            maxCakeIndex = i;
+                            maxCake = cakes[i];
+                        }
+                    }
+                    // 第一次翻转，把最大的饼翻到最上面
+                    Reverse(cakes, 0, maxCakeIndex);
+                    res.Add(maxCakeIndex + 1);
+                    // 第二次翻转，把最大的饼翻到最下面
+                    Reverse(cakes, 0, n - 1);
+                    res.Add(n);
+                    // 递归求解子问题
+                    Sort(cakes, n - 1);
+                }
+                Sort(cakes, cakes.Length);
+                return res;
             }
         }
 
@@ -515,6 +672,7 @@ namespace FuckingAlgorithm {
                 class DoubleList {
                     private Node head, tail;
                     private int size;
+
                     public DoubleList() {
                         head = new Node(0, 0);
                         tail = new Node(0, 0);
@@ -522,6 +680,7 @@ namespace FuckingAlgorithm {
                         tail.prev = head;
                         size = 0;
                     }
+
                     public void AddLast(Node x) {
                         // 把x插入到tail之前
                         x.prev = tail.prev;
@@ -555,11 +714,13 @@ namespace FuckingAlgorithm {
                     private Dictionary<int, Node> map;
                     private DoubleList cache;
                     private int cap;
+
                     public LRUCache(int capacity) {
                         cap = capacity;
                         map = new Dictionary<int, Node>();
                         cache = new DoubleList();
                     }
+
                     // 将key对应node提升为最近使用的，也就是把node从表头删除，插入到表尾
                     private void MakeRecently(int key) {
                         Node x = map[key];
@@ -613,9 +774,9 @@ namespace FuckingAlgorithm {
                 }
             }
         }
-
         static void Main(string[] args) {
-
+            var res = DynamicProgram.EuqationsPossible(new string[] { "a==b", "b==c", "c==a" });
+            System.Console.WriteLine(res);
         }
     }
 }
