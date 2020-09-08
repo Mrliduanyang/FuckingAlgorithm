@@ -656,6 +656,42 @@ namespace FuckingAlgorithm {
                 Sort(cakes, cakes.Length);
                 return res;
             }
+
+            // 暴力算法也是线性搜索，找到一个合适的速度。所以可以用二分搜索来优化
+            public static int MinEatingSpeed(int[] piles, int h) {
+                int left = 1, right = GetMax(piles);
+                while (left < right) {
+                    int mid = (left + right) / 2; // = left + (right - left) / 2
+                    if (CanFinish(piles, mid, h)) {
+                        right = mid;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+                return left;
+            }
+
+            public static bool CanFinish(int[] piles, int speed, int h) {
+                int time = 0;
+                foreach (var item in piles) {
+                    time += TimeOf(item, speed);
+                }
+                return time <= h;
+            }
+
+            public static int TimeOf(int n, int speed) {
+                // 题目规定，一堆吃不下的话就留到下一小时再吃，如果一堆吃完了还有胃口，也只会等到下一小时再吃
+                // n < speed时n % speed = 0，整体结果=1
+                return (n / speed) + ((n % speed > 0) ? 1 : 0);
+            }
+
+            public static int GetMax(int[] piles) {
+                int max = 0;
+                foreach (var item in piles) {
+                    max = Math.Max(max, item);
+                }
+                return max;
+            }
         }
 
         class DataStructure {
