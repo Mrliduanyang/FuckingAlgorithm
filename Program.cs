@@ -659,6 +659,28 @@ namespace FuckingAlgorithm {
 
             // 暴力算法也是线性搜索，找到一个合适的速度。所以可以用二分搜索来优化
             public static int MinEatingSpeed(int[] piles, int h) {
+                bool CanFinish(int[] piles, int speed, int h) {
+                    int time = 0;
+                    foreach (var item in piles) {
+                        time += TimeOf(item, speed);
+                    }
+                    return time <= h;
+                }
+
+                int TimeOf(int n, int speed) {
+                    // 题目规定，一堆吃不下的话就留到下一小时再吃，如果一堆吃完了还有胃口，也只会等到下一小时再吃
+                    // n < speed时n % speed = 0，整体结果=1
+                    return (n / speed) + ((n % speed > 0) ? 1 : 0);
+                }
+
+                int GetMax(int[] piles) {
+                    int max = 0;
+                    foreach (var item in piles) {
+                        max = Math.Max(max, item);
+                    }
+                    return max;
+                }
+
                 int left = 1, right = GetMax(piles);
                 while (left < right) {
                     int mid = (left + right) / 2; // = left + (right - left) / 2
@@ -671,26 +693,19 @@ namespace FuckingAlgorithm {
                 return left;
             }
 
-            public static bool CanFinish(int[] piles, int speed, int h) {
-                int time = 0;
-                foreach (var item in piles) {
-                    time += TimeOf(item, speed);
+            public static int[] TwoSum(int[] nums, int target) {
+                int n = nums.Length;
+                Dictionary<int, int> index = new Dictionary<int, int>();
+                for (int i = 0; i < n; i++) {
+                    index.Add(nums[i], i);
                 }
-                return time <= h;
-            }
-
-            public static int TimeOf(int n, int speed) {
-                // 题目规定，一堆吃不下的话就留到下一小时再吃，如果一堆吃完了还有胃口，也只会等到下一小时再吃
-                // n < speed时n % speed = 0，整体结果=1
-                return (n / speed) + ((n % speed > 0) ? 1 : 0);
-            }
-
-            public static int GetMax(int[] piles) {
-                int max = 0;
-                foreach (var item in piles) {
-                    max = Math.Max(max, item);
+                for (int i = 0; i < n; i++) {
+                    int other = target - nums[i];
+                    if (index.ContainsKey(other) && index[other] != i) {
+                        return new int[] { i, index[other] };
+                    }
                 }
-                return max;
+                return new int[] {-1, -1 };
             }
         }
 
