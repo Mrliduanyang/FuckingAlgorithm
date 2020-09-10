@@ -693,7 +693,7 @@ namespace FuckingAlgorithm {
                 return left;
             }
 
-            public static int[] TwoSum(int[] nums, int target) {
+            public static int[] TwoSum_1(int[] nums, int target) {
                 int n = nums.Length;
                 Dictionary<int, int> index = new Dictionary<int, int>();
                 for (int i = 0; i < n; i++) {
@@ -706,6 +706,46 @@ namespace FuckingAlgorithm {
                     }
                 }
                 return new int[] {-1, -1 };
+            }
+
+            class TwoSum {
+                static Dictionary<int, int> freq = new Dictionary<int, int>();
+
+                public static void Add(int number) {
+                    freq.Add(number, freq.GetValueOrDefault(number, 0) + 1);
+                }
+
+                public static bool Find(int value) {
+                    foreach (var key in freq.Keys) {
+                        int other = value - key;
+                        // 情况1，两个加数相同，就需要看freq中该加数个数是否大于1
+                        if (other == key && freq[key] > 1) {
+                            return true;
+                        }
+                        // 情况2，两个加数不同，要判断另一个加数是否在freq中
+                        if (other != key && freq.ContainsKey(other)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+
+            class TwoSum_2 {
+                static HashSet<int> sum = new HashSet<int>();
+                static List<int> nums = new List<int>();
+
+                // 针对Find优化，在存入number时，同时存入number与nums中所有元素的和，即可在O(1)时间内执行Find
+                public static void Add(int number) {
+                    nums.ForEach((num) => {
+                        sum.Add(num + number);
+                    });
+                    nums.Add(number);
+                }
+
+                public static bool Find(int value) {
+                    return sum.Contains(value);
+                }
             }
         }
 
