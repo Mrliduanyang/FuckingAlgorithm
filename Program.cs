@@ -747,6 +747,20 @@ namespace FuckingAlgorithm {
                     return sum.Contains(value);
                 }
             }
+
+            // 请问通过题目中的跳跃规则，最多能跳多远？如果能够越过最后一格，返回 true，否则返回 false。
+            public static bool CanJump(int[] nums) {
+                int n = nums.Length;
+                int farthest = 0;
+                for (int i = 0; i < n - 1; i++) {
+                    // 不断计算能跳到的最远距离
+                    farthest = Math.Max(farthest, i + nums[i]);
+                    if (farthest <= i) {
+                        return false;
+                    }
+                }
+                return farthest >= n - 1;
+            }
         }
 
         class DataStructure {
