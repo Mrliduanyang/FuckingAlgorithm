@@ -748,18 +748,76 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            // 请问通过题目中的跳跃规则，最多能跳多远？如果能够越过最后一格，返回 true，否则返回 false。
             public static bool CanJump(int[] nums) {
                 int n = nums.Length;
                 int farthest = 0;
                 for (int i = 0; i < n - 1; i++) {
-                    // 不断计算能跳到的最远距离
+                    // 每一步都计算一下从当前位置最远能够跳到哪里。因为只要数组元素不为0，就肯定可以向前走，所以只需求得在位置i上能不能跳过终点。
                     farthest = Math.Max(farthest, i + nums[i]);
                     if (farthest <= i) {
                         return false;
                     }
                 }
                 return farthest >= n - 1;
+            }
+
+            public static int Jump(int[] nums) {
+                int n = nums.Length;
+                int end = 0, farthest = 0;
+                int jumps = 0;
+                for (int i = 0; i < n - 1; i++) {
+                    // i和end标记了从位置i开始可选的跳跃位置，farthest标记了可选跳跃位置中能到的最远距离。因为在i到end中，我们只用选择那个能跳的最远的点。
+                    farthest = Math.Max(i + nums[i], farthest);
+                    if (i == end) {
+                        jumps++;
+                        end = farthest;
+                    }
+                }
+                return jumps;
+            }
+
+            public static List<int[]> MergeIntervals(int[][] intervals) {
+                if (intervals.Length == 0) {
+                    return new List<int[]>();
+                }
+                // 按区间start升序排列
+                Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+                List<int[]> res = new List<int[]>();
+                res.Add(intervals[0]);
+                for (int i = 1; i < intervals.Length; i++) {
+                    var curr = intervals[i];
+                    // res中最后一个元素的引用，所以可以不断修改last的end。
+                    var last = res[res.Count - 1];
+                    // 如果curr的start小于last的end，说明curr可能在last的区间内，这时需要比较curr的end和last的end，确定是否更新last的end。
+                    if (curr[0] <= last[1]) {
+                        last[1] = Math.Max(last[1], curr[1]);
+                    } else {
+                        res.Add(curr);
+                    }
+                }
+                return res;
+            }
+
+            public static List<int[]> IntervalIntersection(int[][] a, int[][] b) {
+                int i = 0, j = 0;
+                List<int[]> res = new List<int[]>();
+                while (i < a.Length && j < b.Length) {
+                    int a1 = a[i][0];
+                    int a2 = a[i][1];
+                    int b1 = a[j][0];
+                    int b2 = a[j][1];
+                    // 两个区间存在交集。两个区间不存在交集的情况为：a1 > b2 或者b1 > a2。否命题就是存在交集的情况。
+                    if (b2 >= a1 && a2 >= b1) {
+                        // 交集为大的start-小的end
+                        res.Add(new int[] { Math.Max(a1, b1), Math.Min(a2, b2) });
+                    }
+                    // 指针前进，如果a2比较大，b中选择下一个；反之
+                    if (b2 < a2) {
+                        j++;
+                    } else {
+                        i++;
+                    }
+                }
             }
         }
 
