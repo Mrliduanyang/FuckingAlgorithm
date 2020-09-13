@@ -818,6 +818,71 @@ namespace FuckingAlgorithm {
                         i++;
                     }
                 }
+                return res;
+            }
+
+            // 理论证明，从n个元素中选择1个，要保证每个元素被选择的概率都是1/n。对于1-i个元素，选择第i个元素的概率是1/i，
+            // 为保证在n个元素中第i个元素被选择的概率不变，需要保证i后面的元素，都不被选择。概率连乘完的结果表明，第i个元素被选择的概率是1/n。
+            public static int GetRandom(ListNode head) {
+                Random r = new Random();
+                int i = 0, res = 0;
+                ListNode p = head;
+                while (p != null) {
+                    // 生成一个[0，i]之间的整数，这个数等于0的概率即是1/i
+                    if (r.Next(++i) == 0) {
+                        res = p.val;
+                    }
+                    p = p.next;
+                }
+                return res;
+            }
+
+            public static int[] GetRandom(ListNode head, int k) {
+                Random r = new Random();
+                int[] res = new int[k];
+                ListNode p = head;
+
+                // 前 k 个元素先默认选上
+                for (int j = 0; j < k && p != null; j++) {
+                    res[j] = p.val;
+                    p = p.next;
+                }
+
+                int i = k;
+                while (p != null) {
+                    // 生成一个 [0, i) 之间的整数
+                    int j = r.nextInt(++i);
+                    // 这个整数小于 k 的概率就是 k/i
+                    if (j < k) {
+                        res[j] = p.val;
+                    }
+                    p = p.next;
+                }
+                return res;
+            }
+
+            public static int MissingNumber(int[] nums) {
+                int n = nums.Length;
+                int res = 0;
+                // 先和新补的索引异或
+                res ^= n;
+                // 把所有的0-n索引和值异或，相同的异或完得0，剩下就是缺失的元素。
+                for (int i = 0; i < n; i++) {
+                    res ^= (i ^= nums[i]);
+                }
+                return res;
+            }
+
+            public static int MissingNumber_1(int[] nums) {
+                int n = nums.Length;
+                int res = 0;
+                // 补的新索引位置的元素
+                res += n;
+                for (int i = 0; i < n; i++) {
+                    // 把索引和元素的差加起来
+                    res += (i - nums[i]);
+                }
+                return res;
             }
         }
 
