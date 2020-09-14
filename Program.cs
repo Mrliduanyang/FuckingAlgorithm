@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace FuckingAlgorithm {
     class Program {
 
-        class DynamicProgram {
+        class Algorithm {
             public static int Fib(int N) {
                 int[] dp = new int[N + 1];
                 dp[1] = dp[2] = 1;
@@ -266,8 +266,8 @@ namespace FuckingAlgorithm {
                 while (dp[k, m] < n) {
                     m++;
                     for (int i = 1; i <= k; i++) {
-                        // dp[i, m - 1]是楼上的楼层数，鸡蛋没碎，k不变，扔鸡蛋次数m-1，dp[k - 1, m - 1]是楼下楼层数，鸡蛋碎了k-1，扔鸡蛋次数m-1
-                        dp[i, m] = dp[i, m - 1] + dp[k - 1, m - 1] + 1;
+                        // dp[i, m - 1]是楼上的楼层数，鸡蛋没碎，i不变，扔鸡蛋次数m-1，dp[i - 1, m - 1]是楼下楼层数，鸡蛋碎了i-1，扔鸡蛋次数m-1
+                        dp[i, m] = dp[i, m - 1] + dp[i - 1, m - 1] + 1;
                     }
                 }
                 return m;
@@ -928,6 +928,57 @@ namespace FuckingAlgorithm {
                 }
                 return string.Join("", res).TrimStart('0');
             }
+
+            // 洗牌算法的正确性准则，产生的结果必须啊有n!种。因为长度为n的数组的全排列有n!种，也就是说打乱结果总数为n!种。
+            public static void Shuffle(int[] arr) {
+                Random r = new Random();
+                int n = arr.Length;
+                // 第一轮迭代是，rand取值n，第二轮迭代，rand取值有n-1个，依次类推，总共有n!种。符合正确性准则。
+                for (int i = 0; i < n; i++) {
+                    int rand = r.Next(i, n - 1);
+                    // Swap交换数组元素
+                    int tmp = arr[i];
+                    arr[i] = arr[rand];
+                    arr[rand] = tmp;
+                }
+                // 错误的写法，共产生n^n种结果，!= n!。
+                for (int i = 0; i < n; i++) {
+                    // 每次都从闭区间 [0, n-1]中随机选取元素进行交换。
+                    int rand = r.Next(i, n - 1);
+                }
+            }
+
+            public static int[, ] FloodFill(int[, ] iamge, int sr, int sc, int newColor) {
+                void Fill(int[, ] iamge, int x, int y, int origColor, int newColor) {
+                    // 出界。
+                    if (!InArea(iamge, x, y)) {
+                        return;
+                    }
+                    // 遇到其他颜色。
+                    if (iamge[x, y] != origColor) {
+                        return;
+                    }
+                    if (iamge[x, y] == -1) {
+                        return;
+                    }
+                    // 按回溯法思路处理无限递归的情况，打标记，以免重复探索。
+                    iamge[x, y] = -1;
+                    // 递归替换左右上下的像素。
+                    Fill(iamge, x, y - 1, origColor, newColor);
+                    Fill(iamge, x, y + 1, origColor, newColor);
+                    Fill(iamge, x - 1, y, origColor, newColor);
+                    Fill(iamge, x + 1, y, origColor, newColor);
+                    // 如果邻居都探索完了，没有问题，那么该点自然可以替换成newColor。
+                    iamge[x, y] = newColor;
+                }
+
+                bool InArea(int[, ] iamge, int x, int y, int origColor, int newColor) {
+                    return x >= 0 && x < iamge.GetLength(0) && y >= 0 && y < iamge.GetLength(1);
+                }
+                int origColor = iamge[sr, sc];
+                Fill(iamge, sr, sc, newColor);
+                return iamge;
+            }
         }
 
         class DataStructure {
@@ -1047,7 +1098,7 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            var res = DynamicProgram.Multiply("123", "45");
+            var res = Algorithm.Multiply("123", "45");
             System.Console.WriteLine(res);
         }
     }
