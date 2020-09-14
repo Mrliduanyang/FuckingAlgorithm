@@ -851,7 +851,7 @@ namespace FuckingAlgorithm {
                 int i = k;
                 while (p != null) {
                     // 生成一个 [0, i) 之间的整数
-                    int j = r.nextInt(++i);
+                    int j = r.Next(++i);
                     // 这个整数小于 k 的概率就是 k/i
                     if (j < k) {
                         res[j] = p.val;
@@ -883,6 +883,50 @@ namespace FuckingAlgorithm {
                     res += (i - nums[i]);
                 }
                 return res;
+            }
+
+            public static int[] FindErrorNums(int[] nums) {
+                int n = nums.Length;
+                int dup = -1;
+                // 每一个出现过的元素都变为相反数，以标记其出现过。值和索引值不一定对应，只要能标记出现过的元素即可。
+                // 例如两个值4，对应索引4的值是2，会在第一次出现值4的时候，将2变为-2，如果第二次出现，就可以找到重复元素
+                for (int i = 0; i < n; i++) {
+                    // 所以此处index要取绝对值，
+                    int index = Math.Abs(nums[i]);
+                    if (nums[index] < 0) {
+                        dup = Math.Abs(nums[i]);
+                    } else {
+                        nums[index] *= -1;
+                    }
+                }
+                int missing = -1;
+                for (int i = 0; i < n; i++) {
+                    // 对应索引有值的索引都已经变为相反数，所以值为正的索引就是确实元素
+                    if (nums[i] > 0)
+                        // 将索引转换成元素
+                        missing = i + 1;
+                }
+                return new int[] { dup, missing };
+            }
+
+            public static string Multiply(string num1, string num2) {
+                int m = num1.Length, n = num2.Length;
+                int[] res = new int[m + n];
+                for (int i = m - 1; i >= 0; i--) {
+                    for (int j = n - 1; j >= 0; j--) {
+                        // 字符转为数字后相乘
+                        int mul = (num1[i] - '0') * (num2[j] - '0');
+                        // 乘积在结果中对应的位置
+                        int p1 = i + j, p2 = i + j + 1;
+                        // 处理本位和
+                        int sum = mul + res[p2];
+                        // 本位结果
+                        res[p2] = sum % 10;
+                        // 进位结果
+                        res[p1] = sum / 10;
+                    }
+                }
+                return string.Join("", res).TrimStart('0');
             }
         }
 
@@ -1003,7 +1047,7 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            var res = DynamicProgram.EuqationsPossible(new string[] { "a==b", "b==c", "c==a" });
+            var res = DynamicProgram.Multiply("123", "45");
             System.Console.WriteLine(res);
         }
     }
