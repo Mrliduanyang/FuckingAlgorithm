@@ -979,6 +979,50 @@ namespace FuckingAlgorithm {
                 Fill(iamge, sr, sc, newColor);
                 return iamge;
             }
+
+            public class KMP {
+                private int[, ] dp;
+                private string pat;
+
+                public KMP(string pat) {
+                    this.pat = pat;
+                    int m = pat.Length;
+                    // ASCII不会超过256个，构造一个二维dp数组包含所有情况。
+                    dp = new int[m, 256];
+                    // base，遇到pat的第一个字符，才会前进。
+                    dp[0, pat[0]] = 1;
+                    int x = 0;
+                    // pat串从第一个开始。
+                    for (int i = 1; i < m; i++) {
+                        for (int j = 0; i < 256; j++) {
+                            if (pat[i] == j) {
+                                // 遇到pat[i]可以前进。
+                                dp[i, j] = i + 1;
+                            } else {
+                                // 否则等于影子状态。
+                                dp[i, j] = dp[x, j];
+                            }
+                        }
+                        // 更新影子状态x，x总是落后i一个状态。x貌似是沿着斜对角下来的。
+                        x = dp[x, pat[i]];
+                    }
+                }
+
+                public int Search(String txt) {
+                    int m = pat.Length;
+                    int n = txt.Length;
+                    // pat的初始态为0。
+                    int j = 0;
+                    for (int i = 0; i < n; i++) {
+                        // 计算pat的下一个状态。
+                        j = dp[j, txt[i]];
+                        // 到达终止态，返回结果。
+                        if (j == m) return i - m + 1;
+                    }
+                    // 没到达终止态，匹配失败。
+                    return -1;
+                }
+            }
         }
 
         class DataStructure {
