@@ -972,11 +972,11 @@ namespace FuckingAlgorithm {
                     iamge[x, y] = newColor;
                 }
 
-                bool InArea(int[, ] iamge, int x, int y, int origColor, int newColor) {
+                bool InArea(int[, ] iamge, int x, int y) {
                     return x >= 0 && x < iamge.GetLength(0) && y >= 0 && y < iamge.GetLength(1);
                 }
                 int origColor = iamge[sr, sc];
-                Fill(iamge, sr, sc, newColor);
+                Fill(iamge, sr, sc, origColor, newColor);
                 return iamge;
             }
 
@@ -1021,6 +1021,138 @@ namespace FuckingAlgorithm {
                     }
                     // 没到达终止态，匹配失败。
                     return -1;
+                }
+            }
+
+            class Tree {
+                public class TreeNode {
+                    public int val;
+                    public TreeNode left;
+                    public TreeNode right;
+                    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null) {
+                        this.val = val;
+                        this.left = left;
+                        this.right = right;
+                    }
+                }
+
+                public static bool IsSameTree(TreeNode p, TreeNode q) {
+                    if (p == null && q == null) {
+                        return true;
+                    }
+                    if (p == null || q == null) {
+                        return false;
+                    }
+                    if (p.val != q.val) {
+                        return false;
+                    }
+                    return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
+                }
+
+                public static int MaxDepth(TreeNode root) {
+                    if (root == null) return 0;
+                    var queue = new Queue<TreeNode>();
+                    queue.Enqueue(root);
+                    int level = 0;
+                    while (queue.Count != 0) {
+                        int count = queue.Count;
+                        level++;
+                        for (int i = 0; i < count; i++) {
+                            var node = queue.Dequeue();
+                            if (node.left != null) {
+                                queue.Enqueue(node.left);
+                            }
+                            if (node.right != null) {
+                                queue.Enqueue(node.right);
+                            }
+                        }
+                    }
+                    return level;
+                }
+
+                public static IList<int> PreorderTraversal(TreeNode root) {
+                    if (root == null) return new List<int> { };
+                    var stack = new Stack<TreeNode>();
+                    var res = new List<int>();
+                    stack.Push(root);
+                    while (stack.Count != 0) {
+                        var node = stack.Pop();
+                        res.Add(node.val);
+                        if (node.right != null) {
+                            stack.Push(node.right);
+                        }
+                        if (node.left != null) {
+                            stack.Push(node.left);
+                        }
+                    }
+                    return res;
+                }
+
+                public static IList<int> PostorderTraversal(TreeNode root) {
+                    if (root == null) return new List<int> { };
+                    var stack = new Stack<TreeNode>();
+                    var res = new List<int>();
+                    stack.Push(root);
+                    while (stack.Count != 0) {
+                        var node = stack.Pop();
+                        res.Insert(0, node.val);
+                        if (node.left != null) {
+                            stack.Push(node.left);
+                        }
+                        if (node.right != null) {
+                            stack.Push(node.right);
+                        }
+                    }
+                    return res;
+                }
+
+                public static TreeNode InvertTree(TreeNode root) {
+                    if (root == null) return null;
+
+                    var left = InvertTree(root.left);
+                    var right = InvertTree(root.right);
+
+                    root.left = right;
+                    root.right = left;
+
+                    return root;
+                }
+
+                public class Node {
+                    public int val;
+                    public IList<Node> children;
+                    public Node() { }
+                    public Node(int _val) {
+                        val = _val;
+                    }
+                    public Node(int _val, IList<Node> _children) {
+                        val = _val;
+                        children = _children;
+                    }
+                }
+                public IList<IList<int>> LevelOrder(Node root) {
+                    var res = new List<IList<int>>();
+                    if (root == null) {
+                        return res;
+                    }
+                    Queue<Node> queue = new Queue<Node>();
+                    queue.Enqueue(root);
+
+                    while (queue.Count > 0) {
+                        var count = queue.Count;
+                        var tmp = new List<int>();
+                        for (int i = 0; i < count; i++) {
+                            var node = queue.Dequeue();
+                            tmp.Add(node.val);
+                            if (node.children != null && node.children.Count != 0) {
+                                foreach (var child in node.children) {
+                                    queue.Enqueue(child);
+                                }
+                            }
+                        }
+                        res.Add(tmp);
+                    }
+                    return res;
                 }
             }
         }
