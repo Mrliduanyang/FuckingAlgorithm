@@ -1130,7 +1130,7 @@ namespace FuckingAlgorithm {
                         children = _children;
                     }
                 }
-                public IList<IList<int>> LevelOrder(Node root) {
+                public static IList<IList<int>> LevelOrder(Node root) {
                     var res = new List<IList<int>>();
                     if (root == null) {
                         return res;
@@ -1154,6 +1154,40 @@ namespace FuckingAlgorithm {
                     }
                     return res;
                 }
+            }
+
+            // 撑杆跳，一次把元素移动到位。
+            public static void Rotate(int[] nums, int k) {
+                k %= nums.Length;
+                int step = 0;
+                for (int start = 0; start < nums.Length; start++) {
+                    int curr = start;
+                    // 第一位准备起跳。
+                    int prevVal = nums[start];
+                    do {
+                        int next = (curr + k) % nums.Length;
+                        int tmp = nums[next];
+                        nums[next] = prevVal;
+                        prevVal = tmp; // 下一位准备起跳。
+                        curr = next;
+                        step++;
+                    } while (curr != start);
+                }
+            }
+
+            public static void Rotate_1(int[] nums, int k) {
+                k %= nums.Length;
+                int[] left = new int[k];
+                int[] right = new int[nums.Length - k];
+                Array.Copy(nums, 0, left, 0, k);
+                Array.Copy(nums, k, right, 0, nums.Length - k);
+                // 将数组两部分分别翻转。
+                Array.Reverse(left);
+                Array.Reverse(right);
+                left.CopyTo(nums, 0);
+                right.CopyTo(nums, k);
+                // 合并后把整个数组翻转。
+                Array.Reverse(nums);
             }
         }
 
