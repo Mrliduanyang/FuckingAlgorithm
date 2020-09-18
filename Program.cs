@@ -1189,6 +1189,36 @@ namespace FuckingAlgorithm {
                 // 合并后把整个数组翻转。
                 Array.Reverse(nums);
             }
+
+            public static int RemoveDuplicates(int[] nums) {
+                int n = nums.Length;
+                if (n == 0) return 0;
+                int slow = 0, fast = 1;
+                while (fast < n) {
+                    if (nums[fast] != nums[slow]) {
+                        slow++;
+                        nums[slow] = nums[fast];
+                    }
+                    fast++;
+                }
+                return slow + 1;
+            }
+
+            public static ListNode DeleteDuplicates(ListNode head) {
+                if (head == null) return null;
+                ListNode slow = head, fast = head.next;
+                while (fast != null) {
+                    if (slow.val != fast.val) {
+                        // 跳过中间元素，slow直接和fast连起来。
+                        slow.next = fast;
+                        slow = slow.next;
+                    }
+                    fast = fast.next;
+                }
+                // fast断开和后面的连接。
+                fast.next = null;
+                return head;
+            }
         }
 
         class DataStructure {
@@ -1306,6 +1336,52 @@ namespace FuckingAlgorithm {
                     }
                 }
             }
+
+            public class Node {
+                public int val;
+                public Node next;
+            }
+
+            public static int Size(Node head) {
+                int len = 0;
+                while (head != null) {
+                    len++;
+                    head = head.next;
+                }
+                return len;
+            }
+
+            public static int Size_1(Node head) {
+                if (head == null) return 0;
+                return Size_1(head.next) + 1;
+            }
+
+            public static Node Reverse(Node head) {
+                if (head == null) return null;
+                Node curr = head, prev = null;
+                while (curr != null) {
+                    var next = curr.next;
+                    // 开始更改当前节点的next指向。
+                    curr.next = prev;
+                    // 移动到下个节点。
+                    prev = curr;
+                    curr = next;
+                }
+                return prev;
+            }
+
+            public static Node Reverse_1(Node head) {
+                // 存疑，递归结束条件应该是head != null and head.next == null。
+                if (head == null || head.next == null) return head;
+                // 把next到最后的链表翻转了。
+                Node newHead = Reverse_1(head.next);
+                // 此时head的next是newHead链表的最后一个节点，需要让该节点的next指向head。
+                head.next.next = head;
+                // head指向null，标志链表结束。
+                head.next = null;
+                return newHead;
+            }
+
         }
         static void Main(string[] args) {
             var res = Algorithm.Multiply("123", "45");
