@@ -1340,6 +1340,10 @@ namespace FuckingAlgorithm {
             public class Node {
                 public int val;
                 public Node next;
+
+                public Node(int _val) {
+                    val = _val;
+                }
             }
 
             public static int Size(Node head) {
@@ -1380,6 +1384,34 @@ namespace FuckingAlgorithm {
                 // head指向null，标志链表结束。
                 head.next = null;
                 return newHead;
+            }
+
+            public static Node Merge(Node head1, Node head2) {
+                if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
+                if (head1.val > head2.val) {
+                    head2.next = Merge(head1, head2.next);
+                    return head2;
+                } else {
+                    head1.next = Merge(head1.next, head2);
+                    return head1;
+                }
+            }
+
+            public static Node Merge_1(Node head1, Node head2) {
+                if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
+                var dummy = new Node(0);
+                while (head1 != null && head2 != null) {
+                    if (head1.val > head2.val) {
+                        dummy.next = head2;
+                        head2 = head2.next;
+                    } else {
+                        dummy.next = head1;
+                        head1 = head1.next;
+                    }
+                    dummy = dummy.next;
+                }
+                dummy.next = head1 == null?head2 : head1;
+                return dummy.next;
             }
 
         }
