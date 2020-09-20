@@ -1414,9 +1414,32 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
+            public static bool IsValid(string str) {
+                char LeftOf(char c) {
+                    if (c == ')') return '(';
+                    if (c == ']') return '[';
+                    return '{';
+                }
+                var left = new Stack<char>();
+                foreach (var c in str) {
+                    if (c == '(' || c == '{' || c == '[') {
+                        left.Push(c);
+                    } else {
+                        // 字符是右括号，要开始和栈顶的左括号匹配。匹配成功，栈顶元素弹出，否则是非法的括号组合
+                        if (left.Count != 0 && LeftOf(c) == left.Peek()) {
+                            left.Pop();
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                // 如果全部匹配完栈中仍有剩余符号，说明是非法的括号组合。
+                return left.Count == 0;
+            }
+
         }
         static void Main(string[] args) {
-            var res = Algorithm.Multiply("123", "45");
+            var res = DataStructure.IsValid("(()");
             System.Console.WriteLine(res);
         }
     }
