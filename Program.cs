@@ -1219,6 +1219,78 @@ namespace FuckingAlgorithm {
                 fast.next = null;
                 return head;
             }
+
+            public static int[] TwoSum_3(int[] nums, int target) {
+                Array.Sort(nums);
+                int lo = 0, hi = nums.Length - 1;
+                while (lo < hi) {
+                    int sum = nums[lo] + nums[hi];
+                    if (sum < target) {
+                        lo++;
+                    } else if (sum > target) {
+                        hi--;
+                    } else if (sum == target) {
+                        return new int[] { nums[lo], nums[hi] };
+                    }
+                }
+                return new int[] { };
+            }
+
+            public static List<int[]> TwoSumTarget(int[] nums, int target) {
+                Array.Sort(nums);
+                var res = new List<int[]>();
+                int lo = 0, hi = nums.Length - 1;
+                while (lo < hi) {
+                    int left = nums[lo], right = nums[hi];
+                    int sum = nums[lo] + nums[hi];
+                    if (sum < target) {
+                        while (lo < hi && nums[lo] == left) lo++;
+                    } else if (sum > target) {
+                        while (lo < hi && nums[hi] == right) hi--;
+                    } else if (sum == target) {
+                        res.Add(new int[] { left, right });
+                        while (lo < hi && nums[lo] == left) lo++;
+                        while (lo < hi && nums[hi] == right) hi--;
+                    }
+                }
+                return res;
+            }
+
+            // 改进的TwoSumTarget，从指定位置，开始查找后面元素和有没有等于target的。
+            public static List<List<int>> TwoSumTarget(int[] nums, int start, int target) {
+                var res = new List<List<int>>();
+                int lo = start, hi = nums.Length - 1;
+                while (lo < hi) {
+                    int left = nums[lo], right = nums[hi];
+                    int sum = nums[lo] + nums[hi];
+                    if (sum < target) {
+                        while (lo < hi && nums[lo] == left) lo++;
+                    } else if (sum > target) {
+                        while (lo < hi && nums[hi] == right) hi--;
+                    } else if (sum == target) {
+                        res.Add(new List<int> { left, right });
+                        while (lo < hi && nums[lo] == left) lo++;
+                        while (lo < hi && nums[hi] == right) hi--;
+                    }
+                }
+                return res;
+            }
+
+            public static List<List<int>> ThreeSumTarget(int[] nums, int target) {
+                Array.Sort(nums);
+                int n = nums.Length;
+                var res = new List<List<int>>();
+                for (int i = 0; i < n; i++) {
+                    var tuples = TwoSumTarget(nums, i + 1, target - nums[i]);
+                    foreach (var tuple in tuples) {
+                        tuple.Add(nums[i]);
+                        res.Add(tuple);
+                    }
+                    // 跳过第一个数字重复的情况。
+                    while (i < n - 1 && nums[i] == nums[i + 1]) i++;
+                }
+                return res;
+            }
         }
 
         class DataStructure {
