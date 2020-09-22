@@ -1291,6 +1291,49 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // 快速排序可以理解为二叉树的前序遍历，归并排序可以理解为二叉树的后序遍历。
+            public class Node {
+                public int val;
+                public Node left;
+                public Node right;
+                public Node next;
+            }
+            public static Node Connect(Node root) {
+                // 将相邻的两个节点连接起来。
+                void Helper(Node node1, Node node2) {
+                    if (node1 == null || node2 == null) return;
+                    node1.next = node2;
+                    // 连接相同父节点的两个子节点。
+                    Helper(node1.left, node1.right);
+                    Helper(node2.left, node2.right);
+                    // 连接跨父节点的两个子节点。
+                    Helper(node1.right, node2.left);
+                }
+                if (root == null) return null;
+                Helper(root.left, root.right);
+                return root;
+            }
+
+            public static void Flatten(Node root) {
+                if (root == null) return;
+                Flatten(root.left);
+                Flatten(root.right);
+
+                var left = root.left;
+                var right = root.right;
+
+                root.left = null;
+                root.right = left;
+
+                var p = root;
+                while (p.right != null) {
+                    p = p.right;
+                }
+
+                p.right = right;
+            }
+
         }
 
         class DataStructure {
