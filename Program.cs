@@ -1293,15 +1293,19 @@ namespace FuckingAlgorithm {
             }
 
             // 快速排序可以理解为二叉树的前序遍历，归并排序可以理解为二叉树的后序遍历。
-            public class Node {
+            public class TreeNode {
                 public int val;
-                public Node left;
-                public Node right;
-                public Node next;
+                public TreeNode left;
+                public TreeNode right;
+                public TreeNode next;
+
+                public TreeNode(int _val) {
+                    val = _val;
+                }
             }
-            public static Node Connect(Node root) {
+            public static TreeNode Connect(TreeNode root) {
                 // 将相邻的两个节点连接起来。
-                void Helper(Node node1, Node node2) {
+                void Helper(TreeNode node1, TreeNode node2) {
                     if (node1 == null || node2 == null) return;
                     node1.next = node2;
                     // 连接相同父节点的两个子节点。
@@ -1315,25 +1319,52 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
-            public static void Flatten(Node root) {
+            public static void Flatten(TreeNode root) {
                 if (root == null) return;
+                // 把左右子树都拉直了。
                 Flatten(root.left);
                 Flatten(root.right);
 
                 var left = root.left;
                 var right = root.right;
-
+                // 左子树接在右子树的位置，左子树置空。
                 root.left = null;
                 root.right = left;
 
                 var p = root;
+                // 移动到右子树的末尾。
                 while (p.right != null) {
                     p = p.right;
                 }
-
+                // 把右子树接在末尾。
                 p.right = right;
             }
 
+            public static TreeNode ConstructMaximumBinaryTree(int[] nums) {
+                TreeNode Helper(int[] nums, int lo, int hi) {
+                    // 递归base。
+                    if (lo > hi) return null;
+
+                    int index = -1, maxVal = int.MinValue;
+                    for (int i = lo; i <= hi; i++) {
+                        if (maxVal < nums[i]) {
+                            maxVal = nums[i];
+                            index = i;
+                        }
+                    }
+
+                    // 递归构造左右子树。
+                    TreeNode root = new TreeNode(maxVal);
+                    root.left = Helper(nums, lo, index - 1);
+                    root.right = Helper(nums, index + 1, hi);
+
+                    return root;
+                }
+
+                return Helper(nums, 0, nums.Length - 1);
+            }
+
+            // 括号的题还有两个没做
         }
 
         class DataStructure {
