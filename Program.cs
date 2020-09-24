@@ -1583,6 +1583,50 @@ namespace FuckingAlgorithm {
                 return left.Count == 0;
             }
 
+            public static int MinAddToMakeValid(string s) {
+                int res = 0;
+                int need = 0;
+                foreach (var c in s) {
+                    if (c == '(') {
+                        // 右括号的需求+1。
+                        need++;
+                    }
+                    if (c == ')') {
+                        // 右括号需求-1。
+                        need--;
+                        if (need == -1) {
+                            // 左括号不够了
+                            res++;
+                            need = 0;
+                        }
+                    }
+                }
+                // res是插入左括号个数，need是需要的右括号个数，如果need不为0，则还需要插入need个左括号。
+                return res + need;
+            }
+
+            public static int MinInsertions(string s) {
+                int res = 0, need = 0;
+                foreach (var c in s) {
+                    if (c == '(') {
+                        need += 2;
+                        if (need % 2 == 1) {
+                            res++;
+                            need--;
+                        }
+                    }
+
+                    if (c == ')') {
+                        need--;
+                        if (need == -1) {
+                            res++;
+                            need = 1;
+                        }
+                    }
+                }
+                return res + need;
+            }
+
         }
         static void Main(string[] args) {
             var res = DataStructure.IsValid("(()");
