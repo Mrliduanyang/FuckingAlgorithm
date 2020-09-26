@@ -6,7 +6,7 @@ namespace FuckingAlgorithm {
     class Program {
 
         class Algorithm {
-            public static int Fib(int N) {
+            public int Fib(int N) {
                 int[] dp = new int[N + 1];
                 dp[1] = dp[2] = 1;
                 for (int i = 3; i <= N; i++) {
@@ -15,7 +15,7 @@ namespace FuckingAlgorithm {
                 return dp[N];
             }
 
-            public static int CoinChange(int[] coins, int amount) {
+            public int CoinChange(int[] coins, int amount) {
                 // 当目标金额为i时，至少需要dp[i]枚硬币凑出
                 // 初始化dp，dp各元素设置为最大值
                 int[] dp = new int[amount + 1];
@@ -35,7 +35,7 @@ namespace FuckingAlgorithm {
                 return (dp[amount] == amount + 1) ? -1 : dp[amount];
             }
 
-            public static List<int[]> Permute(int[] nums) {
+            public List<int[]> Permute(int[] nums) {
                 // 存储全排列结果
                 List<int[]> res = new List<int[]>();
                 void backtrack(int[] nums, List<int> track) {
@@ -65,7 +65,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int FindTargetSumWays(int[] nums, int target) {
+            public int FindTargetSumWays(int[] nums, int target) {
                 int res;
                 Dictionary<string, int> memo = new Dictionary<string, int>();
                 void backtrack(int[] nums, int i, int rest) {
@@ -110,7 +110,7 @@ namespace FuckingAlgorithm {
                 return dp(nums, 0, target);
             }
 
-            public static int LengthOfLIS(int[] nums) {
+            public int LengthOfLIS(int[] nums) {
                 int[] dp = new int[nums.Length];
                 // base， 以nums[i]结尾的最长递增子序列起码包含自己
                 Array.Fill(dp, 1);
@@ -126,7 +126,7 @@ namespace FuckingAlgorithm {
                 return dp[dp.Length - 1];
             }
 
-            public static int MaxSubArray(int[] nums) {
+            public int MaxSubArray(int[] nums) {
                 if (nums.Length == 0) {
                     return 0;
                 }
@@ -140,7 +140,7 @@ namespace FuckingAlgorithm {
                 return dp[dp.Length - 1];
             }
 
-            public static bool CanPartition(int[] nums) {
+            public bool CanPartition(int[] nums) {
 
                 int sum = 0;
                 foreach (var item in nums) {
@@ -172,7 +172,7 @@ namespace FuckingAlgorithm {
                 return dp[n, sum];
             }
 
-            public static int Change(int amount, int[] coins) {
+            public int Change(int amount, int[] coins) {
                 int n = coins.Length;
                 int[, ] dp = new int[n + 1, amount + 1];
                 // base不用任何硬币，凑不去任何金额，当要凑出0，只有一种方案
@@ -193,7 +193,7 @@ namespace FuckingAlgorithm {
                 return dp[n, amount];
             }
 
-            public static int MinDistance(string s1, string s2) {
+            public int MinDistance(string s1, string s2) {
                 int m = s1.Length, n = s2.Length;
                 int[, ] dp = new int[m + 1, n + 1];
                 // base，“”到m的编辑距离为0-m，“”到n的编辑距离为0-n
@@ -224,11 +224,11 @@ namespace FuckingAlgorithm {
                 return dp[m, n];
             }
 
-            private static int Min(int a, int b, int c) {
+            private int Min(int a, int b, int c) {
                 return Math.Min(Math.Min(a, b), c);
             }
 
-            public static int SuperEggDrop(int k, int n) {
+            public int SuperEggDrop(int k, int n) {
                 Dictionary<string, int> memo = new Dictionary<string, int>();
                 int dp(int k, int n) {
                     // base如果只有1个鸡蛋，只能线性扫描
@@ -257,7 +257,7 @@ namespace FuckingAlgorithm {
                 return dp(k, n);
             }
 
-            public static int SuperEggDrop_1(int k, int n) {
+            public int SuperEggDrop_1(int k, int n) {
                 // dp定义为给定k个鸡蛋，可以尝试扔m次鸡蛋，最坏情况下能确切测试一栋n层的楼
                 // base dp[0][..] = 0 dp[..][0] = 0
                 // m最大为n，线性扫描
@@ -273,7 +273,7 @@ namespace FuckingAlgorithm {
                 return m;
             }
 
-            public static int Rob_1(int[] nums) {
+            public int Rob_1(int[] nums) {
                 int n = nums.Length;
                 // dp定义为从第i间房开始抢劫，最多能抢到的钱
                 // base dp[n] = 0
@@ -286,7 +286,7 @@ namespace FuckingAlgorithm {
                 return dp[0];
             }
 
-            public static int Rob_2(int[] nums) {
+            public int Rob_2(int[] nums) {
                 int RobRange(int[] nums, int start, int end) {
                     int n = nums.Length;
                     int[] dp = new int[n + 2];
@@ -303,7 +303,7 @@ namespace FuckingAlgorithm {
                 return Math.Max(RobRange(nums, 1, n - 1), RobRange(nums, 0, n - 2));
             }
 
-            public static int LongestPalindromeSubseq(string s) {
+            public int LongestPalindromeSubseq(string s) {
                 int n = s.Length;
                 // 涉及两个字符串，用二维dp数组
                 // dp定义为在array[i..j]中，最长回文子序列的长度为dp[i][j]
@@ -328,7 +328,7 @@ namespace FuckingAlgorithm {
                 return dp[0, n - 1];
             }
 
-            public static int IntervalSchedule(int[][] intvs) {
+            public int IntervalSchedule(int[][] intvs) {
                 if (intvs.Length == 0) {
                     return 0;
                 }
@@ -346,12 +346,12 @@ namespace FuckingAlgorithm {
                 return count;
             }
 
-            public static int EraseOverlapIntervals(int[][] intvs) {
+            public int EraseOverlapIntervals(int[][] intvs) {
                 int n = intvs.Length;
                 return n - IntervalSchedule(intvs);
             }
 
-            public static int MaxProfit_1(int[] prices) {
+            public int MaxProfit_1(int[] prices) {
                 // 交易次数k=1
                 int n = prices.Length;
                 int[, ] dp = new int[n, 2];
@@ -372,7 +372,7 @@ namespace FuckingAlgorithm {
                 return dp[n - 1, 0];
             }
 
-            public static int MaxProfit_2(int[] prices) {
+            public int MaxProfit_2(int[] prices) {
                 // 交易次数k=无穷
                 int n = prices.Length;
                 // 为了避免处理i-1导致的数组越界，将状态压缩
@@ -385,7 +385,7 @@ namespace FuckingAlgorithm {
                 return dp_i_0;
             }
 
-            public static int MaxProfit_3(int[] prices) {
+            public int MaxProfit_3(int[] prices) {
                 // 交易次数k=无穷，加入冷冻期，间隔一天才能交易
                 int n = prices.Length;
                 int dp_i_0 = 0, dp_i_1 = Int32.MinValue;
@@ -400,7 +400,7 @@ namespace FuckingAlgorithm {
                 return dp_i_0;
             }
 
-            public static int MaxProfit_4(int[] prices, int fee) {
+            public int MaxProfit_4(int[] prices, int fee) {
                 // 交易次数k=无穷，假如交易手续费，相当于买入股票价格高了，或者卖出股票价格减小了
                 int n = prices.Length;
                 int dp_i_0 = 0, dp_i_1 = Int32.MinValue;
@@ -412,7 +412,7 @@ namespace FuckingAlgorithm {
                 return dp_i_0;
             }
 
-            // public static int MaxProfit_5(int[] prices) {
+            // public  int MaxProfit_5(int[] prices) {
             //     int max_k = 2;
             //     int n = prices.Length;
             //     int[, , ] dp = new int[n, max_k + 1, 2];
@@ -433,7 +433,7 @@ namespace FuckingAlgorithm {
             //     return dp[n - 1, 0];
             // }
 
-            public static string Palindrome(string s, int l, int r) {
+            public string Palindrome(string s, int l, int r) {
                 while (l >= 0 && r <= s.Length && s[l] == s[r]) {
                     l--;
                     r++;
@@ -441,7 +441,7 @@ namespace FuckingAlgorithm {
                 return s.Substring(l, r);
             }
 
-            public static string LongestPalindrome(string s) {
+            public string LongestPalindrome(string s) {
                 string res = "";
                 for (int i = 0; i < s.Length; i++) {
                     // 以s[i]为中心的最长回文子串
@@ -458,13 +458,13 @@ namespace FuckingAlgorithm {
                 public ListNode next;
             }
 
-            static ListNode left;
-            public static bool IsPalindrome(ListNode head) {
+            ListNode left;
+            public bool IsPalindrome(ListNode head) {
                 left = head;
                 return Traverse(head);
             }
 
-            public static bool Traverse(ListNode right) {
+            public bool Traverse(ListNode right) {
                 if (right == null) {
                     return true;
                 }
@@ -476,7 +476,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int Trap_1(int[] height) {
+            public int Trap_1(int[] height) {
                 if (height.Length == 0) {
                     return 0;
                 }
@@ -499,7 +499,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
-            public static int Trap_2(int[] height) {
+            public int Trap_2(int[] height) {
                 int n = height.Length;
                 int left = 0, right = n - 1;
                 int l_max = height[0], r_max = height[n - 1];
@@ -598,7 +598,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public static bool EuqationsPossible(string[] euqations) {
+            public bool EuqationsPossible(string[] euqations) {
                 UF uf = new UF(26);
                 // 让相同的字母形成联通分量
                 foreach (string eq in euqations) {
@@ -621,7 +621,7 @@ namespace FuckingAlgorithm {
                 return true;
             }
 
-            public static List<int> PancakeSort(int[] cakes) {
+            public List<int> PancakeSort(int[] cakes) {
                 List<int> res = new List<int>();
                 void Reverse(int[] arr, int i, int j) {
                     while (i < j) {
@@ -658,7 +658,7 @@ namespace FuckingAlgorithm {
             }
 
             // 暴力算法也是线性搜索，找到一个合适的速度。所以可以用二分搜索来优化
-            public static int MinEatingSpeed(int[] piles, int h) {
+            public int MinEatingSpeed(int[] piles, int h) {
                 bool CanFinish(int[] piles, int speed, int h) {
                     int time = 0;
                     foreach (var item in piles) {
@@ -693,7 +693,7 @@ namespace FuckingAlgorithm {
                 return left;
             }
 
-            public static int[] TwoSum_1(int[] nums, int target) {
+            public int[] TwoSum_1(int[] nums, int target) {
                 int n = nums.Length;
                 Dictionary<int, int> index = new Dictionary<int, int>();
                 for (int i = 0; i < n; i++) {
@@ -709,13 +709,13 @@ namespace FuckingAlgorithm {
             }
 
             class TwoSum {
-                static Dictionary<int, int> freq = new Dictionary<int, int>();
+                Dictionary<int, int> freq = new Dictionary<int, int>();
 
-                public static void Add(int number) {
+                public void Add(int number) {
                     freq.Add(number, freq.GetValueOrDefault(number, 0) + 1);
                 }
 
-                public static bool Find(int value) {
+                public bool Find(int value) {
                     foreach (var key in freq.Keys) {
                         int other = value - key;
                         // 情况1，两个加数相同，就需要看freq中该加数个数是否大于1
@@ -732,23 +732,23 @@ namespace FuckingAlgorithm {
             }
 
             class TwoSum_2 {
-                static HashSet<int> sum = new HashSet<int>();
-                static List<int> nums = new List<int>();
+                HashSet<int> sum = new HashSet<int>();
+                List<int> nums = new List<int>();
 
                 // 针对Find优化，在存入number时，同时存入number与nums中所有元素的和，即可在O(1)时间内执行Find
-                public static void Add(int number) {
+                public void Add(int number) {
                     nums.ForEach((num) => {
                         sum.Add(num + number);
                     });
                     nums.Add(number);
                 }
 
-                public static bool Find(int value) {
+                public bool Find(int value) {
                     return sum.Contains(value);
                 }
             }
 
-            public static bool CanJump(int[] nums) {
+            public bool CanJump(int[] nums) {
                 int n = nums.Length;
                 int farthest = 0;
                 for (int i = 0; i < n - 1; i++) {
@@ -761,7 +761,7 @@ namespace FuckingAlgorithm {
                 return farthest >= n - 1;
             }
 
-            public static int Jump(int[] nums) {
+            public int Jump(int[] nums) {
                 int n = nums.Length;
                 int end = 0, farthest = 0;
                 int jumps = 0;
@@ -776,7 +776,7 @@ namespace FuckingAlgorithm {
                 return jumps;
             }
 
-            public static List<int[]> MergeIntervals(int[][] intervals) {
+            public List<int[]> MergeIntervals(int[][] intervals) {
                 if (intervals.Length == 0) {
                     return new List<int[]>();
                 }
@@ -798,7 +798,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static List<int[]> IntervalIntersection(int[][] a, int[][] b) {
+            public List<int[]> IntervalIntersection(int[][] a, int[][] b) {
                 int i = 0, j = 0;
                 List<int[]> res = new List<int[]>();
                 while (i < a.Length && j < b.Length) {
@@ -823,7 +823,7 @@ namespace FuckingAlgorithm {
 
             // 理论证明，从n个元素中选择1个，要保证每个元素被选择的概率都是1/n。对于1-i个元素，选择第i个元素的概率是1/i，
             // 为保证在n个元素中第i个元素被选择的概率不变，需要保证i后面的元素，都不被选择。概率连乘完的结果表明，第i个元素被选择的概率是1/n。
-            public static int GetRandom(ListNode head) {
+            public int GetRandom(ListNode head) {
                 Random r = new Random();
                 int i = 0, res = 0;
                 ListNode p = head;
@@ -837,7 +837,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int[] GetRandom(ListNode head, int k) {
+            public int[] GetRandom(ListNode head, int k) {
                 Random r = new Random();
                 int[] res = new int[k];
                 ListNode p = head;
@@ -861,7 +861,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int MissingNumber(int[] nums) {
+            public int MissingNumber(int[] nums) {
                 int n = nums.Length;
                 int res = 0;
                 // 先和新补的索引异或
@@ -873,7 +873,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int MissingNumber_1(int[] nums) {
+            public int MissingNumber_1(int[] nums) {
                 int n = nums.Length;
                 int res = 0;
                 // 补的新索引位置的元素
@@ -885,7 +885,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static int[] FindErrorNums(int[] nums) {
+            public int[] FindErrorNums(int[] nums) {
                 int n = nums.Length;
                 int dup = -1;
                 // 每一个出现过的元素都变为相反数，以标记其出现过。值和索引值不一定对应，只要能标记出现过的元素即可。
@@ -909,7 +909,7 @@ namespace FuckingAlgorithm {
                 return new int[] { dup, missing };
             }
 
-            public static string Multiply(string num1, string num2) {
+            public string Multiply(string num1, string num2) {
                 int m = num1.Length, n = num2.Length;
                 int[] res = new int[m + n];
                 for (int i = m - 1; i >= 0; i--) {
@@ -930,7 +930,7 @@ namespace FuckingAlgorithm {
             }
 
             // 洗牌算法的正确性准则，产生的结果必须啊有n!种。因为长度为n的数组的全排列有n!种，也就是说打乱结果总数为n!种。
-            public static void Shuffle(int[] arr) {
+            public void Shuffle(int[] arr) {
                 Random r = new Random();
                 int n = arr.Length;
                 // 第一轮迭代是，rand取值n，第二轮迭代，rand取值有n-1个，依次类推，总共有n!种。符合正确性准则。
@@ -948,7 +948,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public static int[, ] FloodFill(int[, ] iamge, int sr, int sc, int newColor) {
+            public int[, ] FloodFill(int[, ] iamge, int sr, int sc, int newColor) {
                 void Fill(int[, ] iamge, int x, int y, int origColor, int newColor) {
                     // 出界。
                     if (!InArea(iamge, x, y)) {
@@ -980,9 +980,9 @@ namespace FuckingAlgorithm {
                 return iamge;
             }
 
-            public class KMP {
-                private int[, ] dp;
-                private string pat;
+            class KMP {
+                int[, ] dp;
+                string pat;
 
                 public KMP(string pat) {
                     this.pat = pat;
@@ -1036,7 +1036,7 @@ namespace FuckingAlgorithm {
                     }
                 }
 
-                public static bool IsSameTree(TreeNode p, TreeNode q) {
+                public bool IsSameTree(TreeNode p, TreeNode q) {
                     if (p == null && q == null) {
                         return true;
                     }
@@ -1049,7 +1049,7 @@ namespace FuckingAlgorithm {
                     return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
                 }
 
-                public static int MaxDepth(TreeNode root) {
+                public int MaxDepth(TreeNode root) {
                     if (root == null) return 0;
                     var queue = new Queue<TreeNode>();
                     queue.Enqueue(root);
@@ -1070,7 +1070,7 @@ namespace FuckingAlgorithm {
                     return level;
                 }
 
-                public static IList<int> PreorderTraversal(TreeNode root) {
+                public IList<int> PreorderTraversal(TreeNode root) {
                     if (root == null) return new List<int> { };
                     var stack = new Stack<TreeNode>();
                     var res = new List<int>();
@@ -1088,7 +1088,7 @@ namespace FuckingAlgorithm {
                     return res;
                 }
 
-                public static IList<int> PostorderTraversal(TreeNode root) {
+                public IList<int> PostorderTraversal(TreeNode root) {
                     if (root == null) return new List<int> { };
                     var stack = new Stack<TreeNode>();
                     var res = new List<int>();
@@ -1106,7 +1106,7 @@ namespace FuckingAlgorithm {
                     return res;
                 }
 
-                public static TreeNode InvertTree(TreeNode root) {
+                public TreeNode InvertTree(TreeNode root) {
                     if (root == null) return null;
 
                     var left = InvertTree(root.left);
@@ -1130,7 +1130,7 @@ namespace FuckingAlgorithm {
                         children = _children;
                     }
                 }
-                public static IList<IList<int>> LevelOrder(Node root) {
+                public IList<IList<int>> LevelOrder(Node root) {
                     var res = new List<IList<int>>();
                     if (root == null) {
                         return res;
@@ -1157,7 +1157,7 @@ namespace FuckingAlgorithm {
             }
 
             // 撑杆跳，一次把元素移动到位。
-            public static void Rotate(int[] nums, int k) {
+            public void Rotate(int[] nums, int k) {
                 k %= nums.Length;
                 int step = 0;
                 for (int start = 0; start < nums.Length; start++) {
@@ -1175,7 +1175,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public static void Rotate_1(int[] nums, int k) {
+            public void Rotate_1(int[] nums, int k) {
                 k %= nums.Length;
                 int[] left = new int[k];
                 int[] right = new int[nums.Length - k];
@@ -1190,7 +1190,7 @@ namespace FuckingAlgorithm {
                 Array.Reverse(nums);
             }
 
-            public static int RemoveDuplicates(int[] nums) {
+            public int RemoveDuplicates(int[] nums) {
                 int n = nums.Length;
                 if (n == 0) return 0;
                 int slow = 0, fast = 1;
@@ -1204,7 +1204,7 @@ namespace FuckingAlgorithm {
                 return slow + 1;
             }
 
-            public static ListNode DeleteDuplicates(ListNode head) {
+            public ListNode DeleteDuplicates(ListNode head) {
                 if (head == null) return null;
                 ListNode slow = head, fast = head.next;
                 while (fast != null) {
@@ -1220,7 +1220,7 @@ namespace FuckingAlgorithm {
                 return head;
             }
 
-            public static int[] TwoSum_3(int[] nums, int target) {
+            public int[] TwoSum_3(int[] nums, int target) {
                 Array.Sort(nums);
                 int lo = 0, hi = nums.Length - 1;
                 while (lo < hi) {
@@ -1236,7 +1236,7 @@ namespace FuckingAlgorithm {
                 return new int[] { };
             }
 
-            public static List<int[]> TwoSumTarget(int[] nums, int target) {
+            public List<int[]> TwoSumTarget(int[] nums, int target) {
                 Array.Sort(nums);
                 var res = new List<int[]>();
                 int lo = 0, hi = nums.Length - 1;
@@ -1257,7 +1257,7 @@ namespace FuckingAlgorithm {
             }
 
             // 改进的TwoSumTarget，从指定位置，开始查找后面元素和有没有等于target的。
-            public static List<List<int>> TwoSumTarget(int[] nums, int start, int target) {
+            public List<List<int>> TwoSumTarget(int[] nums, int start, int target) {
                 var res = new List<List<int>>();
                 int lo = start, hi = nums.Length - 1;
                 while (lo < hi) {
@@ -1276,7 +1276,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public static List<List<int>> ThreeSumTarget(int[] nums, int target) {
+            public List<List<int>> ThreeSumTarget(int[] nums, int target) {
                 Array.Sort(nums);
                 int n = nums.Length;
                 var res = new List<List<int>>();
@@ -1303,7 +1303,7 @@ namespace FuckingAlgorithm {
                     val = _val;
                 }
             }
-            public static TreeNode Connect(TreeNode root) {
+            public TreeNode Connect(TreeNode root) {
                 // 将相邻的两个节点连接起来。
                 void Helper(TreeNode node1, TreeNode node2) {
                     if (node1 == null || node2 == null) return;
@@ -1319,7 +1319,7 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
-            public static void Flatten(TreeNode root) {
+            public void Flatten(TreeNode root) {
                 if (root == null) return;
                 // 把左右子树都拉直了。
                 Flatten(root.left);
@@ -1340,7 +1340,7 @@ namespace FuckingAlgorithm {
                 p.right = right;
             }
 
-            public static TreeNode ConstructMaximumBinaryTree(int[] nums) {
+            public TreeNode ConstructMaximumBinaryTree(int[] nums) {
                 TreeNode Helper(int[] nums, int lo, int hi) {
                     // 递归base。
                     if (lo > hi) return null;
@@ -1364,7 +1364,7 @@ namespace FuckingAlgorithm {
                 return Helper(nums, 0, nums.Length - 1);
             }
 
-            public static TreeNode BuildTree(int[] preorder, int[] inorder) {
+            public TreeNode BuildTree(int[] preorder, int[] inorder) {
                 TreeNode build(int[] preorder, int preStart, int preEnd,
                     int[] inorder, int inStart, int inEnd) {
                     if (preStart > preEnd) {
@@ -1397,7 +1397,7 @@ namespace FuckingAlgorithm {
                     inorder, 0, inorder.Length - 1);
             }
 
-            public static TreeNode BuildTree_1(int[] inorder, int[] postorder) {
+            public TreeNode BuildTree_1(int[] inorder, int[] postorder) {
                 TreeNode build(int[] inorder, int inStart, int inEnd, int[] postorder, int postStart, int postEnd) {
                     if (inStart > inEnd) {
                         return null;
@@ -1553,7 +1553,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public static int Size(Node head) {
+            public int Size(Node head) {
                 int len = 0;
                 while (head != null) {
                     len++;
@@ -1562,12 +1562,12 @@ namespace FuckingAlgorithm {
                 return len;
             }
 
-            public static int Size_1(Node head) {
+            public int Size_1(Node head) {
                 if (head == null) return 0;
                 return Size_1(head.next) + 1;
             }
 
-            public static Node Reverse(Node head) {
+            public Node Reverse(Node head) {
                 if (head == null) return null;
                 Node curr = head, prev = null;
                 while (curr != null) {
@@ -1581,7 +1581,7 @@ namespace FuckingAlgorithm {
                 return prev;
             }
 
-            public static Node Reverse_1(Node head) {
+            public Node Reverse_1(Node head) {
                 // 存疑，递归结束条件应该是head != null and head.next == null。
                 if (head == null || head.next == null) return head;
                 // 把next到最后的链表翻转了。
@@ -1593,7 +1593,7 @@ namespace FuckingAlgorithm {
                 return newHead;
             }
 
-            public static Node Merge(Node head1, Node head2) {
+            public Node Merge(Node head1, Node head2) {
                 if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
                 if (head1.val > head2.val) {
                     head2.next = Merge(head1, head2.next);
@@ -1604,7 +1604,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public static Node Merge_1(Node head1, Node head2) {
+            public Node Merge_1(Node head1, Node head2) {
                 if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
                 var dummy = new Node(0);
                 while (head1 != null && head2 != null) {
@@ -1621,7 +1621,7 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
-            public static bool IsValid(string str) {
+            public bool IsValid(string str) {
                 char LeftOf(char c) {
                     if (c == ')') return '(';
                     if (c == ']') return '[';
@@ -1644,7 +1644,7 @@ namespace FuckingAlgorithm {
                 return left.Count == 0;
             }
 
-            public static int MinAddToMakeValid(string s) {
+            public int MinAddToMakeValid(string s) {
                 int res = 0;
                 int need = 0;
                 foreach (var c in s) {
@@ -1666,7 +1666,7 @@ namespace FuckingAlgorithm {
                 return res + need;
             }
 
-            public static int MinInsertions(string s) {
+            public int MinInsertions(string s) {
                 int res = 0, need = 0;
                 foreach (var c in s) {
                     if (c == '(') {
@@ -1689,9 +1689,7 @@ namespace FuckingAlgorithm {
             }
 
         }
-        static void Main(string[] args) {
-            var res = DataStructure.IsValid("(()");
-            System.Console.WriteLine(res);
+        void Main(string[] args) {
         }
     }
 }
