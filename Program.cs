@@ -1318,6 +1318,29 @@ namespace FuckingAlgorithm {
                 Helper(root.left, root.right);
                 return root;
             }
+            public TreeNode Connect_1(TreeNode root) {
+                if (root == null) return null;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                while (queue.Count != 0) {
+                    int n = queue.Count;
+                    TreeNode dummy = null;
+                    for (int i = 0; i < n; i++) {
+                        var node = queue.Dequeue();
+                        if (node.left != null) {
+                            queue.Enqueue(node.left);
+                        }
+                        if (node.right != null) {
+                            queue.Enqueue(node.right);
+                        }
+                        if (i != 0) {
+                            dummy.next = node;
+                        }
+                        dummy = node;
+                    }
+                }
+                return root;
+            }
 
             public void Flatten(TreeNode root) {
                 if (root == null) return;
@@ -1426,7 +1449,45 @@ namespace FuckingAlgorithm {
                 return build(inorder, 0, inorder.Length - 1,
                     postorder, 0, postorder.Length - 1);
             }
-            // 假装今天有提交。
+            
+            class Difference {
+                private int[] diff;
+                public Difference(int[] nums) {
+                    diff = new int[nums.Length];
+                    diff[0] = nums[0];
+                    for (int i = 1; i < nums.Length; i++) {
+                        diff[i] = nums[i] - nums[i - 1];
+                    }
+                }
+
+                public void Increment(int i, int j, int val) {
+                    diff[i] += val;
+                    if (j + 1 < diff.Length) {
+                        diff[j + 1] -= val;
+                    }
+                }
+
+                public int[] Result() {
+                    int[] res = new int[diff.Length];
+                    res[0] = diff[0];
+                    for (int i = 1; i < diff.Length; i++) {
+                        res[i] = res[i - 1] + diff[i];
+                    }
+                    return res;
+                }
+            }
+
+            public int[] CorpFlightBookings(int[][] bookings, int n) {
+                int[] nums = new int[n];
+                var df = new Difference(nums);
+                foreach (var booking in bookings) {
+                    int i = booking[0] - 1;
+                    int j = booking[1] - 1;
+                    int val = booking[2];
+                    df.Increment(i, j, val);
+                }
+                return df.Result();
+            }
         }
 
         class DataStructure {
@@ -1690,7 +1751,6 @@ namespace FuckingAlgorithm {
             }
 
         }
-        void Main(string[] args) {
-        }
+        void Main(string[] args) { }
     }
 }
