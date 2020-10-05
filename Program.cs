@@ -1277,11 +1277,11 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public List<List<int>> ThreeSumTarget(int[] nums, int target) {
+            public List<List<int>> ThreeSumTarget(int[] nums, int start, int target) {
                 Array.Sort(nums);
                 int n = nums.Length;
                 var res = new List<List<int>>();
-                for (int i = 0; i < n; i++) {
+                for (int i = start; i < n; i++) {
                     var tuples = TwoSumTarget(nums, i + 1, target - nums[i]);
                     foreach (var tuple in tuples) {
                         tuple.Add(nums[i]);
@@ -1293,6 +1293,22 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            public List<List<int>> FourSum(int[] nums, int target) {
+                Array.Sort(nums);
+                int n = nums.Length;
+                var res = new List<List<int>>();
+                for (int i = 0; i < n; i++) {
+                    // 对 target - nums[i] 计算 ThreeSum
+                    var triples = ThreeSumTarget(nums, i + 1, target - nums[i]);
+                    // 如果存在满足条件的三元组，再加上 nums[i] 就是结果四元组
+                    foreach (var triple in triples) {
+                        triple.Add(nums[i]);
+                        res.Add(triple);
+                    }
+                    while (i < n - 1 && nums[i] == nums[i + 1]) i++;
+                }
+                return res;
+            }
             // 快速排序可以理解为二叉树的前序遍历，归并排序可以理解为二叉树的后序遍历。
             public class TreeNode {
                 public int val;
