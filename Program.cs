@@ -1467,6 +1467,36 @@ namespace FuckingAlgorithm {
                     postorder, 0, postorder.Length - 1);
             }
 
+            public int[] FindFrequentTreeSum(TreeNode root) {
+                var map = new Dictionary<int, int>();
+                int max = 0;
+                int Helper(TreeNode root) {
+                    if (root == null) return 0;
+                    int left = Helper(root.left);
+                    int right = Helper(root.right);
+                    int sum = root.val + left + right;
+                    if (!map.ContainsKey(sum)) {
+                        map.Add(sum, 0);
+                    } else {
+                        map[sum] += 1;
+                    }
+                    max = Math.Max(max, map[sum]);
+                    return sum;
+                }
+
+                if (root == null) return new int[] { };
+
+                Helper(root);
+
+                var tmp = new List<int>();
+                foreach (var key in map.Keys) {
+                    if (map[key] == max) {
+                        tmp.Add(key);
+                    }
+                }
+                return tmp.ToArray();
+            }
+
             class Difference {
                 private int[] diff;
                 public Difference(int[] nums) {
