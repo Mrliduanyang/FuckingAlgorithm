@@ -1584,6 +1584,31 @@ namespace FuckingAlgorithm {
                     }
                 }
             }
+
+            public void ReverseString(char[] s) {
+                if (s.Length == 0) return;
+                int start = 0, end = s.Length - 1;
+                while (end > start) {
+                    var tmp = s[end];
+                    s[end] = s[start];
+                    s[start] = tmp;
+                    start++;
+                    end--;
+                }
+            }
+
+            public TreeNode PruneTree(TreeNode root) {
+                bool ContainsOne(TreeNode node) {
+                    if (node == null) return false;
+                    bool left = ContainsOne(node.left);
+                    bool right = ContainsOne(node.right);
+                    if (!left) node.left = null;
+                    if (!right) node.right = null;
+                    return node.val == 1 || left || right;
+                }
+                return ContainsOne(root) ? root : null;
+            }
+
         }
 
         class DataStructure {
