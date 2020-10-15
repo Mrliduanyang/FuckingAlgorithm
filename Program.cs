@@ -1761,6 +1761,84 @@ namespace FuckingAlgorithm {
                 a.next = ReverseKGroup(b, k);
                 return newHead;
             }
+
+            public List<string> CommonChars(string[] A) {
+                var minFreq = new int[26];
+                Array.Fill(minFreq, int.MaxValue);
+
+                foreach (var str in A) {
+                    var freq = new int[26];
+                    foreach (var ch in str) {
+                        freq[ch - 'a']++;
+                    }
+                    for (int i = 0; i < 26; i++) {
+                        minFreq[i] = Math.Min(freq[i], minFreq[i]);
+                    }
+                }
+
+                var ans = new List<string>();
+                for (int i = 0; i < 26; i++) {
+                    for (int j = 0; j < minFreq[i]; j++) {
+                        ans.Add(((char) ('a' + i)).ToString());
+                    }
+                }
+                return ans;
+            }
+
+            public int SumNumbers(TreeNode root) {
+                int Helper(TreeNode root, int curr) {
+                    if (root == null) return 0;
+                    curr = curr * 10 + root.val;
+
+                    if (root.left == null && root.right == null) {
+                        return curr;
+                    }
+                    return Helper(root.left, curr) + Helper(root.right, curr);
+                }
+                return Helper(root, 0);
+            }
+
+            public class BSTIterator {
+                List<int> nodesSorted;
+                int index;
+
+                public BSTIterator(TreeNode root) {
+                    this.nodesSorted = new List<int>();
+                    this.index = -1;
+                    this._inorder(root);
+                }
+
+                private void _inorder(TreeNode root) {
+                    if (root == null) {
+                        return;
+                    }
+                    this._inorder(root.left);
+                    this.nodesSorted.Add(root.val);
+                    this._inorder(root.right);
+                }
+
+                public int Next() {
+                    return this.nodesSorted[(++this.index)];
+                }
+
+                public bool HasNext() {
+                    return this.index + 1 < this.nodesSorted.Count;
+                }
+            }
+
+            public int KthSmallest(TreeNode root, int k) {
+                var stack = new Stack<TreeNode>();
+
+                while (true) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    root = stack.Pop();
+                    if (--k == 0) return root.val;
+                    root = root.right;
+                }
+            }
         }
 
         class DataStructure {
@@ -2073,15 +2151,9 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            // var algorithm = new Algorithm();
+            var algorithm = new Algorithm();
+            algorithm.CommonChars(new string[] { "bella", "label", "roller" });
             // System.Console.WriteLine(algorithm.RemoveDuplicateLetters("abbcc"));
-            var solution = new Solution();
-            solution.Solve(new char[][] {
-                new char[] { 'X', 'X', 'X', 'X' },
-                    new char[] { 'X', 'O', 'O', 'X' },
-                    new char[] { 'X', 'X', 'O', 'X' },
-                    new char[] { 'X', 'O', 'X', 'X' }
-            });
         }
     }
 }
