@@ -434,22 +434,23 @@ namespace FuckingAlgorithm {
             //     return dp[n - 1, 0];
             // }
 
-            public string Palindrome(string s, int l, int r) {
-                while (l >= 0 && r <= s.Length && s[l] == s[r]) {
-                    l--;
-                    r++;
-                }
-                return s.Substring(l, r);
-            }
-
             public string LongestPalindrome(string s) {
+                string Palindrome(string s, int l, int r) {
+                    while (l >= 0 && r < s.Length && s[l] == s[r]) {
+                        l--;
+                        r++;
+                    }
+                    return s.Substring(l + 1, r - l - 1);
+                }
+
                 string res = "";
                 for (int i = 0; i < s.Length; i++) {
                     // 以s[i]为中心的最长回文子串
                     string s1 = Palindrome(s, i, i);
                     // 以s[i]和s[i+1]为中心的最长回文子串
                     string s2 = Palindrome(s, i, i + 1);
-                    res = res.Length > s1.Length ? res.Length > s2.Length ? res : s2 : s1;
+                    res = res.Length > s1.Length? res : s1;
+                    res = res.Length > s2.Length? res : s2;
                 }
                 return res;
             }
@@ -1928,6 +1929,55 @@ namespace FuckingAlgorithm {
                 }
                 return String.Join("", stack1.ToArray()) == String.Join("", stack2.ToArray());
             }
+
+            public void ReorderList(ListNode head) {
+                ListNode MiddleNode(ListNode head) {
+                    ListNode slow = head;
+                    ListNode fast = head;
+                    while (fast.next != null && fast.next.next != null) {
+                        slow = slow.next;
+                        fast = fast.next.next;
+                    }
+                    return slow;
+                }
+
+                ListNode ReverseList(ListNode head) {
+                    ListNode prev = null;
+                    ListNode curr = head;
+                    while (curr != null) {
+                        ListNode nextTemp = curr.next;
+                        curr.next = prev;
+                        prev = curr;
+                        curr = nextTemp;
+                    }
+                    return prev;
+                }
+
+                void MergeList(ListNode l1, ListNode l2) {
+                    ListNode l1_tmp;
+                    ListNode l2_tmp;
+                    while (l1 != null && l2 != null) {
+                        l1_tmp = l1.next;
+                        l2_tmp = l2.next;
+
+                        l1.next = l2;
+                        l1 = l1_tmp;
+
+                        l2.next = l1;
+                        l2 = l2_tmp;
+                    }
+                }
+                if (head == null) {
+                    return;
+                }
+                ListNode mid = MiddleNode(head);
+                ListNode l1 = head;
+                ListNode l2 = mid.next;
+                mid.next = null;
+                l2 = ReverseList(l2);
+                MergeList(l1, l2);
+            }
+
         }
 
         class DataStructure {
@@ -2241,7 +2291,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.BackspaceCompare("a#c", "b"));
+            System.Console.WriteLine(algorithm.LongestPalindrome("cbbd"));
         }
     }
 }
