@@ -1992,9 +1992,47 @@ namespace FuckingAlgorithm {
                     }
                 }
                 return i == name.Length;
-
             }
 
+            public List<int> PartitionLabels(string S) {
+                int[] last = new int[26];
+                int length = S.Length;
+                for (int i = 0; i < length; i++) {
+                    last[S[i] - 'a'] = i;
+                }
+                var partition = new List<int>();
+                int start = 0, end = 0;
+                for (int i = 0; i < length; i++) {
+                    end = Math.Max(end, last[S[i] - 'a']);
+                    if (i == end) {
+                        partition.Add(end - start + 1);
+                        start = end + 1;
+                    }
+                }
+                return partition;
+            }
+
+            public List<List<int>> Combine(int n, int k) {
+                var res = new List<List<int>>();
+                void Helper(int n, int k, int begin, List<int> path, List<List<int>> res) {
+                    if (path.Count == k) {
+                        res.Add(path.ToList());
+                        return;
+                    }
+
+                    for (int i = begin; i <= n; i++) {
+                        path.Add(i);
+                        Helper(n, k, i + 1, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+                if (k <= 0 || n < k) {
+                    return res;
+                }
+                var path = new List<int>();
+                Helper(n, k, 1, path, res);
+                return res;
+            }
         }
 
         class DataStructure {
@@ -2308,7 +2346,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.LongestPalindrome("cbbd"));
+            System.Console.WriteLine(algorithm.Combine(4, 2));
         }
     }
 }
