@@ -460,8 +460,8 @@ namespace FuckingAlgorithm {
                 public ListNode next;
             }
 
-            ListNode left;
             public bool IsPalindrome(ListNode head) {
+                ListNode left = head;
                 bool Traverse(ListNode right) {
                     if (right == null) {
                         return true;
@@ -473,7 +473,6 @@ namespace FuckingAlgorithm {
                     left = left.next;
                     return res;
                 }
-                left = head;
                 return Traverse(head);
             }
 
@@ -2032,6 +2031,37 @@ namespace FuckingAlgorithm {
                 Helper(n, k, 1, path, res);
                 return res;
             }
+
+            public List<List<int>> FindSubsequences(int[] nums) {
+                // 回溯法
+                var res = new List<List<int>>();
+                var path = new List<int>();
+                void Helper(int cur, int last, int[] nums) {
+                    if (cur == nums.Length) {
+                        if (path.Count >= 2) {
+                            res.Add(path);
+                        }
+                        return;
+                    }
+
+                    if (nums[cur] >= last) {
+                        path.Add(nums[cur]);
+                        Helper(cur + 1, nums[cur], nums);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                    // 还不懂，没明白如何保证不重复
+                    if (nums[cur] != last) {
+                        Helper(cur + 1, last, nums);
+                    }
+                }
+
+                Helper(0, int.MinValue, nums);
+                return res;
+            }
+
+            // public int VideoStitching(int[][] clips, int T) {
+                // 排序加贪心
+            // }
         }
 
         class DataStructure {
