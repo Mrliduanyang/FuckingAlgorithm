@@ -2059,9 +2059,27 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            // public int VideoStitching(int[][] clips, int T) {
-                // 排序加贪心
-            // }
+            public int VideoStitching(int[][] clips, int T) {
+                var maxN = new int[T];
+                int last = 0, ret = 0, pre = 0;
+                // 记录从clip[0]位置开始能到到的最远位置
+                foreach (var clip in clips) {
+                    if (clip[0] < T) {
+                        maxN[clip[0]] = Math.Max(maxN[clip[0]], clip[1]);
+                    }
+                }
+                for (int i = 0; i < T; i++) {
+                    last = Math.Max(last, maxN[i]);
+                    if (i == last) {
+                        return -1;
+                    }
+                    if (i == pre) {
+                        ret++;
+                        pre = last;
+                    }
+                }
+                return ret;
+            }
 
             public int LongestMountain(int[] A) {
                 int n = A.Length;
@@ -2085,6 +2103,24 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
+
+            public int[] SmallerNumbersThanCurrent(int[] nums) {
+                // 索引排序，用下标完成排序
+                int[] cnt = new int[101];
+                int n = nums.Length;
+                for (int i = 0; i < n; i++) {
+                    cnt[nums[i]]++;
+                }
+                for (int i = 1; i <= 100; i++) {
+                    cnt[i] += cnt[i - 1];
+                }
+                int[] ret = new int[n];
+                for (int i = 0; i < n; i++) {
+                    ret[i] = nums[i] == 0 ? 0 : cnt[nums[i] - 1];
+                }
+                return ret;
+            }
+
         }
 
         class DataStructure {
