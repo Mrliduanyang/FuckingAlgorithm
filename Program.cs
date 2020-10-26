@@ -2121,6 +2121,54 @@ namespace FuckingAlgorithm {
                 return ret;
             }
 
+            public List<string> LetterCombinations(string digits) {
+                var numCharMap = new Dictionary<char, char[]>() { { '2', new char[] { 'a', 'b', 'c' } }, { '3', new char[] { 'd', 'e', 'f' } }, { '4', new char[] { 'g', 'h', 'i' } }, { '5', new char[] { 'j', 'k', 'l' } }, { '6', new char[] { 'm', 'n', 'o' } }, { '7', new char[] { 'p', 'q', 'r', 's' } }, { '8', new char[] { 't', 'u', 'v' } }, { '9', new char[] { 'w', 'x', 'y', 'z' } },
+                    };
+
+                var path = new List<char>();
+                var res = new List<string>();
+
+                void Helper(int curr, List<char> path, List<string> res) {
+                    if (path.Count == digits.Length) {
+                        res.Add(string.Join("", path));
+                        return;
+                    }
+                    foreach (var ch in numCharMap[digits[curr]]) {
+                        path.Add(ch);
+                        Helper(curr + 1, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+
+                if (digits.Length == 0) {
+                    return res;
+                }
+                Helper(0, path, res);
+                return res;
+            }
+
+            public List<string> GenerateParenthesis(int n) {
+                var res = new List<string>();
+                var path = new List<char>();
+                void Helper(int close, int open, int max, List<char> path, List<string> res) {
+                    if (path.Count == max * 2) {
+                        res.Add(string.Join("", path));
+                        return;
+                    }
+                    if (open < max) {
+                        path.Add('(');
+                        Helper(close, open + 1, max, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                    if (close < open) {
+                        path.Add(')');
+                        Helper(close + 1, open, max, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+                Helper(0, 0, n, path, res);
+                return res;
+            }
         }
 
         class DataStructure {
@@ -2434,7 +2482,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.Combine(4, 2));
+            System.Console.WriteLine(algorithm.LetterCombinations("23"));
         }
     }
 }
