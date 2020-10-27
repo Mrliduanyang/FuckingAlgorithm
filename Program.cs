@@ -2169,6 +2169,55 @@ namespace FuckingAlgorithm {
                 Helper(0, 0, n, path, res);
                 return res;
             }
+
+            public List<List<int>> CombinationSum(int[] candidates, int target) {
+                var path = new List<int>();
+                var res = new List<List<int>>();
+
+                void Helper(int[] candidates, int begin, int sum, int target, List<int> path, List<List<int>> res) {
+                    if (sum == target) {
+                        res.Add(path.ToList());
+                        return;
+                    }
+                    // 去重的关键，
+                    for (int i = begin; i < candidates.Length; i++) {
+                        if ((sum + candidates[i]) <= target) {
+                            path.Add(candidates[i]);
+                            Helper(candidates, i, sum + candidates[i], target, path, res);
+                            path.RemoveAt(path.Count - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if (candidates.Length == 0) {
+                    return res;
+                }
+                Array.Sort(candidates);
+                Helper(candidates, 0, 0, target, path, res);
+                return res;
+            }
+
+            public List<List<int>> Subsets(int[] nums) {
+                var path = new List<int>();
+                var res = new List<List<int>>();
+
+                void Helper(int curr, int[] nums, List<int> path, List<List<int>> res) {
+                    res.Add(path.ToList());
+                    for (int i = curr; i < nums.Length; i++) {
+                        path.Add(nums[i]);
+                        Helper(curr + 1, nums, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+
+                if (nums.Length == 0) {
+                    return res;
+                }
+                Array.Sort(nums);
+                Helper(0, nums, path, res);
+                return res;
+            }
         }
 
         class DataStructure {
@@ -2482,7 +2531,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.LetterCombinations("23"));
+            System.Console.WriteLine(algorithm.Subsets(new int[] { 1, 2, 3 }));
         }
     }
 }
