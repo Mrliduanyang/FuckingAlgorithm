@@ -2012,7 +2012,8 @@ namespace FuckingAlgorithm {
 
             public List<List<int>> Combine(int n, int k) {
                 var res = new List<List<int>>();
-                void Helper(int n, int k, int begin, List<int> path, List<List<int>> res) {
+                var path = new List<int>();
+                void Helper(int n, int k, int begin) {
                     if (path.Count == k) {
                         res.Add(path.ToList());
                         return;
@@ -2020,15 +2021,14 @@ namespace FuckingAlgorithm {
 
                     for (int i = begin; i <= n; i++) {
                         path.Add(i);
-                        Helper(n, k, i + 1, path, res);
+                        Helper(n, k, i + 1);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
                 if (k <= 0 || n < k) {
                     return res;
                 }
-                var path = new List<int>();
-                Helper(n, k, 1, path, res);
+                Helper(n, k, 1);
                 return res;
             }
 
@@ -2036,7 +2036,7 @@ namespace FuckingAlgorithm {
                 // 回溯法
                 var res = new List<List<int>>();
                 var path = new List<int>();
-                void Helper(int cur, int last, int[] nums) {
+                void Helper(int cur, int last) {
                     if (cur == nums.Length) {
                         if (path.Count >= 2) {
                             res.Add(path);
@@ -2046,16 +2046,16 @@ namespace FuckingAlgorithm {
 
                     if (nums[cur] >= last) {
                         path.Add(nums[cur]);
-                        Helper(cur + 1, nums[cur], nums);
+                        Helper(cur + 1, nums[cur]);
                         path.RemoveAt(path.Count - 1);
                     }
                     // 还不懂，没明白如何保证不重复
                     if (nums[cur] != last) {
-                        Helper(cur + 1, last, nums);
+                        Helper(cur + 1, last);
                     }
                 }
 
-                Helper(0, int.MinValue, nums);
+                Helper(0, int.MinValue);
                 return res;
             }
 
@@ -2128,14 +2128,14 @@ namespace FuckingAlgorithm {
                 var path = new List<char>();
                 var res = new List<string>();
 
-                void Helper(int curr, List<char> path, List<string> res) {
+                void Helper(int curr) {
                     if (path.Count == digits.Length) {
                         res.Add(string.Join("", path));
                         return;
                     }
                     foreach (var ch in numCharMap[digits[curr]]) {
                         path.Add(ch);
-                        Helper(curr + 1, path, res);
+                        Helper(curr + 1);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
@@ -2143,30 +2143,30 @@ namespace FuckingAlgorithm {
                 if (digits.Length == 0) {
                     return res;
                 }
-                Helper(0, path, res);
+                Helper(0);
                 return res;
             }
 
             public List<string> GenerateParenthesis(int n) {
                 var res = new List<string>();
                 var path = new List<char>();
-                void Helper(int close, int open, int max, List<char> path, List<string> res) {
+                void Helper(int close, int open, int max) {
                     if (path.Count == max * 2) {
                         res.Add(string.Join("", path));
                         return;
                     }
                     if (open < max) {
                         path.Add('(');
-                        Helper(close, open + 1, max, path, res);
+                        Helper(close, open + 1, max);
                         path.RemoveAt(path.Count - 1);
                     }
                     if (close < open) {
                         path.Add(')');
-                        Helper(close + 1, open, max, path, res);
+                        Helper(close + 1, open, max);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
-                Helper(0, 0, n, path, res);
+                Helper(0, 0, n);
                 return res;
             }
 
@@ -2174,7 +2174,7 @@ namespace FuckingAlgorithm {
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
-                void Helper(int[] candidates, int begin, int sum, int target, List<int> path, List<List<int>> res) {
+                void Helper(int begin, int sum, int target) {
                     if (sum == target) {
                         res.Add(path.ToList());
                         return;
@@ -2183,7 +2183,7 @@ namespace FuckingAlgorithm {
                     for (int i = begin; i < candidates.Length; i++) {
                         if ((sum + candidates[i]) <= target) {
                             path.Add(candidates[i]);
-                            Helper(candidates, i, sum + candidates[i], target, path, res);
+                            Helper(i, sum + candidates[i], target);
                             path.RemoveAt(path.Count - 1);
                         } else {
                             break;
@@ -2194,7 +2194,7 @@ namespace FuckingAlgorithm {
                     return res;
                 }
                 Array.Sort(candidates);
-                Helper(candidates, 0, 0, target, path, res);
+                Helper(0, 0, target);
                 return res;
             }
 
@@ -2202,11 +2202,11 @@ namespace FuckingAlgorithm {
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
-                void Helper(int curr, int[] nums, List<int> path, List<List<int>> res) {
+                void Helper(int curr) {
                     res.Add(path.ToList());
                     for (int i = curr; i < nums.Length; i++) {
                         path.Add(nums[i]);
-                        Helper(curr + 1, nums, path, res);
+                        Helper(curr + 1);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
@@ -2215,7 +2215,7 @@ namespace FuckingAlgorithm {
                     return res;
                 }
                 Array.Sort(nums);
-                Helper(0, nums, path, res);
+                Helper(0);
                 return res;
             }
 
@@ -2256,6 +2256,33 @@ namespace FuckingAlgorithm {
                 res.Remove("");
                 return res.Keys.Count;
             }
+
+            public List<List<int>> PermuteUnique(int[] nums) {
+                List<List<int>> res = new List<List<int>>();
+                List<int> path = new List<int>();
+                bool[] vis = new bool[nums.Length];
+
+                void Helper(int curr) {
+                    if (curr == nums.Length) {
+                        res.Add(path.ToList());
+                        return;
+                    }
+                    for (int i = 0; i < nums.Length; ++i) {
+                        if (vis[i] || (i > 0 && nums[i] == nums[i - 1] && !vis[i - 1])) {
+                            continue;
+                        }
+                        path.Add(nums[i]);
+                        vis[i] = true;
+                        Helper(curr + 1);
+                        vis[i] = false;
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+                Array.Sort(nums);
+                Helper(0);
+                return res;
+            }
+
         }
 
         class DataStructure {
@@ -2569,7 +2596,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.NumTilePossibilities("AAB"));
+            System.Console.WriteLine(algorithm.PermuteUnique(new int[] { 1, 1, 2 }));
         }
     }
 }
