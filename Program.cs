@@ -2218,6 +2218,44 @@ namespace FuckingAlgorithm {
                 Helper(0, nums, path, res);
                 return res;
             }
+
+            public bool UniqueOccurrences(int[] arr) {
+                var numFreqMap = new Dictionary<int, int>();
+                foreach (var num in arr) {
+                    if (numFreqMap.ContainsKey(num)) {
+                        numFreqMap[num] += 1;
+                    } else {
+                        numFreqMap.Add(num, 1);
+                    }
+                }
+                var values = numFreqMap.Values.ToList();
+                var res = values[0];
+                for (int i = 1; i < values.Count; i++) {
+                    res ^= values[i];
+                }
+                return res == 0;
+            }
+
+            public int NumTilePossibilities(string tiles) {
+                // 子集问题是有序的，这个无序
+                var path = new List<char>();
+                var res = new Dictionary<string, bool>();
+
+                void Helper(int curr, string tiles, List<char> path, Dictionary<string, bool> res) {
+                    var tmp = string.Join("", path);
+                    if (!res.ContainsKey(tmp)) {
+                        res.Add(tmp, true);
+                    }
+                    for (int i = curr; i < tiles.Length; i++) {
+                        path.Add(tiles[i]);
+                        Helper(i + 1, tiles, path, res);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+                Helper(0, tiles, path, res);
+                res.Remove("");
+                return res.Keys.Count;
+            }
         }
 
         class DataStructure {
@@ -2531,7 +2569,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.Subsets(new int[] { 1, 2, 3 }));
+            System.Console.WriteLine(algorithm.NumTilePossibilities("AAB"));
         }
     }
 }
