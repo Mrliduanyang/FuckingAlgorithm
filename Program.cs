@@ -2171,6 +2171,7 @@ namespace FuckingAlgorithm {
             }
 
             public List<List<int>> CombinationSum(int[] candidates, int target) {
+                // candidates中无重复元素，但每个元素可用无限次
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
@@ -2179,7 +2180,6 @@ namespace FuckingAlgorithm {
                         res.Add(path.ToList());
                         return;
                     }
-                    // 去重的关键，
                     for (int i = begin; i < candidates.Length; i++) {
                         if ((sum + candidates[i]) <= target) {
                             path.Add(candidates[i]);
@@ -2237,29 +2237,33 @@ namespace FuckingAlgorithm {
             }
 
             public int NumTilePossibilities(string tiles) {
-                // 子集问题是有序的，这个无序
-                var path = new List<char>();
-                var res = new Dictionary<string, bool>();
+                var res = new List<List<int>>();
+                var path = new List<int>();
+                bool[] vis = new bool[tiles.Length];
 
-                void Helper(int curr, string tiles, List<char> path, Dictionary<string, bool> res) {
-                    var tmp = string.Join("", path);
-                    if (!res.ContainsKey(tmp)) {
-                        res.Add(tmp, true);
-                    }
-                    for (int i = curr; i < tiles.Length; i++) {
+                void Helper(int curr) {
+                    res.Add(path.ToList());
+                    for (int i = 0; i < tiles.Length; ++i) {
+                        if (vis[i] || (i > 0 && tiles[i] == tiles[i - 1] && !vis[i - 1])) {
+                            continue;
+                        }
                         path.Add(tiles[i]);
-                        Helper(i + 1, tiles, path, res);
+                        vis[i] = true;
+                        Helper(curr + 1);
+                        vis[i] = false;
                         path.RemoveAt(path.Count - 1);
                     }
                 }
-                Helper(0, tiles, path, res);
-                res.Remove("");
-                return res.Keys.Count;
+                var tmp = tiles.ToCharArray();
+                Array.Sort(tmp);
+                tiles = string.Join("", tmp);
+                Helper(0);
+                return res.Count - 1;
             }
 
             public List<List<int>> PermuteUnique(int[] nums) {
-                List<List<int>> res = new List<List<int>>();
-                List<int> path = new List<int>();
+                var res = new List<List<int>>();
+                var path = new List<int>();
                 bool[] vis = new bool[nums.Length];
 
                 void Helper(int curr) {
@@ -2268,6 +2272,8 @@ namespace FuckingAlgorithm {
                         return;
                     }
                     for (int i = 0; i < nums.Length; ++i) {
+                        // 如果当前元素已访问，或者当前元素未访问，但当前元素和前一个元素相等，并且前一个元素访问过
+                        // 要保证在所有的递归中，每个元素只被访问一次
                         if (vis[i] || (i > 0 && nums[i] == nums[i - 1] && !vis[i - 1])) {
                             continue;
                         }
@@ -2281,6 +2287,34 @@ namespace FuckingAlgorithm {
                 Array.Sort(nums);
                 Helper(0);
                 return res;
+            }
+
+            public List<List<int>> CombinationSum3(int k, int n) {
+                // 只有1-9，每个元素只能使用一次
+                var path = new List<int>();
+                var res = new List<List<int>>();
+                var nums = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+                void Helper(int curr, int sum, int len) {
+                    if (sum == n && len == k) {
+                        res.Add(path.ToList());
+                        return;
+                    }
+                    for (int i = curr; i < nums.Length; i++) {
+                        path.Add(nums[i]);
+                        Helper(i + 1, sum + nums[i], len + 1);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+
+                Helper(0, 0, 0);
+                return res;
+            }
+
+            public List<List<int>> CombinationSum2(int[] candidates, int target) {
+                // candidates中有重复元素，每个只能用一次
+                // 排序+标记
+                var path = new List<int>();
             }
 
         }
@@ -2596,7 +2630,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.PermuteUnique(new int[] { 1, 1, 2 }));
+            System.Console.WriteLine(algorithm.CombinationSum3(3, 7));
         }
     }
 }
