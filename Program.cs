@@ -2421,6 +2421,27 @@ namespace FuckingAlgorithm {
                 return false;
             }
 
+            public List<List<int>> SubsetsWithDup(int[] nums) {
+                var path = new List<int>();
+                var res = new List<List<int>>();
+
+                void Helper(int curr) {
+                    res.Add(path.ToList());
+                    for (int i = curr; i < nums.Length; i++) {
+                        if (i > curr && nums[i] == nums[i - 1]) {
+                            continue;
+                        }
+
+                        path.Add(nums[i]);
+                        Helper(i + 1);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+
+                Array.Sort(nums);
+                Helper(0);
+                return res;
+            }
         }
 
         class DataStructure {
@@ -2734,11 +2755,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.Exist(new char[][] {
-                new char[] { 'A', 'B', 'C', 'E' },
-                    new char[] { 'S', 'F', 'C', 'S' },
-                    new char[] { 'A', 'D', 'E', 'E' }
-            }, "CCFSD"));
+            System.Console.WriteLine(algorithm.SubsetsWithDup(new int[] { 4, 4, 4, 1, 4 }));
         }
     }
 }
