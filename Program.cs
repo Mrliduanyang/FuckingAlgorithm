@@ -2206,7 +2206,7 @@ namespace FuckingAlgorithm {
                     res.Add(path.ToList());
                     for (int i = curr; i < nums.Length; i++) {
                         path.Add(nums[i]);
-                        Helper(curr + 1);
+                        Helper(i + 1);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
@@ -2315,6 +2315,110 @@ namespace FuckingAlgorithm {
                 // candidates中有重复元素，每个只能用一次
                 // 排序+标记
                 var path = new List<int>();
+                var res = new List<List<int>>();
+                var vis = new bool[candidates.Length];
+
+                void Helper(int curr, int sum) {
+                    if (sum == target) {
+                        res.Add(path.ToList());
+                        return;
+                    } else if (sum < target) {
+                        for (int i = curr; i < candidates.Length; i++) {
+                            if (vis[i] || (i > 0 && candidates[i] == candidates[i - 1] && !vis[i - 1])) {
+                                continue;
+                            }
+                            path.Add(candidates[i]);
+                            vis[i] = true;
+                            Helper(i + 1, sum + candidates[i]);
+                            vis[i] = false;
+                            path.RemoveAt(path.Count - 1);
+                        }
+                    }
+                }
+
+                Array.Sort(candidates);
+                Helper(0, 0);
+                return res;
+            }
+
+            public int[] TopKFrequent(int[] nums, int k) {
+                var freqMap = new Dictionary<int, int>();
+                foreach (var num in nums) {
+                    if (freqMap.ContainsKey(num)) {
+                        freqMap[num] += 1;
+                    } else {
+                        freqMap.Add(num, 1);
+                    }
+                }
+                return new int[] { };
+            }
+
+            public int IslandPerimeter(int[][] grid) {
+                // 搜索上下左右的常用技巧
+                int[] dx = { 0, 1, 0, -1 };
+                int[] dy = { 1, 0, -1, 0 };
+
+                int n = grid.Length, m = grid[0].Length;
+                int ans = 0;
+                for (int i = 0; i < n; ++i) {
+                    for (int j = 0; j < m; ++j) {
+                        if (grid[i][j] == 1) {
+                            int cnt = 0;
+                            // 统计每一个格子的边
+                            for (int k = 0; k < 4; ++k) {
+                                int tx = i + dx[k];
+                                int ty = j + dy[k];
+                                if (tx < 0 || tx >= n || ty < 0 || ty >= m || grid[tx][ty] == 0) {
+                                    cnt += 1;
+                                }
+                            }
+                            ans += cnt;
+                        }
+                    }
+                }
+                return ans;
+            }
+
+            public bool Exist(char[][] board, string word) {
+                int h = board.Length;
+                int w = board[0].Length;
+                var directions = new int[][] { new int[] { 0, 1 }, new int[] { 0, -1 }, new int[] { 1, 0 }, new int[] {-1, 0 } };
+                bool[, ] vis = new bool[h, w];
+
+                bool Helper(int i, int j, int idx) {
+                    if (board[i][j] != word[idx]) {
+                        return false;
+                    } else if (idx == word.Length - 1) {
+                        return true;
+                    }
+                    // 回溯的选择
+                    vis[i, j] = true;
+                    bool res = false;
+                    foreach (var direction in directions) {
+                        int tx = i + direction[0], ty = j + direction[1];
+                        if (tx >= 0 && tx < h && ty >= 0 && ty < w) {
+                            if (!vis[tx, ty]) {
+                                bool flag = Helper(tx, ty, idx + 1);
+                                if (flag) {
+                                    res = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    vis[i, j] = false;
+                    return res;
+                }
+
+                for (int i = 0; i < h; i++) {
+                    for (int j = 0; j < w; j++) {
+                        bool flag = Helper(i, j, 0);
+                        if (flag) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
 
         }
@@ -2630,7 +2734,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.CombinationSum3(3, 7));
+            System.Console.WriteLine(algorithm.Exist(new char[][] {
+                new char[] { 'A', 'B', 'C', 'E' },
+                    new char[] { 'S', 'F', 'C', 'S' },
+                    new char[] { 'A', 'D', 'E', 'E' }
+            }, "CCFSD"));
         }
     }
 }
