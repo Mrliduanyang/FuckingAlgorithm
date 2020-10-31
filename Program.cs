@@ -7,6 +7,42 @@ namespace FuckingAlgorithm {
     class Program {
 
         class Algorithm {
+
+            // 链表节点类
+            public class Node {
+                public int val;
+                public Node next;
+
+                public Node(int _val) {
+                    this.val = _val;
+                }
+            }
+
+            // 树节点类
+            public class TreeNode {
+                public int val;
+                public TreeNode left;
+                public TreeNode right;
+                // 存储二叉树相邻节点
+                public TreeNode next;
+                // 存储n叉树
+                public List<TreeNode> children;
+
+                public TreeNode(int _val, TreeNode _left, TreeNode _right) {
+                    val = _val;
+                    left = _left;
+                    right = _right;
+                }
+                public TreeNode(int _val, List<TreeNode> _children) {
+                    val = _val;
+                    children = _children;
+
+                }
+                public TreeNode(int _val) {
+                    val = _val;
+                }
+            }
+
             public int Fib(int N) {
                 int[] dp = new int[N + 1];
                 dp[1] = dp[2] = 1;
@@ -1024,137 +1060,127 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            class Tree {
-                public class TreeNode {
-                    public int val;
-                    public TreeNode left;
-                    public TreeNode right;
-                    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null) {
-                        this.val = val;
-                        this.left = left;
-                        this.right = right;
-                    }
+            // class Tree {
+
+            public bool IsSameTree(TreeNode p, TreeNode q) {
+                if (p == null && q == null) {
+                    return true;
                 }
-
-                public bool IsSameTree(TreeNode p, TreeNode q) {
-                    if (p == null && q == null) {
-                        return true;
-                    }
-                    if (p == null || q == null) {
-                        return false;
-                    }
-                    if (p.val != q.val) {
-                        return false;
-                    }
-                    return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
+                if (p == null || q == null) {
+                    return false;
                 }
-
-                public int MaxDepth(TreeNode root) {
-                    if (root == null) return 0;
-                    var queue = new Queue<TreeNode>();
-                    queue.Enqueue(root);
-                    int level = 0;
-                    while (queue.Count != 0) {
-                        int count = queue.Count;
-                        level++;
-                        for (int i = 0; i < count; i++) {
-                            var node = queue.Dequeue();
-                            if (node.left != null) {
-                                queue.Enqueue(node.left);
-                            }
-                            if (node.right != null) {
-                                queue.Enqueue(node.right);
-                            }
-                        }
-                    }
-                    return level;
+                if (p.val != q.val) {
+                    return false;
                 }
-
-                public IList<int> PreorderTraversal(TreeNode root) {
-                    if (root == null) return new List<int> { };
-                    var stack = new Stack<TreeNode>();
-                    var res = new List<int>();
-                    stack.Push(root);
-                    while (stack.Count != 0) {
-                        var node = stack.Pop();
-                        res.Add(node.val);
-                        if (node.right != null) {
-                            stack.Push(node.right);
-                        }
-                        if (node.left != null) {
-                            stack.Push(node.left);
-                        }
-                    }
-                    return res;
-                }
-
-                public IList<int> PostorderTraversal(TreeNode root) {
-                    if (root == null) return new List<int> { };
-                    var stack = new Stack<TreeNode>();
-                    var res = new List<int>();
-                    stack.Push(root);
-                    while (stack.Count != 0) {
-                        var node = stack.Pop();
-                        res.Insert(0, node.val);
-                        if (node.left != null) {
-                            stack.Push(node.left);
-                        }
-                        if (node.right != null) {
-                            stack.Push(node.right);
-                        }
-                    }
-                    return res;
-                }
-
-                public TreeNode InvertTree(TreeNode root) {
-                    if (root == null) return null;
-
-                    var left = InvertTree(root.left);
-                    var right = InvertTree(root.right);
-
-                    root.left = right;
-                    root.right = left;
-
-                    return root;
-                }
-
-                public class Node {
-                    public int val;
-                    public IList<Node> children;
-                    public Node() { }
-                    public Node(int _val) {
-                        val = _val;
-                    }
-                    public Node(int _val, IList<Node> _children) {
-                        val = _val;
-                        children = _children;
-                    }
-                }
-                public IList<IList<int>> LevelOrder(Node root) {
-                    var res = new List<IList<int>>();
-                    if (root == null) {
-                        return res;
-                    }
-                    Queue<Node> queue = new Queue<Node>();
-                    queue.Enqueue(root);
-
-                    while (queue.Count > 0) {
-                        var count = queue.Count;
-                        var tmp = new List<int>();
-                        for (int i = 0; i < count; i++) {
-                            var node = queue.Dequeue();
-                            tmp.Add(node.val);
-                            if (node.children != null && node.children.Count != 0) {
-                                foreach (var child in node.children) {
-                                    queue.Enqueue(child);
-                                }
-                            }
-                        }
-                        res.Add(tmp);
-                    }
-                    return res;
-                }
+                return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
             }
+
+            public int MaxDepth(TreeNode root) {
+                if (root == null) return 0;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                int level = 0;
+                while (queue.Count != 0) {
+                    int count = queue.Count;
+                    level++;
+                    for (int i = 0; i < count; i++) {
+                        var node = queue.Dequeue();
+                        if (node.left != null) {
+                            queue.Enqueue(node.left);
+                        }
+                        if (node.right != null) {
+                            queue.Enqueue(node.right);
+                        }
+                    }
+                }
+                return level;
+            }
+
+            public IList<int> PreorderTraversal(TreeNode root) {
+                if (root == null) return new List<int> { };
+                var stack = new Stack<TreeNode>();
+                var res = new List<int>();
+                stack.Push(root);
+                while (stack.Count != 0) {
+                    var node = stack.Pop();
+                    res.Add(node.val);
+                    if (node.right != null) {
+                        stack.Push(node.right);
+                    }
+                    if (node.left != null) {
+                        stack.Push(node.left);
+                    }
+                }
+                return res;
+            }
+
+            public IList<int> PostorderTraversal(TreeNode root) {
+                if (root == null) return new List<int> { };
+                var stack = new Stack<TreeNode>();
+                var res = new List<int>();
+                stack.Push(root);
+                while (stack.Count != 0) {
+                    var node = stack.Pop();
+                    res.Insert(0, node.val);
+                    if (node.left != null) {
+                        stack.Push(node.left);
+                    }
+                    if (node.right != null) {
+                        stack.Push(node.right);
+                    }
+                }
+                return res;
+            }
+
+            public TreeNode InvertTree(TreeNode root) {
+                if (root == null) return null;
+
+                var left = InvertTree(root.left);
+                var right = InvertTree(root.right);
+
+                root.left = right;
+                root.right = left;
+
+                return root;
+            }
+
+            // public class Node {
+            //     public int val;
+            //     public IList<Node> children;
+            //     public Node() { }
+            //     public Node(int _val) {
+            //         val = _val;
+            //     }
+            //     public Node(int _val, IList<Node> _children) {
+            //         val = _val;
+            //         children = _children;
+            //     }
+            // }
+            public IList<IList<int>> LevelOrder(TreeNode root) {
+                var res = new List<IList<int>>();
+                if (root == null) {
+                    return res;
+                }
+                Queue<TreeNode> queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+
+                while (queue.Count > 0) {
+                    var count = queue.Count;
+                    var tmp = new List<int>();
+                    for (int i = 0; i < count; i++) {
+                        var node = queue.Dequeue();
+                        tmp.Add(node.val);
+                        if (node.children != null && node.children.Count != 0) {
+                            foreach (var child in node.children) {
+                                queue.Enqueue(child);
+                            }
+                        }
+                    }
+                    res.Add(tmp);
+                }
+                return res;
+            }
+            // }
 
             // 撑杆跳，一次把元素移动到位。
             public void Rotate(int[] nums, int k) {
@@ -1309,16 +1335,16 @@ namespace FuckingAlgorithm {
                 return res;
             }
             // 快速排序可以理解为二叉树的前序遍历，归并排序可以理解为二叉树的后序遍历。
-            public class TreeNode {
-                public int val;
-                public TreeNode left;
-                public TreeNode right;
-                public TreeNode next;
+            // public class TreeNode {
+            //     public int val;
+            //     public TreeNode left;
+            //     public TreeNode right;
+            //     public TreeNode next;
 
-                public TreeNode(int _val) {
-                    val = _val;
-                }
-            }
+            //     public TreeNode(int _val) {
+            //         val = _val;
+            //     }
+            // }
             public TreeNode Connect(TreeNode root) {
                 // 将相邻的两个节点连接起来。
                 void Helper(TreeNode node1, TreeNode node2) {
@@ -2442,130 +2468,50 @@ namespace FuckingAlgorithm {
                 Helper(0);
                 return res;
             }
-        }
 
-        class DataStructure {
-            class LRU {
-                class Node {
-                    public Node(int k, int v) {
-                        key = k;
-                        val = v;
-                    }
-                    public int key, val;
-                    public Node next, prev;
-                }
+            public void Solve(char[][] board) {
+                int rows = board.Length;
+                if (rows == 0) return;
+                int cols = board[0].Length;
 
-                class DoubleList {
-                    private Node head, tail;
-                    private int size;
-
-                    public DoubleList() {
-                        head = new Node(0, 0);
-                        tail = new Node(0, 0);
-                        head.next = tail;
-                        tail.prev = head;
-                        size = 0;
-                    }
-
-                    public void AddLast(Node x) {
-                        // 把x插入到tail之前
-                        x.prev = tail.prev;
-                        x.next = tail;
-                        tail.prev.next = x;
-                        tail.prev = x;
-                        size++;
-                    }
-
-                    public void Remove(Node x) {
-                        x.prev.next = x.next;
-                        x.next.prev = x.prev;
-                        size--;
-                    }
-
-                    public Node RemoveFirst() {
-                        if (head.next == tail) {
-                            return null;
-                        }
-                        Node first = head.next;
-                        Remove(first);
-                        return first;
-                    }
-
-                    public int Size() {
-                        return size;
+                void Helper(int x, int y) {
+                    if (x >= 0 && x <= rows - 1 && y >= 0 && y <= cols - 1 && board[x][y] == 'O') {
+                        board[x][y] = '#';
+                        // 深度遍历上下左右
+                        Helper(x - 1, y);
+                        Helper(x + 1, y);
+                        Helper(x, y - 1);
+                        Helper(x, y + 1);
+                    } else {
+                        return;
                     }
                 }
-
-                class LRUCache {
-                    private Dictionary<int, Node> map;
-                    private DoubleList cache;
-                    private int cap;
-
-                    public LRUCache(int capacity) {
-                        cap = capacity;
-                        map = new Dictionary<int, Node>();
-                        cache = new DoubleList();
-                    }
-
-                    // 将key对应node提升为最近使用的，也就是把node从表头删除，插入到表尾
-                    private void MakeRecently(int key) {
-                        Node x = map[key];
-                        cache.Remove(x);
-                        cache.AddLast(x);
-                    }
-
-                    // 添加最近使用的node，初始化一个node，并插入到表尾，同时在map中添加映射
-                    private void AddRecently(int key, int val) {
-                        Node x = new Node(key, val);
-                        cache.AddLast(x);
-                        map.Add(key, x);
-                    }
-
-                    // 删除某一个key，从表中删除，从map中删除
-                    private void DeleteKey(int key) {
-                        Node x = map[key];
-                        cache.Remove(x);
-                        map.Remove(key);
-                    }
-
-                    // 删除最久未使用的，即表头节点
-                    private void RemoveLeastRecently() {
-                        Node deleteNode = cache.RemoveFirst();
-                        int key = deleteNode.key;
-                        map.Remove(key);
-                    }
-
-                    public int get(int key) {
-                        if (!map.ContainsKey(key)) {
-                            return -1;
-                        }
-                        // 如果存在，将该节点提升为最近使用的
-                        MakeRecently(key);
-                        return map[key].val;
-                    }
-
-                    public void put(int key, int val) {
-                        // 如果key存在，将key对应的val修改，并提到最近使用
-                        if (map.ContainsKey(key)) {
-                            map[key].val = val;
-                            MakeRecently(key);
-                        }
-                        // 如果缓存满了，删除掉最近最少使用的元素
-                        if (cap == cache.Size()) {
-                            RemoveLeastRecently();
-                        }
-                        // 添加最近使用元素
-                        AddRecently(key, val);
-                    }
+                // 先把四周的点及跟他们相连的换成特殊字符。
+                // 第一行
+                for (int j = 0; j < cols; j++) {
+                    Helper(0, j);
                 }
-            }
-
-            public class Node {
-                public int val;
-                public Node next;
-
-                public Node(int _val) {
-                    val = _val;
+                // 最后一行
+                for (int j = 0; j < cols; j++) {
+                    Helper(rows - 1, j);
+                }
+                // 第一列
+                for (int i = 0; i < rows; i++) {
+                    Helper(i, 0);
+                }
+                // 最后一列
+                for (int i = 0; i < rows; i++) {
+                    Helper(i, cols - 1);
+                }
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        if (board[i][j] == 'O') {
+                            board[i][j] = 'X';
+                        }
+                        if (board[i][j] == '#') {
+                            board[i][j] = 'O';
+                        }
+                    }
                 }
             }
 
@@ -2703,53 +2649,121 @@ namespace FuckingAlgorithm {
                 }
                 return res + need;
             }
-
         }
 
-        public class Solution {
-            public void Solve(char[][] board) {
-                int rows = board.Length;
-                if (rows == 0) return;
-                int cols = board[0].Length;
-                // 先把四周的点及跟他们相连的换成特殊字符。
-                // 第一行
-                for (int j = 0; j < cols; j++) {
-                    Helper(board, 0, j, rows, cols);
+        class DataStructure {
+            class LRU {
+                class Node {
+                    public Node(int k, int v) {
+                        key = k;
+                        val = v;
+                    }
+                    public int key, val;
+                    public Node next, prev;
                 }
-                // 最后一行
-                for (int j = 0; j < cols; j++) {
-                    Helper(board, rows - 1, j, rows, cols);
-                }
-                // 第一列
-                for (int i = 0; i < rows; i++) {
-                    Helper(board, i, 0, rows, cols);
-                }
-                // 最后一列
-                for (int i = 0; i < rows; i++) {
-                    Helper(board, i, cols - 1, rows, cols);
-                }
-                for (int i = 0; i < rows; i++) {
-                    for (int j = 0; j < cols; j++) {
-                        if (board[i][j] == 'O') {
-                            board[i][j] = 'X';
+
+                class DoubleList {
+                    private Node head, tail;
+                    private int size;
+
+                    public DoubleList() {
+                        head = new Node(0, 0);
+                        tail = new Node(0, 0);
+                        head.next = tail;
+                        tail.prev = head;
+                        size = 0;
+                    }
+
+                    public void AddLast(Node x) {
+                        // 把x插入到tail之前
+                        x.prev = tail.prev;
+                        x.next = tail;
+                        tail.prev.next = x;
+                        tail.prev = x;
+                        size++;
+                    }
+
+                    public void Remove(Node x) {
+                        x.prev.next = x.next;
+                        x.next.prev = x.prev;
+                        size--;
+                    }
+
+                    public Node RemoveFirst() {
+                        if (head.next == tail) {
+                            return null;
                         }
-                        if (board[i][j] == '#') {
-                            board[i][j] = 'O';
-                        }
+                        Node first = head.next;
+                        Remove(first);
+                        return first;
+                    }
+
+                    public int Size() {
+                        return size;
                     }
                 }
-            }
 
-            public void Helper(char[][] board, int x, int y, int rows, int cols) {
-                if (x >= 0 && x <= rows - 1 && y >= 0 && y <= cols - 1 && board[x][y] == 'O') {
-                    board[x][y] = '#';
-                    // 深度遍历上下左右
-                    Helper(board, x - 1, y, rows, cols);
-                    Helper(board, x + 1, y, rows, cols);
-                    Helper(board, x, y - 1, rows, cols);
-                    Helper(board, x, y + 1, rows, cols);
-                } else {
-                    return;
+                class LRUCache {
+                    private Dictionary<int, Node> map;
+                    private DoubleList cache;
+                    private int cap;
+
+                    public LRUCache(int capacity) {
+                        cap = capacity;
+                        map = new Dictionary<int, Node>();
+                        cache = new DoubleList();
+                    }
+
+                    // 将key对应node提升为最近使用的，也就是把node从表头删除，插入到表尾
+                    private void MakeRecently(int key) {
+                        Node x = map[key];
+                        cache.Remove(x);
+                        cache.AddLast(x);
+                    }
+
+                    // 添加最近使用的node，初始化一个node，并插入到表尾，同时在map中添加映射
+                    private void AddRecently(int key, int val) {
+                        Node x = new Node(key, val);
+                        cache.AddLast(x);
+                        map.Add(key, x);
+                    }
+
+                    // 删除某一个key，从表中删除，从map中删除
+                    private void DeleteKey(int key) {
+                        Node x = map[key];
+                        cache.Remove(x);
+                        map.Remove(key);
+                    }
+
+                    // 删除最久未使用的，即表头节点
+                    private void RemoveLeastRecently() {
+                        Node deleteNode = cache.RemoveFirst();
+                        int key = deleteNode.key;
+                        map.Remove(key);
+                    }
+
+                    public int get(int key) {
+                        if (!map.ContainsKey(key)) {
+                            return -1;
+                        }
+                        // 如果存在，将该节点提升为最近使用的
+                        MakeRecently(key);
+                        return map[key].val;
+                    }
+
+                    public void put(int key, int val) {
+                        // 如果key存在，将key对应的val修改，并提到最近使用
+                        if (map.ContainsKey(key)) {
+                            map[key].val = val;
+                            MakeRecently(key);
+                        }
+                        // 如果缓存满了，删除掉最近最少使用的元素
+                        if (cap == cache.Size()) {
+                            RemoveLeastRecently();
+                        }
+                        // 添加最近使用元素
+                        AddRecently(key, val);
+                    }
                 }
             }
         }
