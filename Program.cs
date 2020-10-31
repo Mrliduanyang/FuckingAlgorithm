@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace FuckingAlgorithm {
-    class Program {
-
-        class Algorithm {
+    public class Program {
+        public class Algorithm {
 
             // 链表节点类
             public class Node {
@@ -261,7 +260,7 @@ namespace FuckingAlgorithm {
                 return dp[m, n];
             }
 
-            private int Min(int a, int b, int c) {
+            public int Min(int a, int b, int c) {
                 return Math.Min(Math.Min(a, b), c);
             }
 
@@ -557,10 +556,10 @@ namespace FuckingAlgorithm {
             }
 
             class UF {
-                private int count;
-                private int[] parent;
+                public int count;
+                public int[] parent;
                 // 记录数组重量
-                private int[] size;
+                public int[] size;
                 public UF(int n) {
                     count = n;
                     parent = new int[n];
@@ -1523,7 +1522,7 @@ namespace FuckingAlgorithm {
             }
 
             class Difference {
-                private int[] diff;
+                public int[] diff;
                 public Difference(int[] nums) {
                     diff = new int[nums.Length];
                     diff[0] = nums[0];
@@ -1833,7 +1832,7 @@ namespace FuckingAlgorithm {
                     this._inorder(root);
                 }
 
-                private void _inorder(TreeNode root) {
+                public void _inorder(TreeNode root) {
                     if (root == null) {
                         return;
                     }
@@ -2651,9 +2650,9 @@ namespace FuckingAlgorithm {
             }
         }
 
-        class DataStructure {
-            class LRU {
-                class Node {
+        public class DataStructure {
+            public class LRU {
+                public class Node {
                     public Node(int k, int v) {
                         key = k;
                         val = v;
@@ -2662,9 +2661,9 @@ namespace FuckingAlgorithm {
                     public Node next, prev;
                 }
 
-                class DoubleList {
-                    private Node head, tail;
-                    private int size;
+                public class DoubleList {
+                    public Node head, tail;
+                    public int size;
 
                     public DoubleList() {
                         head = new Node(0, 0);
@@ -2703,10 +2702,10 @@ namespace FuckingAlgorithm {
                     }
                 }
 
-                class LRUCache {
-                    private Dictionary<int, Node> map;
-                    private DoubleList cache;
-                    private int cap;
+                public class LRUCache {
+                    public Dictionary<int, Node> map;
+                    public DoubleList cache;
+                    public int cap;
 
                     public LRUCache(int capacity) {
                         cap = capacity;
@@ -2715,28 +2714,28 @@ namespace FuckingAlgorithm {
                     }
 
                     // 将key对应node提升为最近使用的，也就是把node从表头删除，插入到表尾
-                    private void MakeRecently(int key) {
+                    public void MakeRecently(int key) {
                         Node x = map[key];
                         cache.Remove(x);
                         cache.AddLast(x);
                     }
 
                     // 添加最近使用的node，初始化一个node，并插入到表尾，同时在map中添加映射
-                    private void AddRecently(int key, int val) {
+                    public void AddRecently(int key, int val) {
                         Node x = new Node(key, val);
                         cache.AddLast(x);
                         map.Add(key, x);
                     }
 
                     // 删除某一个key，从表中删除，从map中删除
-                    private void DeleteKey(int key) {
+                    public void DeleteKey(int key) {
                         Node x = map[key];
                         cache.Remove(x);
                         map.Remove(key);
                     }
 
                     // 删除最久未使用的，即表头节点
-                    private void RemoveLeastRecently() {
+                    public void RemoveLeastRecently() {
                         Node deleteNode = cache.RemoveFirst();
                         int key = deleteNode.key;
                         map.Remove(key);
@@ -2764,6 +2763,54 @@ namespace FuckingAlgorithm {
                         // 添加最近使用元素
                         AddRecently(key, val);
                     }
+                }
+            }
+
+            public class RandomizedCollection {
+                Dictionary<int, SortedSet<int>> idx;
+                List<int> nums;
+                Random random;
+                public RandomizedCollection() {
+                    idx = new Dictionary<int, SortedSet<int>>();
+                    nums = new List<int>();
+                    random = new Random();
+                }
+
+                public bool Insert(int val) {
+                    nums.Add(val);
+                    var set = idx.GetValueOrDefault(val, new SortedSet<int>());
+                    set.Add(nums.Count - 1);
+                    idx[val] = set;
+                    return set.Count == 1;
+                }
+
+                public bool Remove(int val) {
+                    if (!idx.ContainsKey(val)) {
+                        return false;
+                    }
+                    // 从val的索引集合中选择一个，换到最后，以实现O（1）的删除
+                    int i = idx[val].First();
+                    idx[val].Remove(i);
+
+                    if (i == nums.Count - 1) {
+                        // 如果要删除的正好是最后一个元素，直接从集合中删除索引
+                        idx[val].Remove(i);
+                    } else {
+                        // 否则，从val的索引集合中删除索引i，从lastNum的索引集合中删除最后一个，并添加i
+                        int lastNum = nums.Last();
+                        idx[lastNum].Remove(nums.Count - 1);
+                        idx[lastNum].Add(i);
+                        nums[i] = lastNum;
+                    }
+                    if (idx[val].Count == 0) {
+                        idx.Remove(val);
+                    }
+                    nums.RemoveAt(nums.Count - 1);
+                    return true;
+                }
+
+                public int GetRandom() {
+                    return nums[random.Next(nums.Count)];
                 }
             }
         }
