@@ -323,20 +323,20 @@ namespace FuckingAlgorithm {
             }
 
             public int Rob_2(int[] nums) {
-                int RobRange(int[] nums, int start, int end) {
+                int RobRange(int start, int end) {
                     int n = nums.Length;
                     int[] dp = new int[n + 2];
                     for (int i = end; i >= start; i--) {
                         dp[i] = Math.Max(dp[i + 1], dp[i + 2] + nums[i]);
                     }
-                    return dp[0];
+                    return dp[start];
                 }
 
                 int n = nums.Length;
                 if (n == 1) {
                     return nums[0];
                 }
-                return Math.Max(RobRange(nums, 1, n - 1), RobRange(nums, 0, n - 2));
+                return Math.Max(RobRange(1, n - 1), RobRange(0, n - 2));
             }
 
             public int LongestPalindromeSubseq(string s) {
@@ -2712,6 +2712,62 @@ namespace FuckingAlgorithm {
                 }
                 return dp[m - 1, n - 1];
             }
+
+            public int[] Intersection(int[] nums1, int[] nums2) {
+                Array.Sort(nums1);
+                Array.Sort(nums2);
+                if (nums1.Length == 0 || nums1.Length == 0) {
+                    return new int[] { };
+                }
+
+                int idx1 = 0, idx2 = 0;
+                var res = new List<int>();
+                while (idx1 < nums1.Length && idx2 < nums2.Length) {
+                    int num1 = nums1[idx1], num2 = nums2[idx2];
+                    if (num1 == num2) {
+                        if (res.Count == 0 || res.Last() != num1) {
+                            res.Add(num1);
+                        }
+                        idx1++;
+                        idx2++;
+                    } else if (num1 < num2) {
+                        idx1++;
+                    } else {
+                        idx2++;
+                    }
+                }
+                return res.ToArray();
+            }
+
+            public int MinimumTotal(List<List<int>> triangle) {
+                if (triangle.Count == 0) {
+                    return 0;
+                }
+                int n = triangle.Count;
+                var dp = new int[n, n];
+                // base
+                dp[0, 0] = triangle[0][0];
+                for (int i = 1; i < n; i++) {
+                    dp[i, 0] = dp[i - 1, 0] + triangle[i][0];
+                    dp[i, i] = dp[i - 1, i - 1] + triangle[i][i];
+                }
+                for (int i = 1; i < n; i++) {
+                    for (int j = 0; j < i; j++) {
+                        if (i == j) {
+                            dp[i, j] = dp[i - 1, j - 1] + triangle[i][j];
+                        } else if (j == 0) {
+                            dp[i, 0] = dp[i - 1, 0] + triangle[i][0];
+                        } else {
+                            dp[i, j] = Math.Min(dp[i - 1, j - 1], dp[i - 1, j]) + triangle[i][j];
+                        }
+                    }
+                }
+                int res = int.MaxValue;
+                for (int i = 0; i < n; i++) {
+                    res = Math.Min(dp[n - 1, i], res);
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -2880,10 +2936,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.MinPathSum(new int[][] {
-                new int[] { 1, 3, 1 },
-                    new int[] { 1, 5, 1 },
-                    new int[] { 4, 2, 1 },
+            System.Console.WriteLine(algorithm.MinimumTotal(new List<List<int>> {
+                new List<int> { 2 },
+                // new List<int> { 3, 4 },
+                // new List<int> { 6, 5, 7 },
+                // new List<int> { 4, 1, 8, 3 },
             }));
         }
     }
