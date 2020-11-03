@@ -177,11 +177,7 @@ namespace FuckingAlgorithm {
             }
 
             public bool CanPartition(int[] nums) {
-
-                int sum = 0;
-                foreach (var item in nums) {
-                    sum += item;
-                }
+                int sum =  nums.Sum();
                 // 如果和是奇数，没法等分，就不存在等和子集
                 if (sum % 2 != 0) {
                     return false;
@@ -2768,6 +2764,43 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            public bool ValidMountainArray(int[] A) {
+                // 双指针，从左右两边同时向中间靠近
+                if (A.Length < 3) {
+                    return false;
+                }
+                int left = 0, right = A.Length - 1;
+                int i = 0;
+                while (i < A.Length && left < right) {
+                    if (A[left] < A[left + 1]) {
+                        left++;
+                    }
+                    if (A[right] < A[right - 1]) {
+                        right--;
+                    }
+                    i++;
+                }
+                return left == right && left != 0 && right != A.Length - 1;
+            }
+
+            public int MinSteps(int n) {
+                // 二维dp，最后一次的操作肯定是粘贴，如果去掉最后一次粘贴的i个A，那么子问题变为求n-i个A的最少操作次数。也可以是n/2的长度经过复制、粘贴得到
+                // dp定义为长度为
+                int ans = 0, d = 2;
+                while (n > 1) {
+                    while (n % d == 0) {
+                        ans += d;
+                        n /= d;
+                    }
+                    d++;
+                }
+                return ans;
+            }
+
+            public bool CanPartition(int[] nums) {
+                // 去掉
+            }
         }
 
         public class DataStructure {
@@ -2936,12 +2969,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.MinimumTotal(new List<List<int>> {
-                new List<int> { 2 },
-                // new List<int> { 3, 4 },
-                // new List<int> { 6, 5, 7 },
-                // new List<int> { 4, 1, 8, 3 },
-            }));
+            System.Console.WriteLine(algorithm.ValidMountainArray(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
         }
     }
 }
