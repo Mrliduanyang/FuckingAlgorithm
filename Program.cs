@@ -2797,10 +2797,6 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
-
-            public bool CanPartition(int[] nums) {
-                // 去掉
-            }
         }
 
         public class DataStructure {
