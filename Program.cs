@@ -102,30 +102,8 @@ namespace FuckingAlgorithm {
             }
 
             public int FindTargetSumWays(int[] nums, int target) {
-                int res;
                 Dictionary<string, int> memo = new Dictionary<string, int>();
-                void backtrack(int[] nums, int i, int rest) {
-                    // base 用完所有数字，rest为0，说明凑出一个target
-                    if (i == nums.Length) {
-                        if (rest == 0) {
-                            res++;
-                        }
-                        return;
-                    }
-                    // 存在重叠子问题，如果nums[i] = 0，两个backtrack重复，用备忘录消除重叠子问题
-                    // 做选择，选择-号
-                    rest += nums[i];
-                    backtrack(nums, i + 1, rest);
-                    rest -= nums[i];
-
-                    // 做选择，选择+号
-                    rest -= nums[i];
-                    backtrack(nums, i + 1, rest);
-                    rest += nums[i];
-
-                }
-
-                int dp(int[] nums, int i, int rest) {
+                int dp(int i, int rest) {
                     if (i == nums.Length) {
                         if (rest == 0) {
                             return 1;
@@ -137,13 +115,11 @@ namespace FuckingAlgorithm {
                         return memo[key];
                     }
                     // 加上或者减去当前元素后，有多少种方案能凑出新的target
-                    int result = dp(nums, i + 1, rest - nums[i]) + dp(nums, i + 1, rest + nums[i]);
+                    int result = dp(i + 1, rest - nums[i]) + dp(i + 1, rest + nums[i]);
                     memo.Add(key, result);
                     return result;
                 }
-                // backtrack(nums, 0, target);
-                // return res;
-                return dp(nums, 0, target);
+                return dp(0, target);
             }
 
             public int LengthOfLIS(int[] nums) {
@@ -2768,6 +2744,42 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            public int MaximalSquare(char[][] matrix) {
+                int maxSide = 0;
+                if (matrix == null || matrix.Length == 0 || matrix[0].Length == 0) {
+                    return maxSide;
+                }
+                int rows = matrix.Length, columns = matrix[0].Length;
+                var dp = new int[rows, columns];
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < columns; j++) {
+                        if (matrix[i][j] == '1') {
+                            if (i == 0 || j == 0) {
+                                dp[i, j] = 1;
+                            } else {
+                                dp[i, j] = Math.Min(Math.Min(dp[i - 1, j], dp[i, j - 1]), dp[i - 1, j - 1]) + 1;
+                            }
+                            maxSide = Math.Max(maxSide, dp[i, j]);
+                        }
+                    }
+                }
+                int maxSquare = maxSide * maxSide;
+                return maxSquare;
+            }
+            
+            public int IntegerBreak(int n) {
+                int[] dp = new int[n + 1];
+                for (int i = 2; i <= n; i++) {
+                    int curMax = 0;
+                    for (int j = 1; j < i; j++) {
+                        curMax = Math.Max(curMax, Math.Max(j * (i - j), j * dp[i - j]));
+                    }
+                    dp[i] = curMax;
+                }
+                return dp[n];
+            }
+
         }
 
         public class DataStructure {
@@ -2936,12 +2948,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.MinimumTotal(new List<List<int>> {
-                new List<int> { 2 },
-                // new List<int> { 3, 4 },
-                // new List<int> { 6, 5, 7 },
-                // new List<int> { 4, 1, 8, 3 },
-            }));
+            System.Console.WriteLine(algorithm.FindTargetSumWays(new int[] { 1, 1, 1, 1, 1 }, 3));
         }
     }
 }
