@@ -153,7 +153,7 @@ namespace FuckingAlgorithm {
             }
 
             public bool CanPartition(int[] nums) {
-                int sum =  nums.Sum();
+                int sum = nums.Sum();
                 // 如果和是奇数，没法等分，就不存在等和子集
                 if (sum % 2 != 0) {
                     return false;
@@ -2763,7 +2763,7 @@ namespace FuckingAlgorithm {
                 int maxSquare = maxSide * maxSide;
                 return maxSquare;
             }
-            
+
             public int IntegerBreak(int n) {
                 int[] dp = new int[n + 1];
                 for (int i = 2; i <= n; i++) {
@@ -2807,6 +2807,47 @@ namespace FuckingAlgorithm {
                     d++;
                 }
                 return ans;
+            }
+
+            public int LadderLength(string beginWord, string endWord, List<string> wordList) {
+                if (!wordList.Contains(endWord)) return 0;
+
+                List<string> TransferWords(string word) {
+                    var res = new List<string>();
+                    foreach (var candidateWord in wordList) {
+                        int notMatch = 0;
+                        for (int i = 0; i < word.Length; i++) {
+                            if (notMatch == 2) {
+                                break;
+                            }
+                            if (candidateWord[i] != word[i]) {
+                                notMatch++;
+                            }
+                        }
+                        if (notMatch == 1) {
+                            res.Add(candidateWord);
+                        }
+                    }
+                    return res;
+                }
+
+                var path = new Queue<KeyValuePair<string, int>>();
+                path.Enqueue(new KeyValuePair<string, int>(beginWord, 1));
+                while (path.Count != 0) {
+                    int cnt = path.Count;
+                    for (int i = 0; i < cnt; i++) {
+                        var word = path.Dequeue();
+                        var transferWords = TransferWords(word.Key);
+                        foreach (var transferWord in transferWords) {
+                            if (transferWord == endWord) {
+                                return word.Value + 1;
+                            }
+                            wordList.Remove(transferWord);
+                            path.Enqueue(new KeyValuePair<string, int>(transferWord, word.Value + 1));
+                        }
+                    }
+                }
+                return 0;
             }
         }
 
@@ -2975,12 +3016,20 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            var algorithm = new Algorithm();
-<<<<<<< HEAD
-            System.Console.WriteLine(algorithm.FindTargetSumWays(new int[] { 1, 1, 1, 1, 1 }, 3));
-=======
-            System.Console.WriteLine(algorithm.ValidMountainArray(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
->>>>>>> 244ed0f54d24278c77d646165ff2a5afe2c44dde
+            var algorithm = new Algorithm(); <<
+            <<
+            <<
+            <
+            HEAD
+            System.Console.WriteLine(algorithm.FindTargetSumWays(new int[] { 1, 1, 1, 1, 1 }, 3)); ==
+            ==
+            ==
+            =
+            System.Console.WriteLine(algorithm.ValidMountainArray(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 })); >>
+            >>
+            >>
+            >
+            244e d0f54d24278c77d646165ff2a5afe2c44dde
         }
     }
 }
