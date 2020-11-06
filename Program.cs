@@ -2803,6 +2803,7 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
+
             public int[] SortByBits(int[] arr) {
                 // 统计每个数中1的个数，如果个数不等，按照1的个数比较，如果相等，按照原数比较。
                 int BitCount(int v) {
@@ -2893,6 +2894,47 @@ namespace FuckingAlgorithm {
                 } else {
                     return "/";
                 }
+            }
+
+            public int LadderLength(string beginWord, string endWord, List<string> wordList) {
+                if (!wordList.Contains(endWord)) return 0;
+
+                List<string> TransferWords(string word) {
+                    var res = new List<string>();
+                    foreach (var candidateWord in wordList) {
+                        int notMatch = 0;
+                        for (int i = 0; i < word.Length; i++) {
+                            if (notMatch == 2) {
+                                break;
+                            }
+                            if (candidateWord[i] != word[i]) {
+                                notMatch++;
+                            }
+                        }
+                        if (notMatch == 1) {
+                            res.Add(candidateWord);
+                        }
+                    }
+                    return res;
+                }
+
+                var path = new Queue<KeyValuePair<string, int>>();
+                path.Enqueue(new KeyValuePair<string, int>(beginWord, 1));
+                while (path.Count != 0) {
+                    int cnt = path.Count;
+                    for (int i = 0; i < cnt; i++) {
+                        var word = path.Dequeue();
+                        var transferWords = TransferWords(word.Key);
+                        foreach (var transferWord in transferWords) {
+                            if (transferWord == endWord) {
+                                return word.Value + 1;
+                            }
+                            wordList.Remove(transferWord);
+                            path.Enqueue(new KeyValuePair<string, int>(transferWord, word.Value + 1));
+                        }
+                    }
+                }
+                return 0;
             }
         }
 
