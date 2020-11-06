@@ -2812,7 +2812,7 @@ namespace FuckingAlgorithm {
             public int LadderLength(string beginWord, string endWord, List<string> wordList) {
                 if (!wordList.Contains(endWord)) return 0;
 
-                List<string> TransferWords(string word) {
+                List<string> NextWords(string word) {
                     var res = new List<string>();
                     foreach (var candidateWord in wordList) {
                         int notMatch = 0;
@@ -2837,13 +2837,13 @@ namespace FuckingAlgorithm {
                     int cnt = path.Count;
                     for (int i = 0; i < cnt; i++) {
                         var word = path.Dequeue();
-                        var transferWords = TransferWords(word.Key);
-                        foreach (var transferWord in transferWords) {
-                            if (transferWord == endWord) {
+                        var nextWords = NextWords(word.Key);
+                        foreach (var nextWord in nextWords) {
+                            if (nextWord == endWord) {
                                 return word.Value + 1;
                             }
-                            wordList.Remove(transferWord);
-                            path.Enqueue(new KeyValuePair<string, int>(transferWord, word.Value + 1));
+                            wordList.Remove(nextWord);
+                            path.Enqueue(new KeyValuePair<string, int>(nextWord, word.Value + 1));
                         }
                     }
                 }
