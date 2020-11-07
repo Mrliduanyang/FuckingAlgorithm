@@ -1208,7 +1208,7 @@ namespace FuckingAlgorithm {
                     fast = fast.next;
                 }
                 // fast断开和后面的连接。
-                fast.next = null;
+                slow.next = null;
                 return head;
             }
 
@@ -2936,6 +2936,63 @@ namespace FuckingAlgorithm {
                 }
                 return 0;
             }
+
+            public int RemoveDuplicates_1(int[] nums) {
+                int n = nums.Length;
+                if (n == 0) return 0;
+                int slow = 0, fast = 1;
+                int count = 1;
+                while (fast < n) {
+                    if (nums[fast] == nums[fast - 1]) {
+                        count++;
+                    } else {
+                        count = 1;
+                    }
+                    if (count <= 2) {
+                        slow++;
+                        nums[slow] = nums[fast];
+                    }
+                    fast++;
+                }
+                return slow + 1;
+            }
+
+            public ListNode DeleteDuplicates_1(ListNode head) {
+                if (head == null || head.next == null) return head;
+                var slow = head;
+                var fast = head.next;
+
+                while (fast != null) {
+                    if (slow.val == fast.val) {
+                        // 如果fast 和 slow相等，fast前进
+                        fast = fast.next;
+                    } else {
+                        // 如果fast 和 slow 不等，都要前进
+                        slow.next = fast;
+                        slow = slow.next;
+                        fast = fast.next;
+                    }
+                }
+                slow.next = null;
+                return head;
+            }
+
+            // public ListNode DeleteDuplicates_2(ListNode head) {
+            //     if (head == null || head.next == null) return head;
+            //     var slow = head;
+            //     var fast = head.next;
+
+            //     while (fast != null) {
+            //         if (slow.val != fast.val) {
+            //             if (fast.val != fast.next.val) {
+            //                 slow = slow.next;
+            //             }
+            //         }
+                    
+            //     }
+            //     slow.next = null;
+            //     return head;
+            // }
         }
 
         public class DataStructure {
