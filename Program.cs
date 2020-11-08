@@ -139,17 +139,12 @@ namespace FuckingAlgorithm {
             }
 
             public int MaxSubArray(int[] nums) {
-                if (nums.Length == 0) {
-                    return 0;
+                int pre = 0, maxAns = nums[0];
+                foreach (int x in nums) {
+                    pre = Math.Max(pre + x, x);
+                    maxAns = Math.Max(maxAns, pre);
                 }
-                // base第1个元素前面没有子数组，其本身就是最大
-                int[] dp = new int[nums.Length];
-                // 状态转移，元素nums[i]要么自己最大，要么和前面的子数组连起来后最大
-                for (int i = 1; i < nums.Length; i++) {
-                    dp[i] = Math.Max(nums[i], nums[i] + dp[i - 1]);
-                }
-                Array.Sort(dp);
-                return dp[dp.Length - 1];
+                return maxAns;
             }
 
             public bool CanPartition(int[] nums) {
@@ -1213,7 +1208,7 @@ namespace FuckingAlgorithm {
                     fast = fast.next;
                 }
                 // fast断开和后面的连接。
-                fast.next = null;
+                slow.next = null;
                 return head;
             }
 
@@ -2809,6 +2804,98 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            public int[] SortByBits(int[] arr) {
+                // 统计每个数中1的个数，如果个数不等，按照1的个数比较，如果相等，按照原数比较。
+                int BitCount(int v) {
+                    int res = 0;
+                    while (v > 0) {
+                        // 与1做与运算，如果==1，说明最后有一位1，否则是0
+                        if ((v & 1) == 1) res++;
+                        // 右移一位
+                        v >>= 1;
+                    }
+                    return res;
+                }
+                if (arr == null || arr.Length <= 0) return arr;
+
+                Array.Sort(arr, (x, y) => {
+                    var v1 = BitCount(x);
+                    var v2 = BitCount(y);
+                    return (v1 == v2) ? x.CompareTo(y) : v1.CompareTo(v2);
+
+                });
+                return arr;
+            }
+
+            public List<int> SpiralOrder(int[][] matrix) {
+                var res = new List<int>();
+                int m = matrix.Length;
+                if (m == 0) {
+                    return res;
+                }
+                int n = matrix[0].Length;
+                // 遍历完一行或者一列后，修改上下左右边界
+                int top = 0, bottom = m - 1, left = 0, right = n - 1;
+                while (left <= right && top <= bottom) {
+                    // 遍历顶
+                    for (int j = left; j <= right; j++) {
+                        res.Add(matrix[top][j]);
+                    }
+                    top++;
+                    // 遍历右
+                    for (int i = top; i <= bottom; i++) {
+                        res.Add(matrix[i][right]);
+                    }
+                    right--;
+                    // 遍历底
+                    for (int j = right; j >= left; j--) {
+                        res.Add(matrix[bottom][j]);
+                    }
+                    bottom--;
+                    // 遍历左
+                    for (int i = bottom; i >= top; i--) {
+                        res.Add(matrix[i][left]);
+                    }
+                    left++;
+                }
+                return res.GetRange(0, m * n);
+            }
+
+            public int MySqrt(int x) {
+                if (x == 0) {
+                    return 0;
+                }
+                int ans = (int) Math.Exp(0.5 * Math.Log(x));
+                // 浮点数取整可能出现错误
+                return (long) (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
+            }
+
+            public string SimplifyPath(string path) {
+                var stack = new Stack<string>();
+                var paths = path.Split("/");
+                foreach (var item in paths) {
+                    if (item == "") {
+                        continue;
+                    } else if (item == "..") {
+                        if (stack.Count > 0) {
+                            stack.Pop();
+                        }
+                    } else if (item != ".") {
+                        stack.Push(item);
+                    }
+                }
+                if (stack.Count > 0) {
+                    var res = new List<string>();
+                    while (stack.Count != 0) {
+                        res.Insert(0, stack.Pop());
+                        res.Insert(0, "/");
+                    }
+                    return string.Join("", res);
+                } else {
+                    return "/";
+                }
+            }
+
             public int LadderLength(string beginWord, string endWord, List<string> wordList) {
                 if (!wordList.Contains(endWord)) return 0;
 
@@ -2849,7 +2936,67 @@ namespace FuckingAlgorithm {
                 }
                 return 0;
             }
+<<<<<<< HEAD
             // commit something
+=======
+
+            public int RemoveDuplicates_1(int[] nums) {
+                int n = nums.Length;
+                if (n == 0) return 0;
+                int slow = 0, fast = 1;
+                int count = 1;
+                while (fast < n) {
+                    if (nums[fast] == nums[fast - 1]) {
+                        count++;
+                    } else {
+                        count = 1;
+                    }
+                    if (count <= 2) {
+                        slow++;
+                        nums[slow] = nums[fast];
+                    }
+                    fast++;
+                }
+                return slow + 1;
+            }
+
+            public ListNode DeleteDuplicates_1(ListNode head) {
+                if (head == null || head.next == null) return head;
+                var slow = head;
+                var fast = head.next;
+
+                while (fast != null) {
+                    if (slow.val == fast.val) {
+                        // 如果fast 和 slow相等，fast前进
+                        fast = fast.next;
+                    } else {
+                        // 如果fast 和 slow 不等，都要前进
+                        slow.next = fast;
+                        slow = slow.next;
+                        fast = fast.next;
+                    }
+                }
+                slow.next = null;
+                return head;
+            }
+
+            // public ListNode DeleteDuplicates_2(ListNode head) {
+            //     if (head == null || head.next == null) return head;
+            //     var slow = head;
+            //     var fast = head.next;
+
+            //     while (fast != null) {
+            //         if (slow.val != fast.val) {
+            //             if (fast.val != fast.next.val) {
+            //                 slow = slow.next;
+            //             }
+            //         }
+                    
+            //     }
+            //     slow.next = null;
+            //     return head;
+            // }
+>>>>>>> fd662c0afba8946df696b516f4012124c1b0550c
         }
 
         public class DataStructure {
