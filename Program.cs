@@ -3017,20 +3017,7 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            var algorithm = new Algorithm(); <<
-            <<
-            <<
-            <
-            HEAD
-            System.Console.WriteLine(algorithm.FindTargetSumWays(new int[] { 1, 1, 1, 1, 1 }, 3)); ==
-            ==
-            ==
-            =
-            System.Console.WriteLine(algorithm.ValidMountainArray(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 })); >>
-            >>
-            >>
-            >
-            244e d0f54d24278c77d646165ff2a5afe2c44dde
+            var algorithm = new Algorithm();
         }
     }
 }
