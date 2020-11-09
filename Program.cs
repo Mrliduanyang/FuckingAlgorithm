@@ -2936,9 +2936,6 @@ namespace FuckingAlgorithm {
                 }
                 return 0;
             }
-<<<<<<< HEAD
-            // commit something
-=======
 
             public int RemoveDuplicates_1(int[] nums) {
                 int n = nums.Length;
@@ -2980,23 +2977,33 @@ namespace FuckingAlgorithm {
                 return head;
             }
 
-            // public ListNode DeleteDuplicates_2(ListNode head) {
-            //     if (head == null || head.next == null) return head;
-            //     var slow = head;
-            //     var fast = head.next;
+            public int[][] KClosest(int[][] points, int K) {
+                Array.Sort(points, (a, b) => (a[0] * a[0] + a[1] * a[1]) - (b[0] * b[0] + b[1] * b[1]));
+                return points.Take(K).ToArray();
+            }
 
-            //     while (fast != null) {
-            //         if (slow.val != fast.val) {
-            //             if (fast.val != fast.next.val) {
-            //                 slow = slow.next;
-            //             }
-            //         }
-                    
-            //     }
-            //     slow.next = null;
-            //     return head;
-            // }
->>>>>>> fd662c0afba8946df696b516f4012124c1b0550c
+            public ListNode Partition(ListNode head, int x) {
+                if (head == null || head.next == null) {
+                    return head;
+                }
+                var beforeHead = new ListNode();
+                var afterHead = new ListNode();
+                var before = beforeHead;
+                var after = afterHead;
+                while (head != null) {
+                    if(head.val < x){
+                        before.next = head;
+                        before = before.next;
+                    }else{
+                        after.next = head;
+                        after = after.next;
+                    }
+                    head = head.next;
+                }
+                after.next = null;
+                before.next = afterHead.next;
+                return beforeHead.next;
+            }
         }
 
         public class DataStructure {
@@ -3165,6 +3172,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.KClosest(new int[][] {
+                new int[] { 3, 3 },
+                    new int[] { 5, -1 },
+                    new int[] {-2, 4 },
+            }, 2);
         }
     }
 }
