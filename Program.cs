@@ -1300,17 +1300,7 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
-            // 快速排序可以理解为二叉树的前序遍历，归并排序可以理解为二叉树的后序遍历。
-            // public class TreeNode {
-            //     public int val;
-            //     public TreeNode left;
-            //     public TreeNode right;
-            //     public TreeNode next;
 
-            //     public TreeNode(int _val) {
-            //         val = _val;
-            //     }
-            // }
             public TreeNode Connect(TreeNode root) {
                 // 将相邻的两个节点连接起来。
                 void Helper(TreeNode node1, TreeNode node2) {
@@ -2991,10 +2981,10 @@ namespace FuckingAlgorithm {
                 var before = beforeHead;
                 var after = afterHead;
                 while (head != null) {
-                    if(head.val < x){
+                    if (head.val < x) {
                         before.next = head;
                         before = before.next;
-                    }else{
+                    } else {
                         after.next = head;
                         after = after.next;
                     }
@@ -3004,6 +2994,29 @@ namespace FuckingAlgorithm {
                 before.next = afterHead.next;
                 return beforeHead.next;
             }
+
+            public int LengthOfLongestSubstring(string s) {
+                var window = new Dictionary<char, int>();
+                int left = 0, right = 0;
+                int res = 0;
+                while (right < s.Length) {
+                    var ch = s[right];
+                    right++;
+                    if (window.ContainsKey(ch)) {
+                        window[ch]++;
+                    } else {
+                        window[ch] = 1;
+                    }
+                    while (window[ch] > 1) {
+                        var tmp = s[left];
+                        left++;
+                        window[tmp]--;
+                    }
+                    res = Math.Max(res, right - left);
+                }
+                return res;
+            }
+
         }
 
         public class DataStructure {
@@ -3172,11 +3185,9 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.KClosest(new int[][] {
-                new int[] { 3, 3 },
-                    new int[] { 5, -1 },
-                    new int[] {-2, 4 },
-            }, 2);
+            algorithm.ThreeSum(new int[] {
+                -1, 0, 1, 2, -1, -4
+            });
         }
     }
 }
