@@ -3017,6 +3017,83 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            public void NextPermutation(int[] nums) {
+                void Swap(int i, int j) {
+                    int tmp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = tmp;
+                }
+                int i = nums.Length - 2;
+                while (i >= 0 && nums[i] >= nums[i + 1]) {
+                    i--;
+                }
+                if (i >= 0) {
+                    int j = nums.Length - 1;
+                    while (j >= 0 && nums[i] >= nums[j]) {
+                        j--;
+                    }
+                    Swap(i, j);
+                }
+                Array.Reverse(nums, i + 1, nums.Length - i - 1);
+            }
+
+            public string Convert(string s, int numRows) {
+                if (numRows == 1) return s;
+
+                var res = new List<List<char>>();
+                for (int i = 0; i < Math.Min(s.Length, numRows); i++) {
+                    res.Add(new List<char>());
+                }
+
+                int currRow = 0;
+                bool goDown = false;
+                for (int i = 0; i < s.Length; i++) {
+                    res[currRow].Add(s[i]);
+                    if (currRow == 0 || currRow == numRows - 1) goDown = !goDown;
+                    currRow += goDown ? 1 : -1;
+                }
+                return string.Join("", res.Select(item => string.Join("", item)).ToList());
+            }
+
+            public ListNode RemoveNthFromEnd(ListNode head, int n) {
+                var dummy = new ListNode();
+                dummy.next = head;
+                var slow = dummy;
+                var fast = dummy;
+                int i = 0;
+                // fast走n+1步，可以保证slow在待删除节点的前面
+                while (i <= n) {
+                    fast = fast.next;
+                    i++;
+                }
+                while (fast != null) {
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+                var tmp = slow.next;
+                slow.next = tmp.next;
+                return dummy.next;
+            }
+
+            public int ThreeSumClosest(int[] nums, int target) {
+                Array.Sort(nums);
+                int ans = nums[0] + nums[1] + nums[2];
+                for (int i = 0; i < nums.Length; i++) {
+                    int start = i + 1, end = nums.Length - 1;
+                    while (start < end) {
+                        int sum = nums[start] + nums[end] + nums[i];
+                        if (Math.Abs(target - sum) < Math.Abs(target - ans))
+                            ans = sum;
+                        if (sum > target)
+                            end--;
+                        else if (sum < target)
+                            start++;
+                        else
+                            return ans;
+                    }
+                }
+                return ans;
+            }
         }
 
         public class DataStructure {
@@ -3182,12 +3259,38 @@ namespace FuckingAlgorithm {
                     return nums[random.Next(nums.Count)];
                 }
             }
+
+            public class MinStack {
+                Stack<int> stack;
+                Stack<int> minStack;
+                public MinStack() {
+                    stack = new Stack<int>();
+                    minStack = new Stack<int>();
+                    minStack.Push(int.MaxValue);
+                }
+
+                public void Push(int x) {
+                    stack.Push(x);
+                    minStack.Push(Math.Min(x, minStack.Peek()));
+                }
+
+                public void Pop() {
+                    stack.Pop();
+                    minStack.Pop();
+                }
+
+                public int Top() {
+                    return stack.Peek();
+                }
+
+                public int GetMin() {
+                    return minStack.Peek();
+                }
+            }
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.ThreeSum(new int[] {
-                -1, 0, 1, 2, -1, -4
-            });
+            algorithm.Convert("liduanyang", 3);
         }
     }
 }
