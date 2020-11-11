@@ -3094,6 +3094,45 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
+
+            public int SearchInsert(int[] nums, int target) {
+                int left = 0, right = nums.Length - 1;
+                int mid;
+                while (left <= right) {
+                    mid = left + (right - left) / 2;
+                    if (nums[mid] > target) {
+                        right = mid - 1;
+                    } else if (nums[mid] < target) {
+                        left = mid + 1;
+                    } else {
+                        return mid;
+                    }
+                }
+                return left;
+            }
+
+            public bool IsValidSudoku(char[][] board) {
+                var rows = new int[9, 9];
+                var cols = new int[9, 9];
+                var blocks = new int[9, 9];
+
+                for (int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 9; j++) {
+                        if (board[i][j] != '.') {
+                            var ele = int.Parse(board[i][j].ToString()) - 1;
+                            int k = (i / 3) * 3 + j / 3;
+                            if ((rows[i, ele] == 0) && (cols[j, ele] == 0) && (blocks[k, ele] == 0)) {
+                                rows[i, ele]++;
+                                cols[j, ele]++;
+                                blocks[k, ele]++;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
         }
 
         public class DataStructure {
@@ -3290,7 +3329,18 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Convert("liduanyang", 3);
+            var data = new char[][] {
+                new char[] { '5', '3', '.', '.', '7', '.', '.', '.', '.' },
+                new char[] { '6', '.', '.', '1', '9', '5', '.', '.', '.' },
+                new char[] { '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+                new char[] { '8', '.', '.', '.', '6', '.', '.', '.', '3' },
+                new char[] { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+                new char[] { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+                new char[] { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+                new char[] { '.', '.', '.', '4', '1', '9', '.', '.', '5' },
+                new char[] { '.', '.', '.', '.', '8', '.', '.', '7', '9' }
+            };
+            System.Console.WriteLine(algorithm.IsValidSudoku(data));
         }
     }
 }
