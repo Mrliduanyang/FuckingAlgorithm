@@ -912,6 +912,7 @@ namespace FuckingAlgorithm {
             }
 
             public string Multiply(string num1, string num2) {
+                if (num1 == "0" || num2 == "0") return "0";
                 int m = num1.Length, n = num2.Length;
                 int[] res = new int[m + n];
                 for (int i = m - 1; i >= 0; i--) {
@@ -925,7 +926,7 @@ namespace FuckingAlgorithm {
                         // 本位结果
                         res[p2] = sum % 10;
                         // 进位结果
-                        res[p1] = sum / 10;
+                        res[p1] += sum / 10;
                     }
                 }
                 return string.Join("", res).TrimStart('0');
@@ -3133,6 +3134,63 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
+
+            public int[] SortArrayByParityII(int[] A) {
+                int n = A.Length;
+                if (n == 0) {
+                    return new int[] { };
+                }
+                var odd = new List<int>();
+                var even = new List<int>();
+                var res = new List<int>();
+                foreach (var num in A) {
+                    if (num % 2 == 0) {
+                        even.Add(num);
+                    } else {
+                        odd.Add(num);
+                    }
+                }
+                for (int i = 0; i < n / 2; i++) {
+                    res.Add(even[i]);
+                    res.Add(odd[i]);
+                }
+                return res.ToArray();
+            }
+
+            public void Rotate(int[][] matrix) {
+                // matrix[i,j] -> matrix[k=j,n-i]
+                int n = matrix.Length;
+                for (int i = 0; i < n; i++) {
+                    for (int j = i; j < n; j++) {
+                        int tmp = matrix[i][j];
+                        matrix[i][j] = matrix[j][i];
+                        matrix[j][i] = tmp;
+                    }
+                }
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < n / 2; j++) {
+                        int tmp = matrix[i][j];
+                        matrix[i][j] = matrix[i][n - 1 - j];
+                        matrix[i][n - 1 - j] = tmp;
+                    }
+                }
+            }
+
+            public List<List<string>> GroupAnagrams(string[] strs) {
+                if (strs.Length == 0) {
+                    return new List<List<string>>();
+                }
+                var res = new Dictionary<string, List<string>>();
+
+                for (int i = 0; i < strs.Length; i++) {
+                    var tmp = string.Join("", strs[i].OrderBy(x => x));
+                    if (!res.ContainsKey(tmp)) {
+                        res[tmp] = new List<string>();
+                    }
+                    res[tmp].Add(strs[i]);
+                }
+                return res.Values.ToList();
+            }
         }
 
         public class DataStructure {
@@ -3329,18 +3387,14 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            var data = new char[][] {
-                new char[] { '5', '3', '.', '.', '7', '.', '.', '.', '.' },
-                new char[] { '6', '.', '.', '1', '9', '5', '.', '.', '.' },
-                new char[] { '.', '9', '8', '.', '.', '.', '.', '6', '.' },
-                new char[] { '8', '.', '.', '.', '6', '.', '.', '.', '3' },
-                new char[] { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
-                new char[] { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
-                new char[] { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
-                new char[] { '.', '.', '.', '4', '1', '9', '.', '.', '5' },
-                new char[] { '.', '.', '.', '.', '8', '.', '.', '7', '9' }
-            };
-            System.Console.WriteLine(algorithm.IsValidSudoku(data));
+            algorithm.GroupAnagrams(new string[] {
+                "eat",
+                "tea",
+                "tan",
+                "ate",
+                "nat",
+                "bat"
+            });
         }
     }
 }
