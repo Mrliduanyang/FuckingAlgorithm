@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace FuckingAlgorithm {
     public class Program {
@@ -3208,6 +3209,51 @@ namespace FuckingAlgorithm {
                 return head;
             }
 
+            public string CountAndSay(int n) {
+                List<string> res = new List<string>();
+                res.Add("1");
+                for (int i = 1; i < n; ++i) {
+                    var tmp = new StringBuilder();
+                    int k = 0;
+                    int j = 0;
+                    int count = 0;
+                    while (j < res[i - 1].Length) {
+                        if (res[i - 1][k] == res[i - 1][j]) {
+                            count++;
+                            j++;
+                        } else {
+                            tmp.Append(count);
+                            tmp.Append(res[i - 1][k]);
+                            k = j;
+                            count = 0;
+                        }
+                    }
+                    tmp.Append(count);
+                    tmp.Append(res[i - 1][k]);
+                    res.Add(tmp.ToString());
+                }
+                return res.Last();
+            }
+
+            public bool SearchMatrix(int[][] matrix, int target) {
+                int m = matrix.Length;
+                if (m == 0) return false;
+                int n = matrix[0].Length;
+
+                int left = 0, right = m * n - 1;
+                int pivotIdx, pivotValue;
+                while (left <= right) {
+                    pivotIdx = (left + right) / 2;
+                    pivotValue = matrix[pivotIdx / n][pivotIdx % n];
+                    if (target == pivotValue) {
+                        return true;
+                    } else {
+                        if (target < pivotValue) right = pivotIdx - 1;
+                        else left = pivotIdx + 1;
+                    }
+                }
+                return false;
+            }
         }
 
         public class DataStructure {
@@ -3404,14 +3450,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.GroupAnagrams(new string[] {
-                "eat",
-                "tea",
-                "tan",
-                "ate",
-                "nat",
-                "bat"
-            });
+            algorithm.CountAndSay(10);
         }
     }
 }
