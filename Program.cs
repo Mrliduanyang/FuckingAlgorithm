@@ -3254,6 +3254,42 @@ namespace FuckingAlgorithm {
                 }
                 return false;
             }
+
+            public int[] RelativeSortArray(int[] arr1, int[] arr2) {
+                int upper = arr1.Max();
+                int[] frequency = new int[upper + 1];
+                foreach (var x in arr1) {
+                    frequency[x]++;
+                }
+                int[] ans = new int[arr1.Length];
+                int index = 0;
+                foreach (var x in arr2) {
+                    for (int i = 0; i < frequency[x]; ++i) {
+                        ans[index++] = x;
+                    }
+                    frequency[x] = 0;
+                }
+                for (int x = 0; x <= upper; ++x) {
+                    for (int i = 0; i < frequency[x]; ++i) {
+                        ans[index++] = x;
+                    }
+                }
+                return ans;
+            }
+
+            public int LengthOfLastWord(string s) {
+                int lenght = 0;
+                int i = s.Length - 1;
+                while (i >= 0 && (s[i] != ' ' || i == s.Length - 1 || (i < s.Length - 1 && s[i + 1] == ' '))) {
+                    if (s[i] != ' ') {
+                        lenght++;
+                        i--;
+                    } else {
+                        i--;
+                    }
+                }
+                return lenght;
+            }
         }
 
         public class DataStructure {
