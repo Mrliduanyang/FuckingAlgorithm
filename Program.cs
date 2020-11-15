@@ -3290,6 +3290,111 @@ namespace FuckingAlgorithm {
                 }
                 return lenght;
             }
+
+            public ListNode DeleteDuplicates_2(ListNode head) {
+                var dummy = new ListNode();
+                dummy.next = head;
+                var slow = dummy;
+                var fast = head;
+                while (fast != null && fast.next != null) {
+                    if (slow.next.val != fast.next.val) {
+                        slow = slow.next;
+                        fast = fast.next;
+                    } else {
+                        while (fast.next != null && fast.val == fast.next.val) {
+                            fast = fast.next;
+                        }
+                        fast = fast.next;
+                        slow.next = fast;
+                    }
+                }
+                return dummy.next;
+            }
+
+            public string RemoveKdigits(string num, int k) {
+                var deque = new List<char>();
+                foreach (var item in num) {
+                    while (deque.Count != 0 && k > 0 && deque.Last() > item) {
+                        deque.RemoveAt(deque.Count - 1);
+                        k--;
+                    }
+                    deque.Add(item);
+                }
+                for (int i = 0; i < k; i++) {
+                    deque.RemoveAt(deque.Count - 1);
+                }
+                var res = string.Join("", deque).TrimStart('0');
+                return res.Length == 0 ? "0" : res;
+            }
+
+            public int[] NextGreaterElement(int[] nums1, int[] nums2) {
+                var dict = new Dictionary<int, int>();
+                var stack = new Stack<int>();
+                var res = new int[nums1.Length];
+                int n = nums2.Length;
+                for (int i = n - 1; i >= 0; i--) {
+                    while (stack.Count != 0 && stack.Peek() <= nums2[i]) {
+                        stack.Pop();
+                    }
+                    dict[nums2[i]] = stack.Count == 0 ? -1 : stack.Peek();
+                    stack.Push(nums2[i]);
+                }
+                for (int i = 0; i < nums1.Length; i++) {
+                    res[i] = dict[nums1[i]];
+                }
+                return res;
+            }
+
+            public ListNode ReverseBetween(ListNode head, int m, int n) {
+                ListNode successor = null;
+                ListNode helper(ListNode node, int n) {
+                    if (n == 1) {
+                        successor = node?.next;
+                        return node;
+                    }
+                    var last = helper(node.next, n - 1);
+                    node.next.next = node;
+                    node.next = successor;
+                    return last;
+                }
+                var dummy = new ListNode();
+                dummy.next = head;
+                var begin = dummy;
+                for (int i = 1; i < m; i++) {
+                    begin = begin.next;
+                }
+
+                begin.next = helper(begin.next, n - m + 1);
+                return dummy.next;
+            }
+
+            public ListNode ReverseList(ListNode head) {
+                ListNode helper(ListNode node) {
+                    if (node.next == null) {
+                        return node;
+                    }
+                    var last = helper(node.next);
+                    node.next.next = node;
+                    node.next = null;
+                    return last;
+                }
+                return head == null ? head : helper(head);
+            }
+
+            public void Merge(int[] nums1, int m, int[] nums2, int n) {
+                var tmp = new int[m];
+                Array.Copy(nums1, tmp, m);
+                int i = 0, j = 0, k = 0;
+                while (i < m && j < n) {
+                    nums1[k++] = tmp[i] <= nums2[j] ? tmp[i++] : nums2[j++];
+                }
+                if (i < m) {
+                    Array.Copy(tmp, i, nums1, i + j, m + n - i - j);
+                }
+                if (j < n) {
+                    Array.Copy(nums2, j, nums1, i + j, m + n - i - j);
+                }
+            }
         }
 
         public class DataStructure {
@@ -3486,7 +3591,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.CountAndSay(10);
+            algorithm.RemoveKdigits("10200", 2);
         }
     }
 }
