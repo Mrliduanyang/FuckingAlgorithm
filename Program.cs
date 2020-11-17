@@ -3468,6 +3468,94 @@ namespace FuckingAlgorithm {
                 }
                 return Helper(head, null);
             }
+
+            public List<List<int>> Generate(int numRows) {
+                var res = new List<List<int>>();
+                if (numRows == 0) {
+                    return res;
+                }
+                res.Add(new List<int> { 1 });
+                for (int i = 1; i < numRows; i++) {
+                    var row = new List<int>();
+                    row.Add(1);
+                    for (int j = 1; j < i; j++) {
+                        row.Add(res[i - 1][j - 1] + res[i - 1][j]);
+                    }
+                    row.Add(1);
+                    res.Add(row);
+                }
+                return res;
+            }
+
+            public int[][] AllCellsDistOrder(int R, int C, int r0, int c0) {
+                if (R == 0 || C == 0) {
+                    return new int[0][] { };
+                };
+                var res = new List<int[]>();
+                var queue = new Queue<int[]>();
+                var vis = new Dictionary<string, bool>();
+                // 搜索上下左右的常用技巧
+                int[] dx = { 0, 1, 0, -1 };
+                int[] dy = { 1, 0, -1, 0 };
+                queue.Enqueue(new int[] { r0, c0 });
+                vis[$"{r0},{c0}"] = true;
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    for (int i = 0; i < count; i++) {
+                        var cur = queue.Dequeue();
+                        res.Add(cur);
+                        for (int k = 0; k < 4; k++) {
+                            int tx = cur[0] + dx[k];
+                            int ty = cur[1] + dy[k];
+                            if (tx >= 0 && tx < R && ty >= 0 && ty < C) {
+                                var tmp = new int[] { tx, ty };
+                                var pos = string.Join(",", tmp);
+                                if (!vis.ContainsKey(pos)) {
+                                    queue.Enqueue(tmp);
+                                    vis[pos] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return res.ToArray();
+            }
+
+            public List<int> GetRow(int rowIndex) {
+                if (rowIndex < 0) {
+                    return new List<int>();
+                }
+                if (rowIndex == 0) {
+                    return new List<int> { 1 };
+                }
+                var res = new List<int> { 1, 1 };
+                for (int i = 0; i <= rowIndex; i++) {
+                    var row = new List<int>();
+                    row.Add(1);
+                    for (int j = 1; j < i; j++) {
+                        row.Add(res[j - 1] + res[j]);
+                    }
+                    row.Add(1);
+                    res = row;
+                }
+                return res;
+            }
+
+            public int CanCompleteCircuit(int[] gas, int[] cost) {
+                int n = gas.Length;
+                int totalGas = 0;
+                int curGas = 0;
+                int startIdx = 0;
+                for (int i = 0; i < n; i++) {
+                    totalGas += gas[i] - cost[i];
+                    curGas += gas[i] - cost[i];
+                    if (curGas < 0) {
+                        startIdx = i + 1;
+                        curGas = 0;
+                    }
+                }
+                return totalGas >= 0 ? startIdx : -1;
+            }
         }
 
         public class DataStructure {
@@ -3664,7 +3752,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.RemoveKdigits("10200", 2);
+            algorithm.GetRow(2);
         }
     }
 }
