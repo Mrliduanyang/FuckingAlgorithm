@@ -3347,12 +3347,12 @@ namespace FuckingAlgorithm {
 
             public ListNode ReverseBetween(ListNode head, int m, int n) {
                 ListNode successor = null;
-                ListNode helper(ListNode node, int n) {
+                ListNode Helper(ListNode node, int n) {
                     if (n == 1) {
                         successor = node?.next;
                         return node;
                     }
-                    var last = helper(node.next, n - 1);
+                    var last = Helper(node.next, n - 1);
                     node.next.next = node;
                     node.next = successor;
                     return last;
@@ -3364,21 +3364,21 @@ namespace FuckingAlgorithm {
                     begin = begin.next;
                 }
 
-                begin.next = helper(begin.next, n - m + 1);
+                begin.next = Helper(begin.next, n - m + 1);
                 return dummy.next;
             }
 
             public ListNode ReverseList(ListNode head) {
-                ListNode helper(ListNode node) {
+                ListNode Helper(ListNode node) {
                     if (node.next == null) {
                         return node;
                     }
-                    var last = helper(node.next);
+                    var last = Helper(node.next);
                     node.next.next = node;
                     node.next = null;
                     return last;
                 }
-                return head == null ? head : helper(head);
+                return head == null ? head : Helper(head);
             }
 
             public void Merge(int[] nums1, int m, int[] nums2, int n) {
@@ -3394,6 +3394,79 @@ namespace FuckingAlgorithm {
                 if (j < n) {
                     Array.Copy(nums2, j, nums1, i + j, m + n - i - j);
                 }
+            }
+
+            public int[][] ReconstructQueue(int[][] people) {
+                Array.Sort(people, (x, y) => {
+                    return x[0] == y[0] ? x[1] - y[1] : y[0] - x[0];
+                });
+
+                List<int[]> ans = new List<int[]>();
+                foreach (int[] i in people) {
+                    ans.Insert(i[1], i);
+                }
+                return ans.ToArray();
+            }
+
+            public bool IsBalanced(TreeNode root) {
+                // 计算子树高度
+                int GetHeight(TreeNode root) {
+                    if (root == null) {
+                        return 0;
+                    }
+                    return Math.Max(GetHeight(root.left), GetHeight(root.right)) + 1;
+                }
+                bool Helper(TreeNode root) {
+                    if (root == null) {
+                        return true;
+                    } else {
+                        return Math.Abs(GetHeight(root.left) - GetHeight(root.right)) <= 1 && IsBalanced(root.left) && IsBalanced(root.right);
+                    }
+                }
+                return Helper(root);
+            }
+
+            public int MinDepth(TreeNode root) {
+                if (root == null) {
+                    return 0;
+                }
+                if (root.left == null && root.right == null) {
+                    return 1;
+                }
+
+                int minDepth = int.MaxValue;
+                // 必须得在left，right不为null的时候才能计算左右子树的最小高度，否则会返回1
+                if (root.left != null) {
+                    minDepth = Math.Min(MinDepth(root.left), minDepth);
+                }
+                if (root.right != null) {
+                    minDepth = Math.Min(MinDepth(root.right), minDepth);
+                }
+                return minDepth + 1;
+            }
+
+            public TreeNode SortedListToBST(ListNode head) {
+                ListNode GetMedian(ListNode left, ListNode right) {
+                    var slow = left;
+                    var fast = left;
+                    while (fast != right && fast.next != right) {
+                        left = left.next;
+                        fast = fast.next;
+                        fast = fast.next;
+                    }
+                    return left;
+                }
+                TreeNode Helper(ListNode left, ListNode right) {
+                    if (left == right) {
+                        return null;
+                    }
+                    var mid = GetMedian(left, right);
+                    var root = new TreeNode(mid.val);
+                    root.left = Helper(left, mid);
+                    root.right = Helper(mid.next, right);
+                    return root;
+                }
+                return Helper(head, null);
             }
         }
 
