@@ -3556,6 +3556,36 @@ namespace FuckingAlgorithm {
                 }
                 return totalGas >= 0 ? startIdx : -1;
             }
+
+            public bool IsPalindrome(string s) {
+                var sgood = new StringBuilder();
+                foreach (var ch in s) {
+                    if (char.IsLetterOrDigit(ch)) {
+                        sgood.Append(ch);
+                    }
+                }
+                int left = 0, right = sgood.Length - 1;
+                while (left < right) {
+                    if (char.ToLower(sgood[left]) != char.ToLower(sgood[right])) {
+                        return false;
+                    }
+                    ++left;
+                    --right;
+                }
+                return true;
+            }
+
+            public int SingleNumber(int[] nums) {
+                var set = new SortedSet<int>(nums);
+                long setSum = 0, numsSum = 0;
+                foreach (var num in nums) {
+                    numsSum += num;
+                }
+                foreach (var num in set) {
+                    setSum += num;
+                }
+                return (int) ((3 * setSum - numsSum) / 2);
+            }
         }
 
         public class DataStructure {
@@ -3752,7 +3782,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.GetRow(2);
+            algorithm.IsPalindrome("");
         }
     }
 }
