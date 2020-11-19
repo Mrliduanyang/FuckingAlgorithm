@@ -3586,6 +3586,21 @@ namespace FuckingAlgorithm {
                 }
                 return (int) ((3 * setSum - numsSum) / 2);
             }
+
+            public void MoveZeroes(int[] nums) {
+                int slow = -1, fast = 0;
+                while (slow <= fast && fast <= nums.Length - 1) {
+                    if (nums[fast] == 0) {
+                        fast++;
+                    } else {
+                        slow++;
+                        int tmp = nums[slow];
+                        nums[slow] = nums[fast];
+                        nums[fast] = tmp;
+                        fast++;
+                    }
+                }
+            }
         }
 
         public class DataStructure {
@@ -3782,7 +3797,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.IsPalindrome("");
+            algorithm.MoveZeroes(new int[]{0,1,0,3,12});
         }
     }
 }
