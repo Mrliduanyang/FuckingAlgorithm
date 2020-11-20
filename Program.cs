@@ -356,24 +356,13 @@ namespace FuckingAlgorithm {
             }
 
             public int MaxProfit_1(int[] prices) {
-                // 交易次数k=1
                 int n = prices.Length;
-                int[, ] dp = new int[n, 2];
-                // dp定义为第i天持有/未持有股票的收益
-                // base dp[-1, 0] = 0，还没开始交易，利润是0 dp[-1, 1] = -prices[i]，没开始交易，不可能持有股票
-                // 
+                int dp_i_0 = 0, dp_i_1 = int.MinValue;
                 for (int i = 0; i < n; i++) {
-                    if (i - 1 == -1) {
-                        dp[i, 0] = 0;
-                        dp[i, 1] = -prices[i];
-                        continue;
-                    }
-                    // 第i天未持有股票，可能是i-1天就未持有，也可能是i-1天持有股票，然后卖了
-                    dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
-                    // 第i天持有股票，可能是i-1天就持有，也可能是i-1天未持有，但买入了，因为只交易一次，所以收益直接-prices[i]
-                    dp[i, 1] = Math.Max(dp[i - 1, 1], -prices[i]);
+                    dp_i_0 = Math.Max(dp_i_0, dp_i_1 + prices[i]);
+                    dp_i_1 = Math.Max(dp_i_1, -prices[i]);
                 }
-                return dp[n - 1, 0];
+                return dp_i_0;
             }
 
             public int MaxProfit_2(int[] prices) {
@@ -459,8 +448,14 @@ namespace FuckingAlgorithm {
             }
 
             public class ListNode {
-                public char val;
+                public int val;
                 public ListNode next;
+
+                public ListNode() { }
+
+                public ListNode(int _val) {
+                    val = _val;
+                }
             }
 
             public bool IsPalindrome(ListNode head) {
@@ -3601,6 +3596,90 @@ namespace FuckingAlgorithm {
                     }
                 }
             }
+
+            public ListNode SortList(ListNode head) {
+                if (head == null || head.next == null) {
+                    return head;
+                }
+
+                ListNode Cut(ListNode head, int n) {
+                    while (head != null && n > 1) {
+                        head = head.next;
+                        n--;
+                    }
+                    if (head == null) { return null; }
+                    var res = head.next;
+                    head.next = null;
+                    return res;
+
+                }
+                ListNode Merge(ListNode left, ListNode right) {
+                    var dummy = new ListNode();
+                    var p = dummy;
+                    while (left != null && right != null) {
+                        if (left.val < right.val) {
+                            p.next = left;
+                            left = left.next;
+                        } else {
+                            p.next = right;
+                            right = right.next;
+                        }
+                        p = p.next;
+                    }
+                    p.next = left != null ? left : right;
+                    return dummy.next;
+                }
+                // 链表长度
+                int len = 0;
+                var p = head;
+                while (p != null) {
+                    len++;
+                    p = p.next;
+                }
+
+                var dummy = new ListNode();
+                dummy.next = head;
+                for (int i = 1; i < len; i *= 2) {
+                    // cur是新一组的头
+                    var cur = dummy.next;
+                    // tail是上一组的尾巴
+                    var tail = dummy;
+                    while (cur != null) {
+                        var left = cur;
+                        var right = Cut(left, i);
+                        cur = Cut(right, i);
+                        tail.next = Merge(left, right);
+                        while (tail.next != null) tail = tail.next;
+                    }
+                }
+                return dummy.next;
+            }
+
+            public ListNode InsertionSortList(ListNode head) {
+                if (head == null) {
+                    return head;
+                }
+                var dummy = new ListNode(0);
+                dummy.next = head;
+                var last = head;
+                var cur = head.next;
+                while (cur != null) {
+                    if (last.val <= cur.val) {
+                        last = last.next;
+                    } else {
+                        var prev = dummy;
+                        while (prev.next.val <= cur.val) {
+                            prev = prev.next;
+                        }
+                        // 从后往前，last接上cur的next，cur插入到prev和prev的next之间 
+                        last.next = cur.next;
+                        cur.next = prev.next;
+                        prev.next = cur;
+                    }
+                    cur = last.next;
+                }
+                return dummy.next;
+            }
         }
 
         public class DataStructure {
@@ -3797,7 +3876,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MoveZeroes(new int[]{0,1,0,3,12});
+            algorithm.SortList(null);
         }
     }
 }
