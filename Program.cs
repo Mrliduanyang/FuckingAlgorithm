@@ -9,12 +9,21 @@ namespace FuckingAlgorithm {
         public class Algorithm {
 
             // 链表节点类
-            public class Node {
+            public class ListNode {
                 public int val;
-                public Node next;
+                public ListNode next;
+                public ListNode random;
 
-                public Node(int _val) {
-                    this.val = _val;
+                public ListNode() { }
+
+                public ListNode(int _val) {
+                    val = _val;
+                }
+
+                public ListNode(int _val, ListNode _next, ListNode _random) {
+                    val = _val;
+                    next = _next;
+                    random = _random;
                 }
             }
 
@@ -445,17 +454,6 @@ namespace FuckingAlgorithm {
                     res = res.Length > s2.Length? res : s2;
                 }
                 return res;
-            }
-
-            public class ListNode {
-                public int val;
-                public ListNode next;
-
-                public ListNode() { }
-
-                public ListNode(int _val) {
-                    val = _val;
-                }
             }
 
             public bool IsPalindrome(ListNode head) {
@@ -1107,18 +1105,6 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
-            // public class Node {
-            //     public int val;
-            //     public IList<Node> children;
-            //     public Node() { }
-            //     public Node(int _val) {
-            //         val = _val;
-            //     }
-            //     public Node(int _val, IList<Node> _children) {
-            //         val = _val;
-            //         children = _children;
-            //     }
-            // }
             public IList<IList<int>> LevelOrder(TreeNode root) {
                 var res = new List<IList<int>>();
                 if (root == null) {
@@ -2468,7 +2454,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public int Size(Node head) {
+            public int Size(ListNode head) {
                 int len = 0;
                 while (head != null) {
                     len++;
@@ -2477,14 +2463,14 @@ namespace FuckingAlgorithm {
                 return len;
             }
 
-            public int Size_1(Node head) {
+            public int Size_1(ListNode head) {
                 if (head == null) return 0;
                 return Size_1(head.next) + 1;
             }
 
-            public Node Reverse(Node head) {
+            public ListNode Reverse(ListNode head) {
                 if (head == null) return null;
-                Node curr = head, prev = null;
+                ListNode curr = head, prev = null;
                 while (curr != null) {
                     var next = curr.next;
                     // 开始更改当前节点的next指向。
@@ -2496,11 +2482,11 @@ namespace FuckingAlgorithm {
                 return prev;
             }
 
-            public Node Reverse_1(Node head) {
+            public ListNode Reverse_1(ListNode head) {
                 // 存疑，递归结束条件应该是head != null and head.next == null。
                 if (head == null || head.next == null) return head;
                 // 把next到最后的链表翻转了。
-                Node newHead = Reverse_1(head.next);
+                ListNode newHead = Reverse_1(head.next);
                 // 此时head的next是newHead链表的最后一个节点，需要让该节点的next指向head。
                 head.next.next = head;
                 // head指向null，标志链表结束。
@@ -2508,7 +2494,7 @@ namespace FuckingAlgorithm {
                 return newHead;
             }
 
-            public Node Merge(Node head1, Node head2) {
+            public ListNode Merge(ListNode head1, ListNode head2) {
                 if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
                 if (head1.val > head2.val) {
                     head2.next = Merge(head1, head2.next);
@@ -2519,9 +2505,9 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public Node Merge_1(Node head1, Node head2) {
+            public ListNode Merge_1(ListNode head1, ListNode head2) {
                 if (head1 == null || head2 == null) return head1 == null ? head2 : head1;
-                var dummy = new Node(0);
+                var dummy = new ListNode(0);
                 while (head1 != null && head2 != null) {
                     if (head1.val > head2.val) {
                         dummy.next = head2;
@@ -3679,6 +3665,85 @@ namespace FuckingAlgorithm {
                     cur = last.next;
                 }
                 return dummy.next;
+            }
+
+            public ListNode DetectCycle(ListNode head) {
+                if (head == null) {
+                    return null;
+                }
+                var slow = head;
+                var fast = head;
+                while (fast != null && fast.next != null) {
+                    slow = slow.next;
+                    fast = fast.next.next;
+                    if (slow == fast) {
+                        var ptr = head;
+                        while (ptr != slow) {
+                            ptr = ptr.next;
+                            slow = slow.next;
+                        }
+                        return ptr;
+                    }
+                }
+                return null;
+            }
+
+            public int EvalRPN(string[] tokens) {
+                var stack = new Stack<int>();
+                foreach (var token in tokens) {
+                    int num = 0;
+                    if (int.TryParse(token, out num)) {
+                        stack.Push(num);
+                    } else {
+                        var num1 = stack.Pop();
+                        var num2 = stack.Pop();
+                        switch (token) {
+                            case "+":
+                                stack.Push(num2 + num1);
+                                break;
+                            case "-":
+                                stack.Push(num2 - num1);
+                                break;
+                            case "*":
+                                stack.Push(num2 * num1);
+                                break;
+                            case "/":
+                                stack.Push(num2 / num1);
+                                break;
+                            default:
+                                continue;
+                        }
+                    }
+                }
+                return stack.Pop();
+            }
+
+            public ListNode CopyRandomList(ListNode head) {
+                if (head == null) {
+                    return null;
+                }
+                var vis = new Dictionary<ListNode, ListNode>();
+
+                ListNode CloneNode(ListNode node) {
+                    if (node != null) {
+                        if (!vis.ContainsKey(node)) {
+                            vis[node] = new ListNode(node.val, null, null);
+                        }
+                        return vis[node];
+                    }
+                    return null;
+                }
+
+                var old = head;
+                var newNode = new ListNode(old.val);
+                vis[old] = newNode;
+                while (old != null) {
+                    newNode.next = CloneNode(old.next);
+                    newNode.random = CloneNode(old.random);
+                    old = old.next;
+                    newNode = newNode.next;
+                }
+                return vis[head];
             }
         }
 
