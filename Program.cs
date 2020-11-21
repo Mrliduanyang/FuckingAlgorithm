@@ -3745,6 +3745,35 @@ namespace FuckingAlgorithm {
                 }
                 return vis[head];
             }
+
+            public string ReverseWords(string s) {
+                int slow = 0, fast = 0;
+                var stack = new Stack<string>();
+                var n = s.Length;
+                while ((slow <= fast) && (fast < n)) {
+                    while (slow < n && s[slow] == ' ') {
+                        slow++;
+                    }
+                    if (slow == n) break;
+                    fast = slow + 1;
+                    while (fast < n && s[fast] != ' ') {
+                        fast++;
+                    }
+                    stack.Push(s.Substring(slow, fast - slow));
+                    slow = fast;
+                }
+                return string.Join(" ", stack.ToList());
+            }
+
+            public int MaxProduct(int[] nums) {
+                var max = (int[]) nums.Clone();
+                var min = (int[]) nums.Clone();
+                for (int i = 1; i < nums.Length; i++) {
+                    max[i] = Math.Max(Math.Max(max[i - 1] * nums[i], min[i - 1] * nums[i]), nums[i]);
+                    min[i] = Math.Min(Math.Min(min[i - 1] * nums[i], max[i - 1] * nums[i]), nums[i]);
+                }
+                return max.Max();
+            }
         }
 
         public class DataStructure {
@@ -3941,7 +3970,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.SortList(null);
+            System.Console.WriteLine(algorithm.MaxProduct(new int[] {-2, 3, -4 }));
         }
     }
 }
