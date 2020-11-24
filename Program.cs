@@ -359,11 +359,6 @@ namespace FuckingAlgorithm {
                 return count;
             }
 
-            public int EraseOverlapIntervals(int[][] intvs) {
-                int n = intvs.Length;
-                return n - IntervalSchedule(intvs);
-            }
-
             public int MaxProfit_1(int[] prices) {
                 int n = prices.Length;
                 int dp_i_0 = 0, dp_i_1 = int.MinValue;
@@ -3800,7 +3795,7 @@ namespace FuckingAlgorithm {
                 }
                 return -1;
             }
-            
+
             public bool IsAnagram(string s, string t) {
                 var dict = new Dictionary<char, int>();
 
@@ -3817,6 +3812,73 @@ namespace FuckingAlgorithm {
                 return dict.Values.All((item) => {
                     return item == 0;
                 });
+            }
+
+            public int FindMinArrowShots(int[][] points) {
+                if (points.Length == 0) {
+                    return 0;
+                }
+                Array.Sort(points, (a, b) => {
+                    return a[1] < b[1] ? -1 : 1;
+                });
+                int count = 1;
+                int end = points[0][1];
+                foreach (var point in points) {
+                    var start = point[0];
+                    if (start > end) {
+                        count++;
+                        end = point[1];
+                    }
+                }
+                return count;
+            }
+
+            public int EraseOverlapIntervals(int[][] intervals) {
+                if (intervals.Length == 0) {
+                    return 0;
+                }
+                Array.Sort(intervals, (a, b) => {
+                    return a[1] < b[1] ? -1 : 1;
+                });
+                int count = 1;
+                int end = intervals[0][1];
+                foreach (var interval in intervals) {
+                    int start = interval[0];
+                    if (start >= end) {
+                        count++;
+                        end = interval[1];
+                    }
+                }
+                return intervals.Length - count;
+            }
+
+            public ListNode GetIntersectionNode(ListNode headA, ListNode headB) {
+                var dict = new Dictionary<ListNode, bool>();
+                while (headA != null) {
+                    dict[headA] = true;
+                    headA = headA.next;
+                }
+                while (headB != null) {
+                    if (dict.ContainsKey(headB)) {
+                        return headB;
+                    } else {
+                        headB = headB.next;
+                    }
+                }
+                return null;
+            }
+
+            public int FindPeakElement(int[] nums) {
+                int left = 0, right = nums.Length - 1;
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    if (nums[mid] > nums[mid + 1]) {
+                        right = mid;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+                return left;
             }
         }
 
@@ -4014,7 +4076,6 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.MaxProduct(new int[] {-2, 3, -4 }));
         }
     }
 }
