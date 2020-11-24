@@ -1147,15 +1147,15 @@ namespace FuckingAlgorithm {
 
             public void Rotate_1(int[] nums, int k) {
                 k %= nums.Length;
-                int[] left = new int[k];
-                int[] right = new int[nums.Length - k];
-                Array.Copy(nums, 0, left, 0, k);
-                Array.Copy(nums, k, right, 0, nums.Length - k);
+                int[] left = new int[nums.Length - k];
+                int[] right = new int[k];
+                Array.Copy(nums, 0, left, 0, nums.Length - k);
+                Array.Copy(nums, nums.Length - k, right, 0, k);
                 // 将数组两部分分别翻转。
                 Array.Reverse(left);
                 Array.Reverse(right);
                 left.CopyTo(nums, 0);
-                right.CopyTo(nums, k);
+                right.CopyTo(nums, nums.Length - k);
                 // 合并后把整个数组翻转。
                 Array.Reverse(nums);
             }
@@ -3880,6 +3880,16 @@ namespace FuckingAlgorithm {
                 }
                 return left;
             }
+
+            public string ConvertToTitle(int n) {
+                var s = new StringBuilder();
+                while (n != 0) {
+                    n--;
+                    s.Insert(0, (char) ('A' + n % 26));
+                    n = n / 26;
+                }
+                return s.ToString();
+            }
         }
 
         public class DataStructure {
@@ -4076,6 +4086,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.Rotate_1(new int[] {-1, -100, 3, 99 }, 2);
         }
     }
 }
