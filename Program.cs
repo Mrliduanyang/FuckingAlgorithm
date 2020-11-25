@@ -3890,6 +3890,56 @@ namespace FuckingAlgorithm {
                 }
                 return s.ToString();
             }
+
+            public List<string> FindRepeatedDnaSequences(string s) {
+                var res = new List<string>();
+                if (s.Length < 10) {
+                    return res;
+                }
+                var dict = new Dictionary<string, int>();
+                for (int i = 0; i <= s.Length - 10; i++) {
+                    var segment = s.Substring(i, 10);
+                    dict[segment] = dict.GetValueOrDefault(segment, 0) + 1;
+                }
+                foreach (var(key, val) in dict) {
+                    if (val >= 2) {
+                        res.Add(key);
+                    }
+                }
+                return res;
+            }
+
+            public string SortString(string s) {
+                var dict = new int[26];
+                foreach (var ch in s) {
+                    dict[ch - 'a']++;
+                }
+                var res = new StringBuilder();
+                while (res.Length != s.Length) {
+                    for (int i = 0; i < 26; i++) {
+                        if (dict[i] > 0) {
+                            res.Append((char) (i + 'a'));
+                            dict[i]--;
+                        }
+                    }
+                    for (int i = 25; i >= 0; i--) {
+                        if (dict[i] > 0) {
+                            res.Append((char) (i + 'a'));
+                            dict[i]--;
+                        }
+                    }
+                }
+                return res.ToString();
+            }
+
+            public uint ReverseBits(uint n) {
+                uint res = 0;
+                for (int i = 0; i < 32; i++) {
+                    res = (res << 1) + (n & 1);
+                    n >>= 1;
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -4086,7 +4136,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Rotate_1(new int[] {-1, -100, 3, 99 }, 2);
+            algorithm.SortString("aaaabbbbcccc");
         }
     }
 }
