@@ -3999,7 +3999,7 @@ namespace FuckingAlgorithm {
                     }
                     set.Add(nums[i]);
                     if (set.Count > k) {
-                        set.Remove(nums[i - k]);
+                        set.Remove(nums[i - k]);    
                     }
                 }
                 return false;
