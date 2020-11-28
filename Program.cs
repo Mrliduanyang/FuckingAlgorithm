@@ -4132,6 +4132,106 @@ namespace FuckingAlgorithm {
                 }
                 return numCourses == 0 ? res.ToArray() : new int[] { };
             }
+
+            public int MajorityElement(int[] nums) {
+                int count = 0;
+                int candidate = int.MinValue;
+                foreach (var num in nums) {
+                    if (count == 0) {
+                        candidate = num;
+                    }
+                    if (candidate == num) {
+                        count++;
+                    } else {
+                        count--;
+                    }
+                }
+                return candidate;
+            }
+
+            public List<int> MajorityElement_1(int[] nums) {
+                var res = new List<int>();
+                if (nums.Length == 0) {
+                    return res;
+                }
+                int cand1 = 0, cand2 = 0;
+                int count1 = 0, count2 = 0;
+
+                foreach (var num in nums) {
+                    // 一个票只能给一个候选人，只能选择一个if
+                    // 还必须得把候选人判断放在计数判断之前，否则会出现cand1和cand2相等的情况
+                    if (cand1 == num) {
+                        count1++;
+                        continue;
+                    }
+                    if (cand2 == num) {
+                        count2++;
+                        continue;
+                    }
+                    if (count1 == 0) {
+                        cand1 = num;
+                        count1++;
+                        continue;
+                    }
+                    if (count2 == 0) {
+                        cand2 = num;
+                        count2++;
+                        continue;
+                    }
+                    count1--;
+                    count2--;
+                }
+                count1 = count2 = 0;
+                foreach (var num in nums) {
+                    if (num == cand1) {
+                        count1++;
+                    } else if (num == cand2) {
+                        count2++;
+                    }
+                }
+                if (count1 > nums.Length / 3) {
+                    res.Add(cand1);
+                }
+                if (count2 > nums.Length / 3) {
+                    res.Add(cand2);
+                }
+                return res;
+            }
+
+            public bool ContainsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+                // AC不了，C#没有TreeSet数据结构，无法在logn时间内查找指定元素
+                var set = new SortedSet<long?>();
+                for (int i = 0; i < nums.Length; i++) {
+                    var s = set.FirstOrDefault(item => item >= nums[i]);
+                    if (s != null && s <= (long) nums[i] + t) {
+                        return true;
+                    }
+                    var g = set.LastOrDefault(item => item <= nums[i]);
+                    if (g != null && g >= (long) nums[i] - t) {
+                        return true;
+                    }
+                    set.Add(nums[i]);
+                    if (set.Count > k) {
+                        set.Remove(nums[i - k]);
+                    }
+                }
+                return false;
+            }
+
+            public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+                TreeNode Helper(TreeNode root, TreeNode p, TreeNode q) {
+                    if (p.val < root.val && q.val < root.val) {
+                        return Helper(root.left, p, q);
+                    } else if (p.val > root.val && q.val > root.val) {
+                        return Helper(root.right, p, q);
+                    } else {
+                        return root;
+                    }
+                }
+
+                return Helper(root, p, q);
+            }
+
         }
 
         public class DataStructure {
@@ -4355,6 +4455,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.ContainsNearbyAlmostDuplicate(new int[] { 2147483640, 2147483641 }, 3, 3);
         }
     }
 }
