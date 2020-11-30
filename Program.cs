@@ -4265,8 +4265,40 @@ namespace FuckingAlgorithm {
                 return res.Sum();
             }
 
-            
+            public int LargestPerimeter(int[] A) {
+                Array.Sort(A);
+                for (int i = A.Length - 1; i >= 2; i--) {
+                    if (A[i] < A[i - 1] + A[i - 2]) {
+                        return A[i] + A[i - 1] + A[i - 2];
+                    }
+                }
+                return 0;
+            }
 
+            public TreeNode LowestCommonAncestor_1(TreeNode root, TreeNode p, TreeNode q) {
+                TreeNode ans = null;
+                // 当p和q分别在左右子树，或者p或q其中一个为根
+                bool Helper(TreeNode root, TreeNode p, TreeNode q) {
+                    if (root == null) return false;
+                    var l = Helper(root.left, p, q);
+                    var r = Helper(root.right, p, q);
+                    if ((l && r) || ((root.val == p.val || root.val == q.val) && (l || r))) {
+                        ans = root;
+                    }
+                    return l || r || (root.val == p.val || root.val == q.val);
+                }
+                Helper(root, p, q);
+                return ans;
+            }
+
+            public int FindKthLargest(int[] nums, int k) {
+                var res = new SortedList();
+                foreach (var num in nums) {
+                    res.Add(num, num);
+                }
+                var tmp = res.IndexOfKey(nums.Length - k + 2);
+                return tmp;
+            }
         }
 
         public class DataStructure {
@@ -4490,7 +4522,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Calculate(" 3+5 / 2 ");
+            algorithm.FindKthLargest(new int[] { 3, 2, 1, 5, 6, 4 }, 2);
         }
     }
 }
