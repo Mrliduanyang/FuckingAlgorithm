@@ -4232,6 +4232,41 @@ namespace FuckingAlgorithm {
                 return Helper(root, p, q);
             }
 
+            public int Calculate(string s) {
+                var res = new Stack<int>();
+                var num = 0;
+                var symbol = '+';
+                for (int i = 0; i < s.Length; i++) {
+                    var ch = s[i];
+                    if (ch == ' ' && i != s.Length - 1) continue;
+                    if ('0' <= ch && ch <= '9') {
+                        num = num * 10 + (ch - '0');
+                        if (i != s.Length - 1) {
+                            continue;
+                        }
+                    }
+                    switch (symbol) {
+                        case '+':
+                            res.Push(num);
+                            break;
+                        case '-':
+                            res.Push(-num);
+                            break;
+                        case '*':
+                            res.Push(res.Pop() * num);
+                            break;
+                        case '/':
+                            res.Push(res.Pop() / num);
+                            break;
+                    }
+                    symbol = ch;
+                    num = 0;
+                }
+                return res.Sum();
+            }
+
+            
+
         }
 
         public class DataStructure {
@@ -4455,7 +4490,10 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.ContainsNearbyAlmostDuplicate(new int[] { 2147483640, 2147483641 }, 3, 3);
+            algorithm.Calculate(" 3+5 / 2 ");
         }
     }
 }
+
+// http://serv.tju.edu.cn/verifyqr/access?code=Yk0yemRFMTQwTTRqZk5iZmRNZVU2QjRBZE0yVGZVOTQxT2FEM1FleDNNOUQ3VTZ5Nk1jZzg9YT02N2Rh
+// http://serv.tju.edu.cn/verifyqr/access?code=Yk0yemRFMTQwTTRqZk5iZmRNZWs2QjRBZE0yVGZVOTQxT2FEM1FleDNNOUQ3WTY0Nk1jdzg9YT02N2Rh
