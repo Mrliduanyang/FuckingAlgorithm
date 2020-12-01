@@ -4292,12 +4292,137 @@ namespace FuckingAlgorithm {
             }
 
             public int FindKthLargest(int[] nums, int k) {
-                var res = new SortedList();
-                foreach (var num in nums) {
-                    res.Add(num, num);
+                var random = new Random();
+                void Swap(int i, int j) {
+                    var tmp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = tmp;
                 }
-                var tmp = res.IndexOfKey(nums.Length - k + 2);
-                return tmp;
+                int Partition(int l, int r) {
+                    int x = nums[r], i = l - 1;
+                    for (int j = l; j < r; ++j) {
+                        // 遇到j比较大的，跳过，遇到j比较小的，交换到i的下一个位置。把所有小的交换到前面。
+                        if (nums[j] <= x) {
+                            Swap(++i, j);
+                        }
+                    }
+                    Swap(i + 1, r);
+                    return i + 1;
+                }
+                int RandomPartition(int l, int r) {
+                    int i = random.Next(r - l + 1) + l;
+                    // 把l-r中一个随机位置的元素交换到r
+                    Swap(i, r);
+                    return Partition(l, r);
+                }
+
+                int QuickSelect(int l, int r, int idx) {
+                    int q = RandomPartition(l, r);
+                    if (q == idx) {
+                        return nums[q];
+                    } else {
+                        return q < idx ? QuickSelect(q + 1, r, idx) : QuickSelect(l, q - 1, idx);
+                    }
+
+                }
+                return QuickSelect(0, nums.Length - 1, nums.Length - k);
+            }
+
+            public string ReorganizeString(string S) {
+                // 出现次数最多的字母有没有超过一半
+                var mid = (S.Length + 1) / 2;
+                // 计数
+                var dict = S.GroupBy(x => x).OrderByDescending(x => x.Count()).ToDictionary(x => x.Key, x => x.Count());
+
+                if (dict.Values.All(x => x <= mid)) {
+                    var arr = new char[S.Length];
+                    Action<int> action = (i) => {
+                        var key = dict.Keys.First();
+                        arr[i] = key;
+                        dict[key]--;
+                        if (dict[key] <= 0) dict.Remove(key);
+                    };
+
+                    // 交替生成
+                    for (int i = 0; i < arr.Length; i += 2) action(i);
+                    for (int i = 1; i < arr.Length; i += 2) action(i);
+
+                    return new string(arr);
+                }
+
+                return "";
+            }
+
+            public int[] SearchRange(int[] nums, int target) {
+                if (nums.Length == 0) {
+                    return new int[] {-1, -1 };
+                }
+                int left = 0, right = nums.Length - 1;
+                while (left <= right) {
+                    int mid = left + (right - left) / 2;
+                    if (nums[mid] == target) {
+                        int l = mid, r = mid;
+                        while (l >= 0 && nums[l] == target) {
+                            l--;
+                        }
+                        while (r < nums.Length && nums[r] == target) {
+                            r++;
+                        }
+                        return new int[] { l + 1, r - 1 };
+                    } else if (nums[mid] < target) {
+                        left = mid + 1;
+                    } else {
+                        right = mid - 1;
+                    }
+                }
+                return new int[] {-1, -1 };
+            }
+
+            public int[] SingleNumber_1(int[] nums) {
+                // 关键是把两个出现一次的数字分到两个组，两个数字的二进制肯定有不一样的位，根据第一个为1的位把两个数字分到两组
+                var res = new int[2];
+                if (nums.Length < 2) {
+                    return res;
+                }
+                int xorRes = 0;
+                foreach (var num in nums) {
+                    xorRes ^= num;
+                }
+                int idx = 1;
+                while (true) {
+                    if ((xorRes & 1) == 1) {
+                        break;
+                    }
+                    idx = idx << 1;
+                    xorRes = xorRes >> 1;
+                }
+
+                foreach (var num in nums) {
+                    if ((num & idx) == 0) {
+                        res[0] ^= num;
+                    } else {
+                        res[1] ^= num;
+                    }
+                }
+                return res;
+            }
+
+            public int HIndex(int[] citations) {
+                int n = citations.Length;
+                int[] papers = new int[n + 1];
+                foreach (var citation in citations) {
+                    papers[Math.Min(n, citation)]++;
+                }
+                int k = n;
+                for (int s = papers[n]; k > s; s += papers[k]) {
+                    k--;
+                }
+                return k;
+            }
+
+            public int FindDuplicate(int[] nums) {
+                int n = nums.Length - 1;
+                return nums.Sum() - ((1 + n) * n) / 2;
             }
         }
 
@@ -4522,10 +4647,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.FindKthLargest(new int[] { 3, 2, 1, 5, 6, 4 }, 2);
+            algorithm.HIndex(new int[] { 100 });
         }
     }
 }
-
-// http://serv.tju.edu.cn/verifyqr/access?code=Yk0yemRFMTQwTTRqZk5iZmRNZVU2QjRBZE0yVGZVOTQxT2FEM1FleDNNOUQ3VTZ5Nk1jZzg9YT02N2Rh
-// http://serv.tju.edu.cn/verifyqr/access?code=Yk0yemRFMTQwTTRqZk5iZmRNZWs2QjRBZE0yVGZVOTQxT2FEM1FleDNNOUQ3WTY0Nk1jdzg9YT02N2Rh
