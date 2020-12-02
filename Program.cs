@@ -4420,9 +4420,122 @@ namespace FuckingAlgorithm {
                 return k;
             }
 
-            public int FindDuplicate(int[] nums) {
-                int n = nums.Length - 1;
-                return nums.Sum() - ((1 + n) * n) / 2;
+            public int[] MaxNumber(int[] nums1, int[] nums2, int k) {
+                int[] MaxSubsequence(int[] nums, int k) {
+                    int len = nums.Length;
+                    int[] stack = new int[k];
+                    int top = -1;
+                    int remain = len - k;
+                    for (int i = 0; i < len; i++) {
+                        int num = nums[i];
+                        // 如果num比较大，找到num在stack中的正确位置
+                        while (top >= 0 && stack[top] < num && remain > 0) {
+                            top--;
+                            remain--;
+                        }
+                        // 将num放在stack中
+                        if (top < k - 1) {
+                            stack[++top] = num;
+                        } else {
+                            remain--;
+                        }
+                    }
+                    return stack;
+                }
+
+                int[] Merge(int[] sub1, int[] sub2) {
+                    int a = sub1.Length, b = sub2.Length;
+                    if (a == 0) {
+                        return sub2;
+                    }
+                    if (b == 0) {
+                        return sub1;
+                    }
+                    int merglen = a + b;
+                    int[] m = new int[merglen];
+                    int n1 = 0, n2 = 0;
+                    for (int i = 0; i < merglen; i++) {
+                        if (Compare(sub1, sub2, n1, n2) > 0) {
+                            m[i] = sub1[n1++];
+                        } else {
+                            m[i] = sub2[n2++];
+                        }
+                    }
+                    return m;
+                }
+
+                int Compare(int[] sub1, int[] sub2, int n1, int n2) {
+                    int a = sub1.Length, b = sub2.Length;
+                    while (n1 < a && n2 < b) {
+                        int dif = sub1[n1] - sub2[n2];
+                        // 比较当前元素大小，选择大的元素；
+                        // 如果一样大，比较后续元素；
+                        if (dif != 0) {
+                            return dif;
+                        }
+                        n1++;
+                        n2++;
+                    }
+                    // 如果一个比较到头了，那肯定长度长的大
+                    return (a - n1) - (b - n2);
+                }
+
+                int[] res = new int[k];
+                int n1 = nums1.Length;
+                int n2 = nums2.Length;
+                int start = Math.Max(0, k - n2), end = Math.Min(k, n1);
+                for (int i = start; i <= end; i++) {
+                    int[] sub1 = MaxSubsequence(nums1, i);
+                    int[] sub2 = MaxSubsequence(nums2, k - i);
+                    int[] cur = Merge(sub1, sub2);
+                    if (Compare(cur, res, 0, 0) > 0) {
+                        Array.Copy(cur, 0, res, 0, k);
+                    }
+                }
+                return res;
+            }
+
+            public int Rob_3(TreeNode root) {
+                var memo = new Dictionary<TreeNode, int>();
+                // 利用备忘录消除重叠子问题
+                int Helper(TreeNode root) {
+                    if (root == null) return 0;
+
+                    if (memo.ContainsKey(root)) {
+                        return memo[root];
+                    }
+                    // 抢，然后去下下家
+                    int doIt = root.val +
+                        (root.left == null ?
+                            0 : Helper(root.left.left) + Helper(root.left.right)) +
+                        (root.right == null ?
+                            0 : Helper(root.right.left) + Helper(root.right.right));
+                    // 不抢，然后去下家
+                    int dont = Helper(root.left) + Helper(root.right);
+
+                    int res = Math.Max(doIt, dont);
+                    memo[root] = res;
+                    return res;
+                }
+                return Helper(root);
+            }
+
+            public int DiameterOfBinaryTree(TreeNode root) {
+                int ans = 1;
+                int Helper(TreeNode root) {
+                    if (root == null) {
+                        return 0;
+                    }
+                    int l = Helper(root.left);
+                    int r = Helper(root.right);
+                    // 更新以当前节点为根的最大长度
+                    ans = Math.Max(ans, l + r + 1);
+                    // 返回以当前节点为根的子树高度
+                    return Math.Max(l, r) + 1;
+                }
+
+                Helper(root);
+                return ans - 1;
             }
         }
 
