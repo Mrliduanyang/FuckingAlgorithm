@@ -4537,6 +4537,73 @@ namespace FuckingAlgorithm {
                 Helper(root);
                 return ans - 1;
             }
+
+            public bool FindTarget(TreeNode root, int k) {
+                var res = new List<int>();
+                var stack = new Stack<TreeNode>();
+                // root为null并且栈空，结束
+                while (root != null || stack.Count != 0) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    root = stack.Pop();
+                    res.Add(root.val);
+                    root = root.right;
+                }
+                int left = 0, right = res.Count - 1;
+                while (left < right) {
+                    int sum = res[left] + res[right];
+                    if (sum == k)
+                        return true;
+                    if (sum < k)
+                        left++;
+                    else
+                        right--;
+                }
+                return false;
+            }
+
+            public int CountPrimes(int n) {
+                int[] isPrime = new int[n];
+                Array.Fill(isPrime, 1);
+                int ans = 0;
+                for (int i = 2; i < n; ++i) {
+                    if (isPrime[i] == 1) {
+                        ans += 1;
+                        if ((long) i * i < n) {
+                            for (int j = i * i; j < n; j += i) {
+                                isPrime[j] = 0;
+                            }
+                        }
+                    }
+                }
+                return ans;
+            }
+
+            public string GetHint(string secret, string guess) {
+                var dict = new int[10];
+                int bulls = 0, cows = 0;
+                for (int i = 0; i < secret.Length; i++) {
+                    int cs = secret[i] - '0';
+                    int cg = guess[i] - '0';
+                    if (cs == cg) {
+                        bulls++;
+                    } else {
+                        // 只有cs和cg不等时，才会变更个数。dict[cs] < 0说明在guess中有和cs不等的cg
+                        if (dict[cs] < 0) {
+                            cows++;
+                        }
+                        if (dict[cg] > 0) {
+                            cows++;
+                        }
+                        // cs总是增加，cg总是减少
+                        dict[cs]++;
+                        dict[cg]--;
+                    }
+                }
+                return $"{bulls}A{cows}B";
+            }
         }
 
         public class DataStructure {
@@ -4760,7 +4827,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.HIndex(new int[] { 100 });
+            algorithm.GetHint("1123", "0111");
         }
     }
 }
