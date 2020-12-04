@@ -4604,6 +4604,86 @@ namespace FuckingAlgorithm {
                 }
                 return $"{bulls}A{cows}B";
             }
+
+            public List<TreeNode> FindDuplicateSubtrees(TreeNode root) {
+                var dict = new Dictionary<string, int>();
+                var res = new List<TreeNode>();
+                string Helper(TreeNode root) {
+                    if (root == null) return "#";
+                    string str = $"{root.val},{Helper(root.left)},{Helper(root.right)}";
+                    dict[str] = dict.GetValueOrDefault(str, 0) + 1;
+                    // 只在==2时添加一次，之后再出现同样的str，也无需添加
+                    if (dict[str] == 2) {
+                        res.Add(root);
+                    }
+                    return str;
+                }
+                Helper(root);
+                return res;
+            }
+
+            public bool IsPossible(int[] nums) {
+                var numCount = new SortedDictionary<int, int>();
+                var tail = new SortedDictionary<int, int>();
+                foreach (var num in nums) {
+                    numCount[num] = numCount.GetValueOrDefault(num, 0) + 1;
+                }
+                foreach (var num in nums) {
+                    if (numCount[num] == 0) continue;
+                    else if (numCount[num] > 0 && tail.GetValueOrDefault(num - 1, 0) > 0) {
+                        numCount[num]--;
+                        tail[num - 1]--;
+                        tail[num] = tail.GetValueOrDefault(num, 0) + 1;
+                    } else if (numCount.GetValueOrDefault(num + 1, 0) > 0 && numCount.GetValueOrDefault(num + 2, 0) > 0) {
+                        numCount[num]--;
+                        numCount[num + 1]--;
+                        numCount[num + 2]--;
+                        tail[num + 2] = tail.GetValueOrDefault(num + 2, 0) + 1;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public List<double> AverageOfLevels(TreeNode root) {
+                var res = new List<double>();
+                if (root == null) return res;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    var level = new List<int>();
+                    for (int i = 0; i < count; i++) {
+                        var tmp = queue.Dequeue();
+                        level.Add(tmp.val);
+                        if (tmp.left != null) queue.Enqueue(tmp.left);
+                        if (tmp.right != null) queue.Enqueue(tmp.right);
+                    }
+                    res.Add(level.Average());
+                }
+                return res;
+            }
+
+            public bool IsCompleteTree(TreeNode root) {
+                if (root == null) return true;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                var prev = root;
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    for (int i = 0; i < count; i++) {
+                        var tmp = queue.Dequeue();
+                        if (prev == null && tmp != null) return false;
+                        if (tmp != null) {
+                            queue.Enqueue(tmp.left);
+                            queue.Enqueue(tmp.right);
+                        }
+                        prev = tmp;
+                    }
+                }
+                return true;
+            }
         }
 
         public class DataStructure {
