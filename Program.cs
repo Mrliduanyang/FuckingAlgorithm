@@ -4684,6 +4684,33 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
+
+            public bool IsUnivalTree(TreeNode root) {
+                int val = root.val;
+                bool Helper(TreeNode root) {
+                    if (root == null) return true;
+                    var left = Helper(root.left);
+                    var right = Helper(root.right);
+                    return left && right && root.val == val;
+                }
+                return Helper(root);
+            }
+
+            // public int LeastInterval(char[] tasks, int n) {
+            //     var dict = tasks.GroupBy(x => x).OrderByDescending(x => x.Count()).ToDictionary(x => x.Key, x => x.Count());
+            //     var res = new List<List<char>>();
+            //     var count = tasks.Length;
+            //     var keys = dict.Keys;
+            //     while (count != 0) {
+            //         var tmp = new List<char>();
+            //         // 每一组放n+1个
+            //         for (int i = 0; i <= n; i++) {
+            //             if(dict[keys[i]])
+            //         }
+            //     }
+            //     return 0;
+            // }
+
         }
 
         public class DataStructure {
@@ -4907,7 +4934,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.GetHint("1123", "0111");
+            algorithm.LeastInterval(new char[] { 'A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G' }, 2);
         }
     }
 }
