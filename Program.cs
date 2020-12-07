@@ -4696,23 +4696,7 @@ namespace FuckingAlgorithm {
                 return Helper(root);
             }
 
-            // public int LeastInterval(char[] tasks, int n) {
-            //     var dict = tasks.GroupBy(x => x).OrderByDescending(x => x.Count()).ToDictionary(x => x.Key, x => x.Count());
-            //     var res = new List<List<char>>();
-            //     var count = tasks.Length;
-            //     var keys = dict.Keys;
-            //     while (count != 0) {
-            //         var tmp = new List<char>();
-            //         // 每一组放n+1个
-            //         for (int i = 0; i <= n; i++) {
-            //             if(dict[keys[i]])
-            //         }
-            //     }
-            //     return 0;
-            // }
-
-            public int MaxAncestorDiff() {
-                var root = new TreeNode(12);
+            public int MaxAncestorDiff(TreeNode root) {
                 if (root == null) return 0;
                 var res = int.MinValue;
                 (int, int) Helper(TreeNode root) {
@@ -4735,6 +4719,90 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            public int MatrixScore(int[][] A) {
+                int m = A.Length, n = A[0].Length;
+                // 翻转第一列为0的行
+                for (int i = 0; i < m; i++) {
+                    if (A[i][0] == 0) {
+                        for (int j = 0; j < n; j++) {
+                            A[i][j] = (1 - A[i][j]);
+                        }
+                    }
+                }
+                for (int j = 0; j < n; j++) {
+                    int zeroCount = 0, oneCount = 0;
+                    for (int i = 0; i < m; i++) {
+                        if (A[i][j] == 0) {
+                            zeroCount++;
+                        } else {
+                            oneCount++;
+                        }
+                    }
+                    if (zeroCount > oneCount) {
+                        for (int i = 0; i < m; i++) {
+                            A[i][j] = (1 - A[i][j]);
+                        }
+                    }
+                }
+                int res = 0;
+                foreach (var row in A) {
+                    int rowScore = 0;
+                    foreach (var x in row) {
+                        rowScore = ((rowScore << 1) + x);
+                    }
+                    res += rowScore;
+                }
+                return res;
+            }
+
+            public string SmallestFromLeaf(TreeNode root) {
+                var res = new List<string>();
+                var str = new StringBuilder();
+                void Helper(TreeNode root) {
+                    if (root == null) return;
+                    str.Append((char) ('a' + root.val));
+                    if (root.left == null && root.right == null) {
+                        var tmp = new string(str.ToString().Reverse().ToArray());
+                        res.Add(tmp);
+                    }
+                    Helper(root.left);
+                    Helper(root.right);
+                    str.Remove(str.Length - 1, 1);
+                }
+                Helper(root);
+                return res.Min();
+            }
+
+            public TreeNode AddOneRow(TreeNode root, int v, int d) {
+                if (d == 1) {
+                    var tmp = new TreeNode(v);
+                    tmp.left = root;
+                    return tmp;
+                }
+                var queue = new Queue<TreeNode>();
+                var prevRow = new List<TreeNode>();
+                var height = 1;
+                queue.Enqueue(root);
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    for (int i = 0; i < count; i++) {
+                        var node = queue.Dequeue();
+                        if (height == d - 1) prevRow.Add(node);
+                        if (node.left != null) queue.Enqueue(node.left);
+                        if (node.right != null) queue.Enqueue(node.right);
+                    }
+                    if (++height == d) break;
+                }
+                foreach (var node in prevRow) {
+                    var tmp = new TreeNode(v);
+                    tmp.left = node.left;
+                    node.left = tmp;
+                    tmp = new TreeNode(v);
+                    tmp.right = node.right;
+                    node.right = tmp;
+                }
+                return root;
+            }
         }
 
         public class DataStructure {
@@ -4958,7 +5026,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MaxAncestorDiff();
+            algorithm.MatrixScore(new int[][] {
+                new int[] { 0, 0, 1, 1 },
+                    new int[] { 1, 0, 1, 0 },
+                    new int[] { 1, 1, 0, 0 },
+            });
         }
     }
 }
