@@ -4803,6 +4803,108 @@ namespace FuckingAlgorithm {
                 }
                 return root;
             }
+
+            public int[] ProductExceptSelf(int[] nums) {
+                int n = nums.Length;
+                int[] prev = new int[n];
+                int[] next = new int[n];
+                prev[0] = 1;
+                next[n - 1] = 1;
+                for (int i = 1; i < n; i++) {
+                    prev[i] = prev[i - 1] * nums[i - 1];
+                }
+                for (int i = n - 2; i >= 0; i--) {
+                    next[i] = next[i + 1] * nums[i + 1];
+                }
+                return prev.Zip(next, (x, y) => x * y).ToArray();
+            }
+
+            public int FindDuplicate(int[] nums) {
+                Array.Sort(nums);
+                int slow = 0, fast = 1;
+                while (fast < nums.Length) {
+                    if (nums[slow] == nums[fast]) {
+                        return nums[slow];
+                    }
+                    slow++;
+                    fast++;
+                }
+                return -1;
+            }
+
+            public List<int> SplitIntoFibonacci(string S) {
+                var res = new List<int>();
+                int length = S.Length;
+
+                bool Helper(int idx, int prev, int sum) {
+                    if (idx == length) return res.Count >= 3;
+                    long curLong = 0;
+                    for (int i = idx; i < length; i++) {
+                        // 当前块长度大于1，并且起始位是0，剪枝
+                        if (i > idx && S[idx] == '0') break;
+                        curLong = curLong * 10 + (S[i] - '0');
+                        if (curLong > int.MaxValue) break;
+                        int cur = (int) curLong;
+                        if (res.Count >= 2) {
+                            if (cur < sum) continue;
+                            else if (cur > sum) break;
+                        }
+                        res.Add(cur);
+                        if (Helper(i + 1, cur, prev + cur)) {
+                            return true;
+                        } else {
+                            res.RemoveAt(res.Count - 1);
+                        }
+                    }
+                    return false;
+                }
+                Helper(0, 0, 0);
+                return res;
+            }
+
+            public int NumSquares(int n) {
+                // 跟换硬币差不多，把硬币换成完全平方数，并且不限制硬币个数
+                var nums = new List<int>();
+                for (int i = 1; i * i <= n; i++) {
+                    nums.Add(i * i);
+                }
+                var dp = new int[n + 1];
+                Array.Fill(dp, n + 1);
+                dp[0] = 0;
+                for (int i = 1; i <= n; i++) {
+                    foreach (var num in nums) {
+                        if ((i - num) < 0) continue;
+                        dp[i] = Math.Min(dp[i], 1 + dp[i - num]);
+                    }
+                }
+                return dp[n];
+            }
+
+            public bool WordPattern(string pattern, string s) {
+                var patterns = pattern.ToArray();
+                var words = s.Split(" ");
+                if (patterns.Length != words.Length) return false;
+                var dict1 = new Dictionary<char, string>();
+                var dict2 = new Dictionary<string, char>();
+                for (int i = 0; i < patterns.Length; i++) {
+                    var ch = patterns[i];
+                    var word = words[i];
+                    if (dict1.ContainsKey(ch) && dict2.ContainsKey(word) && (dict1[ch] != word || dict2[word] != ch)) {
+                        return false;
+                    }
+                    if (dict1.ContainsKey(ch) && !dict2.ContainsKey(word)) {
+                        return false;
+                    }
+                    if (!dict1.ContainsKey(ch) && dict2.ContainsKey(word)) {
+                        return false;
+                    }
+                    if (!dict1.ContainsKey(ch) && !dict2.ContainsKey(word)) {
+                        dict1[ch] = word;
+                        dict2[word] = ch;
+                    }
+                }
+                return true;
+            }
         }
 
         public class DataStructure {
@@ -5026,11 +5128,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MatrixScore(new int[][] {
-                new int[] { 0, 0, 1, 1 },
-                    new int[] { 1, 0, 1, 0 },
-                    new int[] { 1, 1, 0, 0 },
-            });
+            algorithm.WordPattern("abba", "dog cat cat dog");
         }
     }
 }
