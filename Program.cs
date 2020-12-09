@@ -4905,6 +4905,24 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
+
+            public bool IsValidSerialization(string preorder) {
+                int slots = 1;
+                int n = preorder.Length;
+                for (int i = 0; i < n; ++i) {
+                    if (preorder[i] == ',') {
+                        --slots;
+                        if (slots < 0) return false;
+                        if (preorder[i - 1] != '#') slots += 2;
+                    }
+                }
+                slots = (preorder[n - 1] == '#') ? slots - 1 : slots + 1;
+                return slots == 0;
+            }
+
+            public bool IsPowerOfThree(int n) {
+                return (Math.Log10(n) / Math.Log10(3)) % 1 == 0;
+            }
         }
 
         public class DataStructure {
@@ -5128,7 +5146,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.WordPattern("abba", "dog cat cat dog");
+            algorithm.SplitIntoFibonacci("121474836472147483648");
         }
     }
 }
