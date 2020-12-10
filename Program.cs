@@ -144,8 +144,7 @@ namespace FuckingAlgorithm {
                         }
                     }
                 }
-                Array.Sort(dp);
-                return dp[dp.Length - 1];
+                return dp.Max();
             }
 
             public int MaxSubArray(int[] nums) {
@@ -4922,6 +4921,35 @@ namespace FuckingAlgorithm {
 
             public bool IsPowerOfThree(int n) {
                 return (Math.Log10(n) / Math.Log10(3)) % 1 == 0;
+            }
+
+            public bool LemonadeChange(int[] bills) {
+                int five = 0, ten = 0;
+                foreach (var bill in bills) {
+                    if (bill == 5) {
+                        five++;
+                    } else if (bill == 10) {
+                        if (five == 0) {
+                            return false;
+                        }
+                        five--;
+                        ten++;
+                    } else {
+                        if (five > 0 && ten > 0) {
+                            five--;
+                            ten--;
+                        } else if (five >= 3) {
+                            five -= 3;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            public int LengthOfLIS(int[] nums) {
+
             }
         }
 
