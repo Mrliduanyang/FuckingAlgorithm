@@ -472,20 +472,21 @@ namespace FuckingAlgorithm {
                 }
                 int n = height.Length;
                 int ans = 0;
-                int[] l_max = new int[n], r_max = new int[n];
+                int[] lMax = new int[n], rMax = new int[n];
                 // base。l_max表示位置i左侧最高柱子的高度，r_max表示位置右侧最高柱子的高度
-                l_max[0] = height[0];
-                r_max[n - 1] = height[n - 1];
+                lMax[0] = height[0];
+                rMax[n - 1] = height[n - 1];
                 // 从左向右计算 l_max
                 for (int i = 1; i < n; i++) {
-                    l_max[i] = Math.Max(height[i], l_max[i - 1]);
+                    lMax[i] = Math.Max(height[i], lMax[i - 1]);
                 }
                 // 从右向左计算 r_max
                 for (int i = n - 2; i >= 0; i--) {
-                    r_max[i] = Math.Max(height[i], r_max[i + 1]);
+                    rMax[i] = Math.Max(height[i], rMax[i + 1]);
                 }
-                for (int i = 1; i < n - 1; i++)
-                    ans += Math.Min(l_max[i], r_max[i]) - height[i];
+                for (int i = 1; i < n - 1; i++) {
+                    ans += Math.Min(lMax[i], rMax[i]) - height[i];
+                }
                 return ans;
             }
 
@@ -4861,6 +4862,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #279
             public int NumSquares(int n) {
                 // 跟换硬币差不多，把硬币换成完全平方数，并且不限制硬币个数
                 var nums = new List<int>();
@@ -4905,6 +4907,7 @@ namespace FuckingAlgorithm {
                 return true;
             }
 
+            // #331
             public bool IsValidSerialization(string preorder) {
                 int slots = 1;
                 int n = preorder.Length;
@@ -4919,10 +4922,12 @@ namespace FuckingAlgorithm {
                 return slots == 0;
             }
 
+            // #326
             public bool IsPowerOfThree(int n) {
                 return (Math.Log10(n) / Math.Log10(3)) % 1 == 0;
             }
 
+            // #860
             public bool LemonadeChange(int[] bills) {
                 int five = 0, ten = 0;
                 foreach (var bill in bills) {
@@ -4947,7 +4952,7 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
-
+            // #304
             public class NumMatrix {
                 int[, ] dp;
                 public NumMatrix(int[][] matrix) {
@@ -4963,6 +4968,66 @@ namespace FuckingAlgorithm {
                 public int SumRegion(int row1, int col1, int row2, int col2) {
                     return dp[row2 + 1, col2 + 1] - dp[row1, col2 + 1] - dp[row2 + 1, col1] + dp[row1, col1];
                 }
+            }
+
+            // #11
+            public int MaxArea(int[] height) {
+                int l = 0, r = height.Length - 1;
+                int ans = 0;
+                while (l < r) {
+                    int area = Math.Min(height[l], height[r]) * (r - l);
+                    ans = Math.Max(ans, area);
+                    if (height[l] <= height[r]) {
+                        ++l;
+                    } else {
+                        --r;
+                    }
+                }
+                return ans;
+            }
+
+            // #485
+            public int FindMaxConsecutiveOnes(int[] nums) {
+                if (nums.Length == 0) return 0;
+                int ans = 0;
+                int left = 0, right = 0;
+                while (left < nums.Length && right < nums.Length) {
+                    if (nums[left] != 1) {
+                        left++;
+                    } else {
+                        right = left;
+                        while (right < nums.Length && nums[right] == 1) {
+                            right++;
+                        }
+                        ans = Math.Max(ans, right - left);
+                        left = right;
+                    }
+                }
+                return ans;
+            }
+
+            // #649
+            public string PredictPartyVictory(string senate) {
+                int n = senate.Length;
+                var radiant = new Queue<int>();
+                var dire = new Queue<int>();
+                for (int i = 0; i < n; ++i) {
+                    if (senate[i] == 'R') {
+                        radiant.Enqueue(i);
+                    } else {
+                        dire.Enqueue(i);
+                    }
+                }
+                while (radiant.Count != 0 && dire.Count != 0) {
+                    int radiantIndex = radiant.Dequeue(), direIndex = dire.Dequeue();
+                    if (radiantIndex < direIndex) {
+                        radiant.Enqueue(radiantIndex + n);
+                    } else {
+                        dire.Enqueue(direIndex + n);
+                    }
+                }
+                return radiant.Count != 0 ? "Radiant" : "Dire";
+
             }
         }
 
@@ -5187,7 +5252,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.SplitIntoFibonacci("121474836472147483648");
+            algorithm.FindMaxConsecutiveOnes(new int[] { 1, 1, 0, 1, 1, 1 });
         }
     }
 }
