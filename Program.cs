@@ -2301,18 +2301,6 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public int[] TopKFrequent(int[] nums, int k) {
-                var freqMap = new Dictionary<int, int>();
-                foreach (var num in nums) {
-                    if (freqMap.ContainsKey(num)) {
-                        freqMap[num] += 1;
-                    } else {
-                        freqMap.Add(num, 1);
-                    }
-                }
-                return new int[] { };
-            }
-
             public int IslandPerimeter(int[][] grid) {
                 // 搜索上下左右的常用技巧
                 int[] dx = { 0, 1, 0, -1 };
@@ -5027,7 +5015,32 @@ namespace FuckingAlgorithm {
                     }
                 }
                 return radiant.Count != 0 ? "Radiant" : "Dire";
+            }
 
+            // #347
+            class MyComparer : IComparer {
+                public int Compare(object x, object y) {
+                    var x1 = (int) x;
+                    var y1 = (int) y;
+                    return x1 < y1 ? -1 : 1;
+                }
+            }
+
+            public int[] TopKFrequent(int[] nums, int k) {
+                var dict = new Dictionary<int, int>();
+                foreach (var num in nums) {
+                    dict[num] = dict.GetValueOrDefault(num, 0) + 1;
+                }
+                var heap = new SortedList(new MyComparer());
+                foreach (var(key, val) in dict) {
+                    heap.Add(val, key);
+                    if (heap.Count > k) {
+                        heap.RemoveAt(0);
+                    }
+                }
+                var res = new int[k];
+                heap.GetValueList().CopyTo(res, 0);
+                return res;
             }
         }
 
@@ -5252,7 +5265,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.FindMaxConsecutiveOnes(new int[] { 1, 1, 0, 1, 1, 1 });
+            algorithm.TopKFrequent(new int[] { 1, 1, 1, 2, 2, 3 }, 2);
         }
     }
 }
