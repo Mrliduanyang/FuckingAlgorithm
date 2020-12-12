@@ -144,8 +144,7 @@ namespace FuckingAlgorithm {
                         }
                     }
                 }
-                Array.Sort(dp);
-                return dp[dp.Length - 1];
+                return dp.Max();
             }
 
             public int MaxSubArray(int[] nums) {
@@ -3945,6 +3944,30 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
+            public bool IsIsomorphic(string s, string t) {
+                var dict1 = new Dictionary<char, int>();
+                var res1 = new StringBuilder();
+                int count1 = 0;
+                foreach (var ch in s) {
+                    if (!dict1.ContainsKey(ch)) {
+                        dict1[ch] = count1;
+                        count1++;
+                    }
+                    res1.Append(dict1[ch]);
+                }
+                var dict2 = new Dictionary<char, int>();
+                var res2 = new StringBuilder();
+                int count2 = 0;
+                foreach (var ch in t) {
+                    if (!dict2.ContainsKey(ch)) {
+                        dict2[ch] = count2;
+                        count2++;
+                    }
+                    res2.Append(dict2[ch]);
+                }
+                return res1.ToString() == res2.ToString();
+            }
+
             public int MaxmiumGap(int[] nums) {
                 int n = nums.Length;
                 if (n < 2) {
@@ -4002,6 +4025,7 @@ namespace FuckingAlgorithm {
                 }
                 return false;
             }
+<<<<<<< HEAD
             class MyComparer : IComparer {
                 public int Compare(object x, object y) {
                     var x1 = (int) x;
@@ -4026,6 +4050,922 @@ namespace FuckingAlgorithm {
                 heap.GetValueList().CopyTo(res, 0);
                 return res;
             }
+=======
+
+            public int FourSumCount(int[] A, int[] B, int[] C, int[] D) {
+                var dict = new Dictionary<int, int>();
+                foreach (var numA in A) {
+                    foreach (var numB in B) {
+                        dict[numA + numB] = dict.GetValueOrDefault(numA + numB, 0) + 1;
+                    }
+                }
+                int ans = 0;
+                foreach (var numC in C) {
+                    foreach (var numD in D) {
+                        if (dict.ContainsKey(-(numC + numD))) {
+                            ans += dict[-(numC + numD)];
+                        }
+                    }
+                }
+                return ans;
+            }
+
+            public int ComputeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+                int area1 = (C - A) * (D - B);
+                int area2 = (G - E) * (H - F);
+
+                if (A >= G || C <= E || B >= H || D <= F)
+                    return area1 + area2;
+
+                int length = Math.Min(C, G) - Math.Max(A, E);
+                int height = Math.Min(D, H) - Math.Max(B, F);
+                int area3 = length * height;
+                return area1 + area2 - area3;
+            }
+
+            public bool CanFinish(int numCourses, int[][] prerequisites) {
+                var indegree = new int[numCourses];
+                var adjacency = new List<List<int>>();
+                var queue = new Queue<int>();
+                for (int i = 0; i < numCourses; i++) {
+                    adjacency.Add(new List<int>());
+                }
+                foreach (var node in prerequisites) {
+                    // node=[0,1]，要学习0，先学习1
+                    indegree[node[0]]++;
+                    adjacency[node[1]].Add(node[0]);
+                }
+                for (int i = 0; i < numCourses; i++) {
+                    // 先找到入度为0的，作为起点
+                    if (indegree[i] == 0) {
+                        queue.Enqueue(i);
+                    }
+                }
+                while (queue.Count != 0) {
+                    int pre = queue.Dequeue();
+                    numCourses--;
+                    foreach (var cur in adjacency[pre]) {
+                        // 入度降为0，说明没有前驱课程
+                        if (--indegree[cur] == 0) {
+                            queue.Enqueue(cur);
+                        }
+                    }
+                }
+                return numCourses == 0;
+            }
+
+            public int[] FindOrder(int numCourses, int[][] prerequisites) {
+                var indegree = new int[numCourses];
+                var adjacency = new List<List<int>>();
+                var queue = new Queue<int>();
+                var res = new List<int>();
+
+                for (int i = 0; i < numCourses; i++) {
+                    adjacency.Add(new List<int>());
+                }
+                foreach (var node in prerequisites) {
+                    indegree[node[0]]++;
+                    adjacency[node[1]].Add(node[0]);
+                }
+                for (int i = 0; i < numCourses; i++) {
+                    if (indegree[i] == 0) {
+                        queue.Enqueue(i);
+                        res.Add(i);
+                    }
+                }
+                while (queue.Count != 0) {
+                    int pre = queue.Dequeue();
+                    numCourses--;
+                    foreach (var cur in adjacency[pre]) {
+                        if (--indegree[cur] == 0) {
+                            queue.Enqueue(cur);
+                            res.Add(cur);
+                        }
+                    }
+                }
+                return numCourses == 0 ? res.ToArray() : new int[] { };
+            }
+
+            public int MajorityElement(int[] nums) {
+                int count = 0;
+                int candidate = int.MinValue;
+                foreach (var num in nums) {
+                    if (count == 0) {
+                        candidate = num;
+                    }
+                    if (candidate == num) {
+                        count++;
+                    } else {
+                        count--;
+                    }
+                }
+                return candidate;
+            }
+
+            public List<int> MajorityElement_1(int[] nums) {
+                var res = new List<int>();
+                if (nums.Length == 0) {
+                    return res;
+                }
+                int cand1 = 0, cand2 = 0;
+                int count1 = 0, count2 = 0;
+
+                foreach (var num in nums) {
+                    // 一个票只能给一个候选人，只能选择一个if
+                    // 还必须得把候选人判断放在计数判断之前，否则会出现cand1和cand2相等的情况
+                    if (cand1 == num) {
+                        count1++;
+                        continue;
+                    }
+                    if (cand2 == num) {
+                        count2++;
+                        continue;
+                    }
+                    if (count1 == 0) {
+                        cand1 = num;
+                        count1++;
+                        continue;
+                    }
+                    if (count2 == 0) {
+                        cand2 = num;
+                        count2++;
+                        continue;
+                    }
+                    count1--;
+                    count2--;
+                }
+                count1 = count2 = 0;
+                foreach (var num in nums) {
+                    if (num == cand1) {
+                        count1++;
+                    } else if (num == cand2) {
+                        count2++;
+                    }
+                }
+                if (count1 > nums.Length / 3) {
+                    res.Add(cand1);
+                }
+                if (count2 > nums.Length / 3) {
+                    res.Add(cand2);
+                }
+                return res;
+            }
+
+            public bool ContainsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+                // AC不了，C#没有TreeSet数据结构，无法在logn时间内查找指定元素
+                var set = new SortedSet<long?>();
+                for (int i = 0; i < nums.Length; i++) {
+                    var s = set.FirstOrDefault(item => item >= nums[i]);
+                    if (s != null && s <= (long) nums[i] + t) {
+                        return true;
+                    }
+                    var g = set.LastOrDefault(item => item <= nums[i]);
+                    if (g != null && g >= (long) nums[i] - t) {
+                        return true;
+                    }
+                    set.Add(nums[i]);
+                    if (set.Count > k) {
+                        set.Remove(nums[i - k]);
+                    }
+                }
+                return false;
+            }
+
+            public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+                TreeNode Helper(TreeNode root, TreeNode p, TreeNode q) {
+                    if (p.val < root.val && q.val < root.val) {
+                        return Helper(root.left, p, q);
+                    } else if (p.val > root.val && q.val > root.val) {
+                        return Helper(root.right, p, q);
+                    } else {
+                        return root;
+                    }
+                }
+
+                return Helper(root, p, q);
+            }
+
+            public int Calculate(string s) {
+                var res = new Stack<int>();
+                var num = 0;
+                var symbol = '+';
+                for (int i = 0; i < s.Length; i++) {
+                    var ch = s[i];
+                    if (ch == ' ' && i != s.Length - 1) continue;
+                    if ('0' <= ch && ch <= '9') {
+                        num = num * 10 + (ch - '0');
+                        if (i != s.Length - 1) {
+                            continue;
+                        }
+                    }
+                    switch (symbol) {
+                        case '+':
+                            res.Push(num);
+                            break;
+                        case '-':
+                            res.Push(-num);
+                            break;
+                        case '*':
+                            res.Push(res.Pop() * num);
+                            break;
+                        case '/':
+                            res.Push(res.Pop() / num);
+                            break;
+                    }
+                    symbol = ch;
+                    num = 0;
+                }
+                return res.Sum();
+            }
+
+            public int LargestPerimeter(int[] A) {
+                Array.Sort(A);
+                for (int i = A.Length - 1; i >= 2; i--) {
+                    if (A[i] < A[i - 1] + A[i - 2]) {
+                        return A[i] + A[i - 1] + A[i - 2];
+                    }
+                }
+                return 0;
+            }
+
+            public TreeNode LowestCommonAncestor_1(TreeNode root, TreeNode p, TreeNode q) {
+                TreeNode ans = null;
+                // 当p和q分别在左右子树，或者p或q其中一个为根
+                bool Helper(TreeNode root, TreeNode p, TreeNode q) {
+                    if (root == null) return false;
+                    var l = Helper(root.left, p, q);
+                    var r = Helper(root.right, p, q);
+                    if ((l && r) || ((root.val == p.val || root.val == q.val) && (l || r))) {
+                        ans = root;
+                    }
+                    return l || r || (root.val == p.val || root.val == q.val);
+                }
+                Helper(root, p, q);
+                return ans;
+            }
+
+            public int FindKthLargest(int[] nums, int k) {
+                var random = new Random();
+                void Swap(int i, int j) {
+                    var tmp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = tmp;
+                }
+                int Partition(int l, int r) {
+                    int x = nums[r], i = l - 1;
+                    for (int j = l; j < r; ++j) {
+                        // 遇到j比较大的，跳过，遇到j比较小的，交换到i的下一个位置。把所有小的交换到前面。
+                        if (nums[j] <= x) {
+                            Swap(++i, j);
+                        }
+                    }
+                    Swap(i + 1, r);
+                    return i + 1;
+                }
+                int RandomPartition(int l, int r) {
+                    int i = random.Next(r - l + 1) + l;
+                    // 把l-r中一个随机位置的元素交换到r
+                    Swap(i, r);
+                    return Partition(l, r);
+                }
+
+                int QuickSelect(int l, int r, int idx) {
+                    int q = RandomPartition(l, r);
+                    if (q == idx) {
+                        return nums[q];
+                    } else {
+                        return q < idx ? QuickSelect(q + 1, r, idx) : QuickSelect(l, q - 1, idx);
+                    }
+
+                }
+                return QuickSelect(0, nums.Length - 1, nums.Length - k);
+            }
+
+            public string ReorganizeString(string S) {
+                // 出现次数最多的字母有没有超过一半
+                var mid = (S.Length + 1) / 2;
+                // 计数
+                var dict = S.GroupBy(x => x).OrderByDescending(x => x.Count()).ToDictionary(x => x.Key, x => x.Count());
+
+                if (dict.Values.All(x => x <= mid)) {
+                    var arr = new char[S.Length];
+                    Action<int> action = (i) => {
+                        var key = dict.Keys.First();
+                        arr[i] = key;
+                        dict[key]--;
+                        if (dict[key] <= 0) dict.Remove(key);
+                    };
+
+                    // 交替生成
+                    for (int i = 0; i < arr.Length; i += 2) action(i);
+                    for (int i = 1; i < arr.Length; i += 2) action(i);
+
+                    return new string(arr);
+                }
+
+                return "";
+            }
+
+            public int[] SearchRange(int[] nums, int target) {
+                if (nums.Length == 0) {
+                    return new int[] {-1, -1 };
+                }
+                int left = 0, right = nums.Length - 1;
+                while (left <= right) {
+                    int mid = left + (right - left) / 2;
+                    if (nums[mid] == target) {
+                        int l = mid, r = mid;
+                        while (l >= 0 && nums[l] == target) {
+                            l--;
+                        }
+                        while (r < nums.Length && nums[r] == target) {
+                            r++;
+                        }
+                        return new int[] { l + 1, r - 1 };
+                    } else if (nums[mid] < target) {
+                        left = mid + 1;
+                    } else {
+                        right = mid - 1;
+                    }
+                }
+                return new int[] {-1, -1 };
+            }
+
+            public int[] SingleNumber_1(int[] nums) {
+                // 关键是把两个出现一次的数字分到两个组，两个数字的二进制肯定有不一样的位，根据第一个为1的位把两个数字分到两组
+                var res = new int[2];
+                if (nums.Length < 2) {
+                    return res;
+                }
+                int xorRes = 0;
+                foreach (var num in nums) {
+                    xorRes ^= num;
+                }
+                int idx = 1;
+                while (true) {
+                    if ((xorRes & 1) == 1) {
+                        break;
+                    }
+                    idx = idx << 1;
+                    xorRes = xorRes >> 1;
+                }
+
+                foreach (var num in nums) {
+                    if ((num & idx) == 0) {
+                        res[0] ^= num;
+                    } else {
+                        res[1] ^= num;
+                    }
+                }
+                return res;
+            }
+
+            public int HIndex(int[] citations) {
+                int n = citations.Length;
+                int[] papers = new int[n + 1];
+                foreach (var citation in citations) {
+                    papers[Math.Min(n, citation)]++;
+                }
+                int k = n;
+                for (int s = papers[n]; k > s; s += papers[k]) {
+                    k--;
+                }
+                return k;
+            }
+
+            public int[] MaxNumber(int[] nums1, int[] nums2, int k) {
+                int[] MaxSubsequence(int[] nums, int k) {
+                    int len = nums.Length;
+                    int[] stack = new int[k];
+                    int top = -1;
+                    int remain = len - k;
+                    for (int i = 0; i < len; i++) {
+                        int num = nums[i];
+                        // 如果num比较大，找到num在stack中的正确位置
+                        while (top >= 0 && stack[top] < num && remain > 0) {
+                            top--;
+                            remain--;
+                        }
+                        // 将num放在stack中
+                        if (top < k - 1) {
+                            stack[++top] = num;
+                        } else {
+                            remain--;
+                        }
+                    }
+                    return stack;
+                }
+
+                int[] Merge(int[] sub1, int[] sub2) {
+                    int a = sub1.Length, b = sub2.Length;
+                    if (a == 0) {
+                        return sub2;
+                    }
+                    if (b == 0) {
+                        return sub1;
+                    }
+                    int merglen = a + b;
+                    int[] m = new int[merglen];
+                    int n1 = 0, n2 = 0;
+                    for (int i = 0; i < merglen; i++) {
+                        if (Compare(sub1, sub2, n1, n2) > 0) {
+                            m[i] = sub1[n1++];
+                        } else {
+                            m[i] = sub2[n2++];
+                        }
+                    }
+                    return m;
+                }
+
+                int Compare(int[] sub1, int[] sub2, int n1, int n2) {
+                    int a = sub1.Length, b = sub2.Length;
+                    while (n1 < a && n2 < b) {
+                        int dif = sub1[n1] - sub2[n2];
+                        // 比较当前元素大小，选择大的元素；
+                        // 如果一样大，比较后续元素；
+                        if (dif != 0) {
+                            return dif;
+                        }
+                        n1++;
+                        n2++;
+                    }
+                    // 如果一个比较到头了，那肯定长度长的大
+                    return (a - n1) - (b - n2);
+                }
+
+                int[] res = new int[k];
+                int n1 = nums1.Length;
+                int n2 = nums2.Length;
+                int start = Math.Max(0, k - n2), end = Math.Min(k, n1);
+                for (int i = start; i <= end; i++) {
+                    int[] sub1 = MaxSubsequence(nums1, i);
+                    int[] sub2 = MaxSubsequence(nums2, k - i);
+                    int[] cur = Merge(sub1, sub2);
+                    if (Compare(cur, res, 0, 0) > 0) {
+                        Array.Copy(cur, 0, res, 0, k);
+                    }
+                }
+                return res;
+            }
+
+            public int Rob_3(TreeNode root) {
+                var memo = new Dictionary<TreeNode, int>();
+                // 利用备忘录消除重叠子问题
+                int Helper(TreeNode root) {
+                    if (root == null) return 0;
+
+                    if (memo.ContainsKey(root)) {
+                        return memo[root];
+                    }
+                    // 抢，然后去下下家
+                    int doIt = root.val +
+                        (root.left == null ?
+                            0 : Helper(root.left.left) + Helper(root.left.right)) +
+                        (root.right == null ?
+                            0 : Helper(root.right.left) + Helper(root.right.right));
+                    // 不抢，然后去下家
+                    int dont = Helper(root.left) + Helper(root.right);
+
+                    int res = Math.Max(doIt, dont);
+                    memo[root] = res;
+                    return res;
+                }
+                return Helper(root);
+            }
+
+            public int DiameterOfBinaryTree(TreeNode root) {
+                int ans = 1;
+                int Helper(TreeNode root) {
+                    if (root == null) {
+                        return 0;
+                    }
+                    int l = Helper(root.left);
+                    int r = Helper(root.right);
+                    // 更新以当前节点为根的最大长度
+                    ans = Math.Max(ans, l + r + 1);
+                    // 返回以当前节点为根的子树高度
+                    return Math.Max(l, r) + 1;
+                }
+
+                Helper(root);
+                return ans - 1;
+            }
+
+            public bool FindTarget(TreeNode root, int k) {
+                var res = new List<int>();
+                var stack = new Stack<TreeNode>();
+                // root为null并且栈空，结束
+                while (root != null || stack.Count != 0) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    root = stack.Pop();
+                    res.Add(root.val);
+                    root = root.right;
+                }
+                int left = 0, right = res.Count - 1;
+                while (left < right) {
+                    int sum = res[left] + res[right];
+                    if (sum == k)
+                        return true;
+                    if (sum < k)
+                        left++;
+                    else
+                        right--;
+                }
+                return false;
+            }
+
+            public int CountPrimes(int n) {
+                int[] isPrime = new int[n];
+                Array.Fill(isPrime, 1);
+                int ans = 0;
+                for (int i = 2; i < n; ++i) {
+                    if (isPrime[i] == 1) {
+                        ans += 1;
+                        if ((long) i * i < n) {
+                            for (int j = i * i; j < n; j += i) {
+                                isPrime[j] = 0;
+                            }
+                        }
+                    }
+                }
+                return ans;
+            }
+
+            public string GetHint(string secret, string guess) {
+                var dict = new int[10];
+                int bulls = 0, cows = 0;
+                for (int i = 0; i < secret.Length; i++) {
+                    int cs = secret[i] - '0';
+                    int cg = guess[i] - '0';
+                    if (cs == cg) {
+                        bulls++;
+                    } else {
+                        // 只有cs和cg不等时，才会变更个数。dict[cs] < 0说明在guess中有和cs不等的cg
+                        if (dict[cs] < 0) {
+                            cows++;
+                        }
+                        if (dict[cg] > 0) {
+                            cows++;
+                        }
+                        // cs总是增加，cg总是减少
+                        dict[cs]++;
+                        dict[cg]--;
+                    }
+                }
+                return $"{bulls}A{cows}B";
+            }
+
+            public List<TreeNode> FindDuplicateSubtrees(TreeNode root) {
+                var dict = new Dictionary<string, int>();
+                var res = new List<TreeNode>();
+                string Helper(TreeNode root) {
+                    if (root == null) return "#";
+                    string str = $"{root.val},{Helper(root.left)},{Helper(root.right)}";
+                    dict[str] = dict.GetValueOrDefault(str, 0) + 1;
+                    // 只在==2时添加一次，之后再出现同样的str，也无需添加
+                    if (dict[str] == 2) {
+                        res.Add(root);
+                    }
+                    return str;
+                }
+                Helper(root);
+                return res;
+            }
+
+            public bool IsPossible(int[] nums) {
+                var numCount = new SortedDictionary<int, int>();
+                var tail = new SortedDictionary<int, int>();
+                foreach (var num in nums) {
+                    numCount[num] = numCount.GetValueOrDefault(num, 0) + 1;
+                }
+                foreach (var num in nums) {
+                    if (numCount[num] == 0) continue;
+                    else if (numCount[num] > 0 && tail.GetValueOrDefault(num - 1, 0) > 0) {
+                        numCount[num]--;
+                        tail[num - 1]--;
+                        tail[num] = tail.GetValueOrDefault(num, 0) + 1;
+                    } else if (numCount.GetValueOrDefault(num + 1, 0) > 0 && numCount.GetValueOrDefault(num + 2, 0) > 0) {
+                        numCount[num]--;
+                        numCount[num + 1]--;
+                        numCount[num + 2]--;
+                        tail[num + 2] = tail.GetValueOrDefault(num + 2, 0) + 1;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public List<double> AverageOfLevels(TreeNode root) {
+                var res = new List<double>();
+                if (root == null) return res;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    var level = new List<int>();
+                    for (int i = 0; i < count; i++) {
+                        var tmp = queue.Dequeue();
+                        level.Add(tmp.val);
+                        if (tmp.left != null) queue.Enqueue(tmp.left);
+                        if (tmp.right != null) queue.Enqueue(tmp.right);
+                    }
+                    res.Add(level.Average());
+                }
+                return res;
+            }
+
+            public bool IsCompleteTree(TreeNode root) {
+                if (root == null) return true;
+                var queue = new Queue<TreeNode>();
+                queue.Enqueue(root);
+                var prev = root;
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    for (int i = 0; i < count; i++) {
+                        var tmp = queue.Dequeue();
+                        if (prev == null && tmp != null) return false;
+                        if (tmp != null) {
+                            queue.Enqueue(tmp.left);
+                            queue.Enqueue(tmp.right);
+                        }
+                        prev = tmp;
+                    }
+                }
+                return true;
+            }
+
+            public bool IsUnivalTree(TreeNode root) {
+                int val = root.val;
+                bool Helper(TreeNode root) {
+                    if (root == null) return true;
+                    var left = Helper(root.left);
+                    var right = Helper(root.right);
+                    return left && right && root.val == val;
+                }
+                return Helper(root);
+            }
+
+            public int MaxAncestorDiff(TreeNode root) {
+                if (root == null) return 0;
+                var res = int.MinValue;
+                (int, int) Helper(TreeNode root) {
+                    if (root == null) {
+                        return (100001, -1);
+                    }
+                    var curVal = root.val;
+                    var(lMin, lMax) = Helper(root.left);
+                    var(rMin, rMax) = Helper(root.right);
+                    lMin = lMin == 100001 ? curVal : lMin;
+                    lMax = lMax == -1 ? curVal : lMax;
+                    rMin = rMin == 100001 ? curVal : rMin;
+                    rMax = rMax == -1 ? curVal : rMax;
+                    var curMin = Math.Min(lMin, rMin);
+                    var curMax = Math.Max(lMax, rMax);
+                    res = Math.Max(res, Math.Max(Math.Abs(curVal - curMin), Math.Abs(curVal - curMax)));
+                    return (Math.Min(curVal, curMin), Math.Max(curVal, curMax));
+                }
+                Helper(root);
+                return res;
+            }
+
+            public int MatrixScore(int[][] A) {
+                int m = A.Length, n = A[0].Length;
+                // 翻转第一列为0的行
+                for (int i = 0; i < m; i++) {
+                    if (A[i][0] == 0) {
+                        for (int j = 0; j < n; j++) {
+                            A[i][j] = (1 - A[i][j]);
+                        }
+                    }
+                }
+                for (int j = 0; j < n; j++) {
+                    int zeroCount = 0, oneCount = 0;
+                    for (int i = 0; i < m; i++) {
+                        if (A[i][j] == 0) {
+                            zeroCount++;
+                        } else {
+                            oneCount++;
+                        }
+                    }
+                    if (zeroCount > oneCount) {
+                        for (int i = 0; i < m; i++) {
+                            A[i][j] = (1 - A[i][j]);
+                        }
+                    }
+                }
+                int res = 0;
+                foreach (var row in A) {
+                    int rowScore = 0;
+                    foreach (var x in row) {
+                        rowScore = ((rowScore << 1) + x);
+                    }
+                    res += rowScore;
+                }
+                return res;
+            }
+
+            public string SmallestFromLeaf(TreeNode root) {
+                var res = new List<string>();
+                var str = new StringBuilder();
+                void Helper(TreeNode root) {
+                    if (root == null) return;
+                    str.Append((char) ('a' + root.val));
+                    if (root.left == null && root.right == null) {
+                        var tmp = new string(str.ToString().Reverse().ToArray());
+                        res.Add(tmp);
+                    }
+                    Helper(root.left);
+                    Helper(root.right);
+                    str.Remove(str.Length - 1, 1);
+                }
+                Helper(root);
+                return res.Min();
+            }
+
+            public TreeNode AddOneRow(TreeNode root, int v, int d) {
+                if (d == 1) {
+                    var tmp = new TreeNode(v);
+                    tmp.left = root;
+                    return tmp;
+                }
+                var queue = new Queue<TreeNode>();
+                var prevRow = new List<TreeNode>();
+                var height = 1;
+                queue.Enqueue(root);
+                while (queue.Count != 0) {
+                    var count = queue.Count;
+                    for (int i = 0; i < count; i++) {
+                        var node = queue.Dequeue();
+                        if (height == d - 1) prevRow.Add(node);
+                        if (node.left != null) queue.Enqueue(node.left);
+                        if (node.right != null) queue.Enqueue(node.right);
+                    }
+                    if (++height == d) break;
+                }
+                foreach (var node in prevRow) {
+                    var tmp = new TreeNode(v);
+                    tmp.left = node.left;
+                    node.left = tmp;
+                    tmp = new TreeNode(v);
+                    tmp.right = node.right;
+                    node.right = tmp;
+                }
+                return root;
+            }
+
+            public int[] ProductExceptSelf(int[] nums) {
+                int n = nums.Length;
+                int[] prev = new int[n];
+                int[] next = new int[n];
+                prev[0] = 1;
+                next[n - 1] = 1;
+                for (int i = 1; i < n; i++) {
+                    prev[i] = prev[i - 1] * nums[i - 1];
+                }
+                for (int i = n - 2; i >= 0; i--) {
+                    next[i] = next[i + 1] * nums[i + 1];
+                }
+                return prev.Zip(next, (x, y) => x * y).ToArray();
+            }
+
+            public int FindDuplicate(int[] nums) {
+                Array.Sort(nums);
+                int slow = 0, fast = 1;
+                while (fast < nums.Length) {
+                    if (nums[slow] == nums[fast]) {
+                        return nums[slow];
+                    }
+                    slow++;
+                    fast++;
+                }
+                return -1;
+            }
+
+            public List<int> SplitIntoFibonacci(string S) {
+                var res = new List<int>();
+                int length = S.Length;
+
+                bool Helper(int idx, int prev, int sum) {
+                    if (idx == length) return res.Count >= 3;
+                    long curLong = 0;
+                    for (int i = idx; i < length; i++) {
+                        // 当前块长度大于1，并且起始位是0，剪枝
+                        if (i > idx && S[idx] == '0') break;
+                        curLong = curLong * 10 + (S[i] - '0');
+                        if (curLong > int.MaxValue) break;
+                        int cur = (int) curLong;
+                        if (res.Count >= 2) {
+                            if (cur < sum) continue;
+                            else if (cur > sum) break;
+                        }
+                        res.Add(cur);
+                        if (Helper(i + 1, cur, prev + cur)) {
+                            return true;
+                        } else {
+                            res.RemoveAt(res.Count - 1);
+                        }
+                    }
+                    return false;
+                }
+                Helper(0, 0, 0);
+                return res;
+            }
+
+            public int NumSquares(int n) {
+                // 跟换硬币差不多，把硬币换成完全平方数，并且不限制硬币个数
+                var nums = new List<int>();
+                for (int i = 1; i * i <= n; i++) {
+                    nums.Add(i * i);
+                }
+                var dp = new int[n + 1];
+                Array.Fill(dp, n + 1);
+                dp[0] = 0;
+                for (int i = 1; i <= n; i++) {
+                    foreach (var num in nums) {
+                        if ((i - num) < 0) continue;
+                        dp[i] = Math.Min(dp[i], 1 + dp[i - num]);
+                    }
+                }
+                return dp[n];
+            }
+
+            public bool WordPattern(string pattern, string s) {
+                var patterns = pattern.ToArray();
+                var words = s.Split(" ");
+                if (patterns.Length != words.Length) return false;
+                var dict1 = new Dictionary<char, string>();
+                var dict2 = new Dictionary<string, char>();
+                for (int i = 0; i < patterns.Length; i++) {
+                    var ch = patterns[i];
+                    var word = words[i];
+                    if (dict1.ContainsKey(ch) && dict2.ContainsKey(word) && (dict1[ch] != word || dict2[word] != ch)) {
+                        return false;
+                    }
+                    if (dict1.ContainsKey(ch) && !dict2.ContainsKey(word)) {
+                        return false;
+                    }
+                    if (!dict1.ContainsKey(ch) && dict2.ContainsKey(word)) {
+                        return false;
+                    }
+                    if (!dict1.ContainsKey(ch) && !dict2.ContainsKey(word)) {
+                        dict1[ch] = word;
+                        dict2[word] = ch;
+                    }
+                }
+                return true;
+            }
+
+            public bool IsValidSerialization(string preorder) {
+                int slots = 1;
+                int n = preorder.Length;
+                for (int i = 0; i < n; ++i) {
+                    if (preorder[i] == ',') {
+                        --slots;
+                        if (slots < 0) return false;
+                        if (preorder[i - 1] != '#') slots += 2;
+                    }
+                }
+                slots = (preorder[n - 1] == '#') ? slots - 1 : slots + 1;
+                return slots == 0;
+            }
+
+            public bool IsPowerOfThree(int n) {
+                return (Math.Log10(n) / Math.Log10(3)) % 1 == 0;
+            }
+
+            public bool LemonadeChange(int[] bills) {
+                int five = 0, ten = 0;
+                foreach (var bill in bills) {
+                    if (bill == 5) {
+                        five++;
+                    } else if (bill == 10) {
+                        if (five == 0) {
+                            return false;
+                        }
+                        five--;
+                        ten++;
+                    } else {
+                        if (five > 0 && ten > 0) {
+                            five--;
+                            ten--;
+                        } else if (five >= 3) {
+                            five -= 3;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            public int LengthOfLIS(int[] nums) {
+
+            }
+>>>>>>> 3a405829a981c91f16fb3e2085ea1b0fb8b8b515
         }
 
         public class DataStructure {
@@ -4219,10 +5159,41 @@ namespace FuckingAlgorithm {
                     return minStack.Peek();
                 }
             }
+
+            public class MyStack {
+                public Queue<int> queue;
+                public MyStack() {
+                    queue = new Queue<int>();
+                }
+
+                public void Push(int x) {
+                    int n = queue.Count;
+                    queue.Enqueue(x);
+                    for (int i = 0; i < n; i++) {
+                        queue.Enqueue(queue.Dequeue());
+                    }
+                }
+
+                public int Pop() {
+                    return queue.Dequeue();
+                }
+
+                public int Top() {
+                    return queue.First();
+                }
+
+                public bool Empty() {
+                    return queue.Count == 0;
+                }
+            }
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+<<<<<<< HEAD
             algorithm.TopKFrequent(new int[] { 1, 1, 1, 2, 2, 3 }, 2);
+=======
+            algorithm.SplitIntoFibonacci("121474836472147483648");
+>>>>>>> 3a405829a981c91f16fb3e2085ea1b0fb8b8b515
         }
     }
 }
