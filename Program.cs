@@ -5018,7 +5018,7 @@ namespace FuckingAlgorithm {
             }
 
             // #347
-            class MyComparer : IComparer {
+            class TopKComparer : IComparer {
                 public int Compare(object x, object y) {
                     var x1 = (int) x;
                     var y1 = (int) y;
@@ -5031,7 +5031,7 @@ namespace FuckingAlgorithm {
                 foreach (var num in nums) {
                     dict[num] = dict.GetValueOrDefault(num, 0) + 1;
                 }
-                var heap = new SortedList(new MyComparer());
+                var heap = new SortedList(new TopKComparer());
                 foreach (var(key, val) in dict) {
                     heap.Add(val, key);
                     if (heap.Count > k) {
@@ -5068,6 +5068,147 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
+
+            // #350
+            public int[] Intersect(int[] nums1, int[] nums2) {
+                var shortNums = nums1.Length < nums2.Length ? nums1 : nums2;
+                var longNums = nums1.Length >= nums2.Length ? nums1 : nums2;
+                var dict = new Dictionary<int, int>();
+                foreach (var num in shortNums) {
+                    dict[num] = dict.GetValueOrDefault(num, 0) + 1;
+                }
+                var res = new int[shortNums.Length];
+                var idx = 0;
+                foreach (var num in longNums) {
+                    var count = dict.GetValueOrDefault(num, 0);
+                    if (count > 0) {
+                        res[idx++] = num;
+                        count--;
+                        if (count > 0) {
+                            dict[num] = count;
+                        } else {
+                            dict.Remove(num);
+                        }
+                    }
+                }
+                return res.Take(idx).ToArray();
+            }
+
+            // #354
+            public int MaxEnvelopes(int[][] envelopes) {
+                Array.Sort(envelopes, (x, y) => {
+                    if (x[0] == y[0]) {
+                        return y[1] - x[1];
+                    } else {
+                        return x[0] - y[0];
+                    }
+                });
+                var secDim = envelopes.Select(x => x[1]).ToArray();
+                var dp = new int[secDim.Length];
+                var res = 0;
+                Array.Fill(dp, 1);
+                for (int i = 0; i < secDim.Length; i++) {
+                    for (int j = 0; j < i; j++) {
+                        if (secDim[i] > secDim[j]) {
+                            dp[i] = Math.Max(dp[i], dp[j] + 1);
+                        }
+                    }
+                    res = Math.Max(res, dp[i]);
+                }
+                return res;
+            }
+
+            // #365
+            public bool CanMeasureWater(int x, int y, int z) {
+                int gcd(int x, int y) {
+                    int remainder = x % y;
+                    while (remainder != 0) {
+                        x = y;
+                        y = remainder;
+                        remainder = x % y;
+                    }
+                    return y;
+                }
+                // 最后请用以上水壶中的一或两个来盛放取得的z升水。
+                if (x + y < z) {
+                    return false;
+                }
+                if (x == 0 || y == 0) {
+                    return z == 0 || x + y == z;
+                }
+                return z % gcd(x, y) == 0;
+            }
+
+            // #400
+            int FindNthDigit(int n) {
+                if (n == 0) { return 0; }
+                int digit = 1; // digit位数
+                long start = 1; // digit位数的起始数
+                long idxCount = digit * 9 * start; // digit位数范围内索引长度
+
+                while (n > idxCount) {
+                    n = (int) (n - idxCount);
+                    ++digit;
+                    start *= 10;
+                    idxCount = digit * 9 * start;
+                }
+                long num = start + (n - 1) / digit;
+                int remainder = (n - 1) % digit;
+                return (int) (num.ToString() [remainder] - '0');
+            }
+
+            // #373
+            class KSmallComparer : IComparer {
+                public int Compare(object x, object y) {
+                    var x1 = (long) x;
+                    var y1 = (long) y;
+                    // 小顶堆比较器，小于返回-1
+                    return x1 < y1 ? -1 : 1;
+                }
+            }
+            public List<List<int>> KSmallestPairs(int[] nums1, int[] nums2, int k) {
+                var heap = new SortedList(new KSmallComparer());
+                foreach (var num1 in nums1) {
+                    foreach (var num2 in nums2) {
+                        long sum = num1 + num2;
+                        heap.Add(sum, new List<int> { num1, num2 });
+                        if (heap.Count > k) {
+                            heap.RemoveAt(heap.Count - 1);
+                        }
+                    }
+                }
+                var res = new List<List<int>>();
+                foreach (var item in heap.GetValueList()) {
+                    res.Add((List<int>) item);
+                }
+                return res;
+            }
+
+            public int CombinationSum4(int[] nums, int target) {
+                int[] dp = new int[target + 1];
+                int Helper(int target) {
+                    if (target == 0) {
+                        return 1;
+                    }
+                    if (dp[target] >= 0) {
+                        return dp[target];
+                    }
+                    int count = 0;
+                    for (int i = 0; i < nums.Length; i++) {
+                        if (target >= nums[i]) {
+                            count += Helper(target - nums[i]);
+                        }
+                    }
+                    dp[target] = count;
+                    return count;
+                }
+
+                Array.Sort(nums);
+                Array.Fill(dp, -1);
+                int count = Helper(target);
+                return count;
+            }
+
         }
 
         public class DataStructure {
@@ -5291,7 +5432,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.TopKFrequent(new int[] { 1, 1, 1, 2, 2, 3 }, 2);
+            algorithm.CombinationSum4(new int[] { 1, 2, 3 }, 4);
         }
     }
 }
