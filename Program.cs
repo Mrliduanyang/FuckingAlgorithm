@@ -5184,6 +5184,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #377
             public int CombinationSum4(int[] nums, int target) {
                 int[] dp = new int[target + 1];
                 int Helper(int target) {
@@ -5207,6 +5208,47 @@ namespace FuckingAlgorithm {
                 Array.Fill(dp, -1);
                 int count = Helper(target);
                 return count;
+            }
+
+            // #738
+            public int MonotoneIncreasingDigits(int N) {
+                var digits = N.ToString().ToCharArray();
+                int i = 1;
+                while (i < digits.Length && digits[i - 1] <= digits[i]) {
+                    i++;
+                }
+                if (i < digits.Length) {
+                    while (i > 0 && digits[i - 1] > digits[i]) {
+                        digits[i - 1]--;
+                        i--;
+                    }
+                    for (++i; i < digits.Length; i++) {
+                        digits[i] = '9';
+                    }
+                }
+                return int.Parse(new string(digits));
+            }
+
+            // #378
+            class KthSmallestComparer : IComparer {
+                public int Compare(object x, object y) {
+                    var x1 = (int) x;
+                    var y1 = (int) y;
+                    // 小顶堆比较器，小于返回-1
+                    return x1 < y1 ? -1 : 1;
+                }
+            }
+            public int KthSmallest(int[][] matrix, int k) {
+                var heap = new SortedList(new KthSmallestComparer(), k);
+                foreach (var row in matrix) {
+                    foreach (var num in row) {
+                        heap.Add(num, num);
+                        if (heap.Count > k) {
+                            heap.RemoveAt(k);
+                        }
+                    }
+                }
+                return (int) heap.GetValueList() [k - 1];
             }
 
         }
@@ -5327,6 +5369,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #381
             public class RandomizedCollection {
                 Dictionary<int, SortedSet<int>> idx;
                 List<int> nums;
@@ -5366,6 +5409,47 @@ namespace FuckingAlgorithm {
                     if (idx[val].Count == 0) {
                         idx.Remove(val);
                     }
+                    nums.RemoveAt(nums.Count - 1);
+                    return true;
+                }
+
+                public int GetRandom() {
+                    return nums[random.Next(nums.Count)];
+                }
+            }
+
+            // #380
+            public class RandomizedSet {
+                Dictionary<int, int> idx;
+                List<int> nums;
+                Random random;
+                public RandomizedSet() {
+                    idx = new Dictionary<int, int>();
+                    nums = new List<int>();
+                    random = new Random();
+                }
+
+                public bool Insert(int val) {
+                    if (idx.ContainsKey(val)) {
+                        return false;
+                    } else {
+                        nums.Add(val);
+                        idx[val] = nums.Count - 1;
+                        return true;
+                    }
+                }
+
+                public bool Remove(int val) {
+                    if (!idx.ContainsKey(val)) {
+                        return false;
+                    }
+                    var valIdx = idx[val];
+                    if (valIdx != nums.Count - 1) {
+                        var lastNum = nums.Last();
+                        nums[valIdx] = lastNum;
+                        idx[lastNum] = valIdx;
+                    }
+                    idx.Remove(val);
                     nums.RemoveAt(nums.Count - 1);
                     return true;
                 }
@@ -5432,7 +5516,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.CombinationSum4(new int[] { 1, 2, 3 }, 4);
+            algorithm.KthSmallest(new int[][] {
+                new int[] { 1, 5, 9 },
+                    new int[] { 10, 11, 13 },
+                    new int[] { 12, 13, 15 }
+            }, 8);
         }
     }
 }
