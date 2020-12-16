@@ -927,7 +927,7 @@ namespace FuckingAlgorithm {
                 int n = arr.Length;
                 // 第一轮迭代是，rand取值n，第二轮迭代，rand取值有n-1个，依次类推，总共有n!种。符合正确性准则。
                 for (int i = 0; i < n; i++) {
-                    int rand = r.Next(i, n - 1);
+                    int rand = r.Next(i, n);
                     // Swap交换数组元素
                     int tmp = arr[i];
                     arr[i] = arr[rand];
@@ -936,7 +936,7 @@ namespace FuckingAlgorithm {
                 // 错误的写法，共产生n^n种结果，!= n!。
                 for (int i = 0; i < n; i++) {
                     // 每次都从闭区间 [0, n-1]中随机选取元素进行交换。
-                    int rand = r.Next(i, n - 1);
+                    int rand = r.Next(i, n);
                 }
             }
 
@@ -5251,6 +5251,38 @@ namespace FuckingAlgorithm {
                 return (int) heap.GetValueList() [k - 1];
             }
 
+            // #386
+            public List<int> LexicalOrder(int n) {
+                var res = new List<int>();
+                void Helper(int i) {
+                    if (i > n) {
+                        return;
+                    }
+                    res.Add(i);
+                    for (int j = 0; j < 10; j++) {
+                        Helper(i * 10 + j);
+                    }
+                }
+                for (int i = 1; i < 10; i++) {
+                    Helper(i);
+                }
+                return res;
+            }
+
+            // #442
+            public List<int> FindDuplicates(int[] nums) {
+                var res = new List<int>();
+                for (int i = 0; i < nums.Length; i++) {
+                    int idx = Math.Abs(nums[i]) - 1;
+                    if (nums[idx] > 0) {
+                        nums[idx] = -nums[idx];
+                    } else {
+                        res.Add(idx + 1);
+                    }
+                }
+                return res;
+            }
+
         }
 
         public class DataStructure {
@@ -5456,6 +5488,30 @@ namespace FuckingAlgorithm {
 
                 public int GetRandom() {
                     return nums[random.Next(nums.Count)];
+                }
+            }
+
+            // #384
+            public class ShuffleArray {
+                int[] _nums;
+                int[] _shuffle;
+                Random r = new Random();
+                public ShuffleArray(int[] nums) {
+                    _nums = nums;
+                    _shuffle = nums.Clone() as int[];
+                }
+                public int[] Reset() {
+                    return _nums;
+                }
+
+                public int[] Shuffle() {
+                    for (int i = 0; i < _nums.Length; i++) {
+                        var index = r.Next(i, _nums.Length);
+                        var tmp = _shuffle[i];
+                        _shuffle[i] = _shuffle[index];
+                        _shuffle[index] = tmp;
+                    }
+                    return _shuffle;
                 }
             }
 
