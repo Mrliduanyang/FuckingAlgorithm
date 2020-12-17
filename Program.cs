@@ -396,6 +396,7 @@ namespace FuckingAlgorithm {
                 return dp_i_0;
             }
 
+            // #714
             public int MaxProfit_4(int[] prices, int fee) {
                 // 交易次数k=无穷，假如交易手续费，相当于买入股票价格高了，或者卖出股票价格减小了
                 int n = prices.Length;
@@ -5283,6 +5284,93 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #423
+            public string OriginalDigits(string s) {
+                char[] count = new char[26 + (int)
+                    'a'];
+                foreach (var letter in s.ToCharArray()) {
+                    count[letter]++;
+                }
+                int[] nums = new int[10];
+                nums[0] = count['z'];
+                nums[2] = count['w'];
+                nums[4] = count['u'];
+                nums[6] = count['x'];
+                nums[8] = count['g'];
+                nums[3] = count['h'] - nums[8];
+                nums[5] = count['f'] - nums[4];
+                nums[7] = count['s'] - nums[6];
+                nums[9] = count['i'] - nums[5] - nums[6] - nums[8];
+                nums[1] = count['n'] - nums[7] - 2 * nums[9];
+
+                StringBuilder output = new StringBuilder();
+                for (int i = 0; i < 10; i++)
+                    for (int j = 0; j < nums[i]; j++)
+                        output.Append(i);
+                return output.ToString();
+            }
+
+            // #427
+            // public Node construct(int[][] grid) {
+            //     Node subConstruct(int[][] grid, int i, int j, int length) {
+            //         if (length == 1) return new Node(grid[i][j] == 1 ? true : false, true);
+            //         bool mark = true;
+            //         int num = grid[i][j];
+            //         for (int a = i; a < i + length; ++a) {
+            //             for (int b = j; b < j + length; ++b) {
+            //                 if (num != grid[a][b]) {
+            //                     mark = false;
+            //                     break;
+            //                 }
+            //             }
+            //         }
+            //         if (mark) return new Node(grid[i][j] == 1 ? true : false, true);
+            //         Node curNode = new Node(true, false);
+            //         curNode.topLeft = subConstruct(grid, i, j, length / 2);
+            //         curNode.topRight = subConstruct(grid, i, j + length / 2, length / 2);
+            //         curNode.bottomLeft = subConstruct(grid, i + length / 2, j, length / 2);
+            //         curNode.bottomRight = subConstruct(grid, i + length / 2, j + length / 2, length / 2);
+            //         return curNode;
+            //     }
+            //     return subConstruct(grid, 0, 0, grid.Length);
+            // }
+
+            // #443
+            public int Compress(char[] chars) {
+                var length = chars.Length;
+                int slow = 0, fast = 0, cur = 0;
+                while (fast <= length) {
+                    // 特殊处理fast
+                    if (fast == length || chars[fast] != chars[slow]) {
+                        chars[cur++] = chars[slow];
+                        if ((fast - slow) >= 2) {
+                            foreach (var ch in (fast - slow).ToString()) {
+                                chars[cur++] = ch;
+                            }
+                        }
+                        slow = fast;
+                    }
+                    fast++;
+                }
+                return chars.Take(cur).Count();
+            }
+
+            public int NumberOfBoomerangs(int[][] points) {
+                int res = 0;
+                foreach (var point in points) {
+                    var dict = new Dictionary<int, int>();
+                    foreach (var targetPoint in points) {
+                        int dx = point[0] - targetPoint[0];
+                        int dy = point[1] - targetPoint[1];
+                        var dis = dx * dx + dy * dy;
+                        dict[dis] = dict.GetValueOrDefault(dis, 0) + 1;
+                    }
+                    foreach (var(key, value) in dict) {
+                        res += (value * (value - 1));
+                    }
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -5572,11 +5660,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.KthSmallest(new int[][] {
-                new int[] { 1, 5, 9 },
-                    new int[] { 10, 11, 13 },
-                    new int[] { 12, 13, 15 }
-            }, 8);
+            algorithm.Compress(new char[] { 'a', 'b', 'b', 'b', 'c' });
         }
     }
 }
