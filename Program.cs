@@ -5355,6 +5355,7 @@ namespace FuckingAlgorithm {
                 return chars.Take(cur).Count();
             }
 
+            // #447
             public int NumberOfBoomerangs(int[][] points) {
                 int res = 0;
                 foreach (var point in points) {
@@ -5371,6 +5372,21 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #421
+            public int FindMaximumXOR(int[] nums) {
+                if (nums.Length == 1) {
+                    return 0;
+                }
+                int res = int.MinValue;
+                for (int i = 0; i < nums.Length; i++) {
+                    for (int j = i + 1; j < nums.Length; j++) {
+                        res = Math.Max(res, nums[i] ^ nums[j]);
+                    }
+                }
+                return res;
+            }
+
         }
 
         public class DataStructure {
@@ -5655,6 +5671,56 @@ namespace FuckingAlgorithm {
 
                 public bool Empty() {
                     return queue.Count == 0;
+                }
+            }
+
+            // #208
+            public class Trie {
+                class TireNode {
+                    public bool isEnd;
+                    public TireNode[] next;
+                    public TireNode() {
+                        isEnd = false;
+                        next = new TireNode[26];
+                    }
+                }
+
+                TireNode root;
+                public Trie() {
+                    root = new TireNode();
+                }
+
+                public void Insert(string word) {
+                    var node = root;
+                    foreach (var ch in word) {
+                        if (node.next[ch - 'a'] == null) {
+                            node.next[ch - 'a'] = new TireNode();
+                        }
+                        node = node.next[ch - 'a'];
+                    }
+                    node.isEnd = true;
+                }
+
+                public bool Search(string word) {
+                    var node = root;
+                    foreach (var ch in word) {
+                        node = node.next[ch - 'a'];
+                        if (node == null) {
+                            return false;
+                        }
+                    }
+                    return node.isEnd;
+                }
+
+                public bool StartsWith(string prefix) {
+                    TireNode node = root;
+                    foreach (var ch in prefix) {
+                        node = node.next[ch - 'a'];
+                        if (node == null) {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
             }
         }
