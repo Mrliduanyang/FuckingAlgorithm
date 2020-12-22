@@ -430,6 +430,7 @@ namespace FuckingAlgorithm {
             //     return dp[n - 1, 0];
             // }
 
+            // #5
             public string LongestPalindrome(string s) {
                 string Palindrome(string s, int l, int r) {
                     while (l >= 0 && r < s.Length && s[l] == s[r]) {
@@ -5387,8 +5388,75 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-        }
+            // #414
+            public int ThirdMax(int[] nums) {
+                long first = (long) int.MinValue - 1, second = (long) int.MinValue - 1, third = (long) int.MinValue - 1;
+                foreach (var num in nums) {
+                    if (num > first) {
+                        third = second;
+                        second = first;
+                        first = num;
+                    }
+                    if (num < first && num > second) {
+                        third = second;
+                        second = num;
+                    }
+                    if (num < second && num > third) {
+                        third = num;
+                    }
+                }
+                return (int) (third != (long) int.MinValue - 1 ? third : first);
+            }
 
+            // #401
+            public IList<string> ReadBinaryWatch(int num) {
+                List<string> res = new List<string>();
+                int[] data = new int[] { 1, 2, 4, 8, 1, 2, 4, 8, 16, 32 };
+
+                void FindHour(int idx, int n, int hour, int minute) {
+                    if (hour > 11 || minute > 59) return;
+
+                    if (n == 0) {
+                        var m = $"{minute}".PadLeft(2, '0');
+                        res.Add($"{hour}:{m}");
+                        return;
+                    }
+                    for (int i = idx; i < data.Length; i++) {
+                        if (i < 4) {
+                            hour += data[i];
+                        } else {
+                            minute += data[i];
+                        }
+                        FindHour(i + 1, n - 1, hour, minute);
+                        if (i < 4) {
+                            hour -= data[i];
+                        } else {
+                            minute -= data[i];
+                        }
+                    }
+                }
+                FindHour(0, num, 0, 0);
+                return res;
+            }
+
+            // #427
+            public int LongestPalindrome_1(string s) {
+                var dict = new Dictionary<char, int>();
+                int length = s.Length;
+                foreach (var ch in s) {
+                    dict[ch] = dict.GetValueOrDefault(ch, 0) + 1;
+                }
+
+                int ans = 0;
+                foreach (var(key, val) in dict) {
+                    ans += val / 2 * 2;
+                    if (val % 2 == 1 && ans % 2 == 0) {
+                        ans++;
+                    }
+                }
+                return ans;
+            }
+        }
         public class DataStructure {
             public class LRU {
                 public class Node {
@@ -5726,7 +5794,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Compress(new char[] { 'a', 'b', 'b', 'b', 'c' });
+            algorithm.ReadBinaryWatch(2);
         }
     }
 }
