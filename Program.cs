@@ -5456,6 +5456,66 @@ namespace FuckingAlgorithm {
                 }
                 return ans;
             }
+
+            // #434
+            public int CountSegments(string s) {
+                int res = 0;
+                for (int i = 0; i < s.Length; i++) {
+                    if ((i == 0 || s[i - 1] == ' ') && s[i] != ' ') {
+                        res++;
+                    }
+                }
+                return res;
+            }
+
+            // #495
+            public int FindPoisonedDuration(int[] timeSeries, int duration) {
+                int res = 0;
+                for (int i = 0; i < timeSeries.Length - 1; i++) {
+                    if (timeSeries[i + 1] - timeSeries[i] >= duration) {
+                        res += duration;
+                    } else {
+                        res += (timeSeries[i + 1] - timeSeries[i]);
+                    }
+                }
+                return timeSeries.Length < 1 ? 0 : res + duration;
+            }
+
+            // #438
+            public List<int> FindAnagrams(string s, string p) {
+                var res = new List<int>();
+                int left = 0, right = 0;
+                var need = new Dictionary<char, int>();
+                var window = new Dictionary<char, int>();
+                int valid = 0;
+                foreach (var ch in p) {
+                    need[ch] = need.GetValueOrDefault(ch, 0) + 1;
+                }
+                while (right < s.Length) {
+                    var ch = s[right];
+                    right++;
+                    if (need.ContainsKey(ch)) {
+                        window[ch] = window.GetValueOrDefault(ch, 0) + 1;
+                        if (window[ch] == need[ch]) {
+                            valid++;
+                        }
+                    }
+                    while (right - left >= p.Length) {
+                        if (valid == need.Keys.Count) {
+                            res.Add(left);
+                        }
+                        var delCh = s[left];
+                        left++;
+                        if (need.ContainsKey(delCh)) {
+                            if (window[delCh] == need[delCh]) {
+                                valid--;
+                            }
+                            window[delCh]--;
+                        }
+                    }
+                }
+                return res;
+            }
         }
         public class DataStructure {
             public class LRU {
