@@ -5539,6 +5539,88 @@ namespace FuckingAlgorithm {
                 }
                 return ret;
             }
+
+            // #455
+            public int FindContentChildren(int[] g, int[] s) {
+                Array.Sort(g);
+                Array.Sort(s);
+                int res = 0;
+                int i = 0, j = 0;
+                while (true) {
+                    while (i < g.Length && j < s.Length) {
+                        if (s[j] >= g[i]) {
+                            res++;
+                            i++;
+                        }
+                        j++;
+                    }
+                    if (i == g.Length || j == s.Length) {
+                        break;
+                    }
+                }
+                return res;
+            }
+
+            // #448
+            public List<int> FindDisappearedNumbers(int[] nums) {
+                for (int i = 0; i < nums.Length; i++) {
+                    int newIdx = Math.Abs(nums[i]) - 1;
+                    if (nums[newIdx] > 0) {
+                        nums[newIdx] *= -1;
+
+                    }
+                }
+                var res = new List<int>();
+                for (int i = 0; i < nums.Length; i++) {
+                    if (nums[i] > 0) {
+                        res.Add(i + 1);
+                    }
+                }
+                return res;
+            }
+
+            // #475
+            // public int FindRadius(int[] houses, int[] heaters) {
+            //     int r = houses.Last();
+            //     bool Helper(int[][] heaterRanges) {
+
+            //     }
+            //     while (r >= 1) {
+            //         if (true) {
+
+            //         } else {
+            //             r /= 2;
+            //         }
+            //     }
+            // }
+
+            // #451
+            public string FrequencySort(string s) {
+                var res = new StringBuilder();
+                var dict = new Dictionary<char, int>();
+                foreach (var ch in s) {
+                    dict[ch] = dict.GetValueOrDefault(ch, 0) + 1;
+                }
+                var tmp = dict.OrderByDescending(x => x.Value);
+                foreach (var(key, val) in tmp) {
+                    for (int i = 0; i < val; i++) {
+                        res.Append(key);
+                    }
+                }
+                return res.ToString();
+            }
+
+            public int MinMoves(int[] nums) {
+                int n = nums.Length, res = 0, sum = nums.Sum();
+                while (true) {
+                    if (((n - 1) * res + sum) % n == 0) {
+                        break;
+                    } else {
+                        res++;
+                    }
+                }
+                return res;
+            }
         }
         public class DataStructure {
             public class LRU {
@@ -5877,7 +5959,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.ReadBinaryWatch(2);
+            algorithm.FrequencySort("tree");
         }
     }
 }
