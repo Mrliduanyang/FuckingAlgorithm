@@ -5622,6 +5622,87 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #498
+            public int[] FindDiagonalOrder(int[][] matrix) {
+                if (matrix.Length == 0) {
+                    return new int[0];
+                }
+                var res = new List<int>();
+                List<int> Cur = new List<int>();
+                int col = matrix.Length;
+                int row = matrix[0].Length;
+
+                for (int i = 0; i < col + row - 1; i++) {
+                    int j = i < row ? 0 : i - row + 1;
+                    int k = i < row ? i : row - 1;
+                    while (j < col && k > -1) {
+                        Cur.Add(matrix[j++][k--]);
+                    }
+                    if (i % 2 == 0) {
+                        Cur.Reverse();
+                    }
+                    int[] x = Cur.ToArray();
+                    for (int l = 0; l < x.Length; l++) {
+                        res.Add(x[l]);
+                    }
+                    Cur.Clear();
+                }
+                return res.ToArray();
+            }
+
+            // #500
+            public string[] FindWords(string[] words) {
+                var dict = new Dictionary<char, int> { { 'q', 1 },
+                        { 'w', 1 },
+                        { 'e', 1 },
+                        { 'r', 1 },
+                        { 't', 1 },
+                        { 'y', 1 },
+                        { 'u', 1 },
+                        { 'i', 1 },
+                        { 'o', 1 },
+                        { 'p', 1 },
+                        { 'a', 2 },
+                        { 's', 2 },
+                        { 'd', 2 },
+                        { 'f', 2 },
+                        { 'g', 2 },
+                        { 'h', 2 },
+                        { 'j', 2 },
+                        { 'k', 2 },
+                        { 'l', 2 },
+                        { 'z', 3 },
+                        { 'x', 3 },
+                        { 'c', 3 },
+                        { 'v', 3 },
+                        { 'b', 3 },
+                        { 'n', 3 },
+                        { 'm', 3 },
+                    };
+                var res = new List<string>();
+                foreach (var word in words) {
+                    var tmp = word.ToLower();
+                    if (tmp.All(x => dict[x] == dict[tmp[0]])) {
+                        res.Add(word);
+                    }
+                }
+                return res.ToArray();
+            }
+
+            // #503
+            public int[] NextGreaterElements(int[] nums) {
+                int[] res = new int[nums.Length];
+                var stack = new Stack<int>();
+                for (int i = 2 * nums.Length - 1; i >= 0; --i) {
+                    while (stack.Count != 0 && nums[stack.Peek()] <= nums[i % nums.Length]) {
+                        stack.Pop();
+                    }
+                    res[i % nums.Length] = stack.Count == 0 ? -1 : nums[stack.Peek()];
+                    stack.Push(i % nums.Length);
+                }
+                return res;
+            }
         }
         public class DataStructure {
             public class LRU {
@@ -5960,7 +6041,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.FrequencySort("tree");
+            algorithm.FindDiagonalOrder(new int[][] {
+                new int[] { 1, 2, 3, 4 },
+                    new int[] { 5, 6, 7, 8 },
+                    new int[] { 9, 10, 11, 12 },
+            });
         }
     }
 }
