@@ -409,26 +409,29 @@ namespace FuckingAlgorithm {
                 return dp_i_0;
             }
 
-            // public  int MaxProfit_5(int[] prices) {
-            //     int max_k = 2;
-            //     int n = prices.Length;
-            //     int[, , ] dp = new int[n, max_k + 1, 2];
-            //     // dp定义为第i天持有/未持有股票的收益
-            //     // base dp[-1, 0] = 0，还没开始交易，利润是0 dp[-1, 1] = -prices[i]，没开始交易，不可能持有股票
-            //     // 
-            //     for (int i = 0; i < n; i++) {
-            //         if (i - 1 == -1) {
-            //             dp[i, 0] = 0;
-            //             dp[i, 1] = -prices[i];
-            //             continue;
-            //         }
-            //         // 第i天未持有股票，可能是i-1天就未持有，也可能是i-1天持有股票，然后卖了
-            //         dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
-            //         // 第i天持有股票，可能是i-1天就持有，也可能是i-1天未持有，但买入了，因为只交易一次，所以收益直接-prices[i]
-            //         dp[i, 1] = Math.Max(dp[i - 1, 1], -prices[i]);
-            //     }
-            //     return dp[n - 1, 0];
-            // }
+            // #188
+            public int MaxProfit(int k, int[] prices) {
+                int n = prices.Length;
+                if (k > n / 2)
+                    return MaxProfit_2(prices);
+
+                int[, , ] dp = new int[n + 1, k + 1, 2];
+                for (int i = 0; i <= n; i++) {
+                    for (int j = k; j >= 1; j--) {
+                        if (i - 1 == -1) {
+                            dp[0, j, 0] = 0;
+                            dp[0, j, 1] = int.MinValue;
+                            dp[i, 0, 0] = 0;
+                            dp[i, 0, 1] = int.MinValue;
+                            continue;
+                        }
+                        dp[i, j, 0] = Math.Max(dp[i - 1, j, 0], dp[i - 1, j, 1] + prices[i - 1]);
+                        dp[i, j, 1] = Math.Max(dp[i - 1, j, 1], dp[i - 1, j - 1, 0] - prices[i - 1]);
+                    }
+                }
+                System.Console.WriteLine(dp[n, k, 0]);
+                return dp[n, k, 0];
+            }
 
             // #5
             public string LongestPalindrome(string s) {
@@ -5622,6 +5625,35 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #506
+            public string[] FindRelativeRanks(int[] nums) {
+                var dict = new Dictionary<int, string>();
+                for (int i = 0; i < nums.Length; i++) {
+                    dict[nums[i]] = i.ToString();
+                }
+                Array.Sort(nums, (x, y) => y - x);
+                var res = new string[nums.Length];
+                for (int i = 0; i < nums.Length; i++) {
+                    if (i == 0) {
+                        dict[nums[i]] = "Gold Medal";
+                    } else if (i == 1) {
+                        dict[nums[i]] = "Silver Medal";
+                    } else if (i == 2) {
+                        dict[nums[i]] = "Bronze Medal";
+                    } else {
+                        dict[nums[i]] = (i + 1).ToString();
+                    }
+                }
+                return dict.Values.ToArray();
+            }
+
+            // #520
+            public bool DetectCapitalUse(string word) {
+                if (word.ToUpper() == word) return true;
+                if (word.Substring(1).ToLower() == word.Substring(1)) return true;
+                return false;
+            }
         }
         public class DataStructure {
             public class LRU {
@@ -5960,7 +5992,13 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.FrequencySort("tree");
+            algorithm.FindRelativeRanks(new int[] {
+                10,
+                3,
+                8,
+                9,
+                4
+            });
         }
     }
 }
