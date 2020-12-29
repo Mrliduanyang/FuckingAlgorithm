@@ -315,6 +315,7 @@ namespace FuckingAlgorithm {
                 return Math.Max(RobRange(1, n - 1), RobRange(0, n - 2));
             }
 
+            // #516
             public int LongestPalindromeSubseq(string s) {
                 int n = s.Length;
                 // 涉及两个字符串，用二维dp数组
@@ -327,7 +328,7 @@ namespace FuckingAlgorithm {
                 // 要求dp[0,n-1]，斜着遍历或者反着遍历
                 for (int i = n - 1; i >= 0; i--) {
                     // j比i大
-                    for (int j = i + 1; i < n; i++) {
+                    for (int j = i + 1; j < n; j++) {
                         if (s[i] == s[j]) {
                             // 如果s[i]和s[j]字符相同，最长回文子序列长度加2
                             dp[i, j] = dp[i + 1, j - 1] + 2;
