@@ -5792,14 +5792,31 @@ namespace FuckingAlgorithm {
                         if (ni >= 0 && ni < m && nj >= 0 && nj < n && !vis[ni, nj]) {
                             res[ni][nj] = res[i][j] + 1;
                             queue.Enqueue(new Tuple<int, int>(ni, nj));
-                            vis[ni,nj] = true;
+                            vis[ni, nj] = true;
                         }
                     }
                 }
 
                 return res;
             }
+
+            // #525
+            public int FindMaxLength(int[] nums) {
+                var dict = new Dictionary<int, int>();
+                dict[0] = -1;
+                int maxlen = 0, count = 0;
+                for (int i = 0; i < nums.Length; i++) {
+                    count = count + (nums[i] == 1 ? 1 : -1);
+                    if (dict.ContainsKey(count)) {
+                        maxlen = Math.Max(maxlen, i - dict[count]);
+                    } else {
+                        dict[count] = i;
+                    }
+                }
+                return maxlen;
+            }
         }
+
         public class DataStructure {
             public class LRU {
                 public class Node {
