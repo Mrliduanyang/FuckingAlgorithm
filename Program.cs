@@ -5863,6 +5863,25 @@ namespace FuckingAlgorithm {
                 return count;
             }
 
+            // #239
+            public int[] MaxSlidingWindow(int[] nums, int k) {
+                int n = nums.Length;
+                int[] res = new int[n - k + 1];
+                LinkedList<int> deque = new LinkedList<int>();
+                for (int i = 0; i < n; i++) {
+                    if (deque.Count != 0 && deque.First() < (i - k + 1)) {
+                        deque.RemoveFirst();
+                    }
+                    while (deque.Count != 0 && nums[i] >= nums[deque.Last()]) {
+                        deque.RemoveLast();
+                    }
+                    deque.AddLast(i);
+                    if (i >= k - 1) {
+                        res[i - k + 1] = nums[deque.First()];
+                    }
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
