@@ -5882,6 +5882,32 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #540
+            public int SingleNonDuplicate(int[] nums) {
+                int left = 0;
+                int right = nums.Length - 1;
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    bool halvesAreEven = (right - mid) % 2 == 0;
+                    if (nums[mid + 1] == nums[mid]) {
+                        if (halvesAreEven) {
+                            left = mid + 2;
+                        } else {
+                            right = mid - 1;
+                        }
+                    } else if (nums[mid - 1] == nums[mid]) {
+                        if (halvesAreEven) {
+                            right = mid - 2;
+                        } else {
+                            left = mid + 1;
+                        }
+                    } else {
+                        return nums[mid];
+                    }
+                }
+                return nums[left];
+            }
         }
 
         public class DataStructure {
