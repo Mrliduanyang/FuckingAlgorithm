@@ -6221,7 +6221,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            System.Console.WriteLine(algorithm.NumberOfArithmeticSlices(new int[] { 1, 2, 3, 4 }));
+            algorithm.NumberOfArithmeticSlices(new int[] { 1, 2, 3, 4 });
         }
     }
 }
