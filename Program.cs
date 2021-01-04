@@ -2174,7 +2174,7 @@ namespace FuckingAlgorithm {
                     return res;
                 }
                 Array.Sort(candidates);
-                Helper(0, 0, target);
+                Helper(0, 0);
                 return res;
             }
 
