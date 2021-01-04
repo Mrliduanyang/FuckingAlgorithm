@@ -62,25 +62,39 @@ namespace FuckingAlgorithm {
             }
 
             public int CoinChange(int[] coins, int amount) {
-                // 当目标金额为i时，至少需要dp[i]枚硬币凑出
-                // 初始化dp，dp各元素设置为最大值
-                int[] dp = new int[amount + 1];
-                Array.Fill(dp, amount + 1);
-                // base，金额为0，硬币为0
-                dp[0] = 0;
-                // 求dp中所有金额
-                for (int i = 0; i < dp.Length; i++) {
-                    // 遍历可用的硬币
-                    foreach (var coin in coins) {
-                        // 减去硬币面值后，金额小于0，无解跳过
-                        if (i - coin < 0) continue;
-                        // 选择硬币数最少的方案
-                        dp[i] = Math.Min(dp[i], 1 + dp[i - coin]);
+                    // 当目标金额为i时，至少需要dp[i]枚硬币凑出
+                    // 初始化dp，dp各元素设置为最大值
+                    int[] dp = new int[amount + 1];
+                    Array.Fill(dp, amount + 1);
+                    // base，金额为0，硬币为0
+                    dp[0] = 0;
+                    // 求dp中所有金额
+                    for (int i = 0; i < dp.Length; i++) {
+                        // 遍历可用的硬币
+                        foreach (var coin in coins) {
+                            // 减去硬币面值后，金额小于0，无解跳过
+                            if (i - coin < 0) continue;
+                            // 选择硬币数最少的方案
+                            dp[i] = Math.Min(dp[i], 1 + dp[i - coin]);
+                        }
                     }
+                    return (dp[amount] == amount + 1) ? -1 : dp[amount];
                 }
-                return (dp[amount] == amount + 1) ? -1 : dp[amount];
-            }
 
+                <<
+                <<
+                <<
+                <
+                HEAD ==
+                ==
+                ==
+                =
+                // #46
+                >>
+                >>
+                >>
+                >
+                54 ff6fa7c0caaf1ab18d18db31f46cb9afa02ce6
             public List<int[]> Permute(int[] nums) {
                 // 存储全排列结果
                 List<int[]> res = new List<int[]>();
@@ -2141,7 +2155,7 @@ namespace FuckingAlgorithm {
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
-                void Helper(int begin, int sum, int target) {
+                void Helper(int begin, int sum) {
                     if (sum == target) {
                         res.Add(path.ToList());
                         return;
@@ -2149,7 +2163,7 @@ namespace FuckingAlgorithm {
                     for (int i = begin; i < candidates.Length; i++) {
                         if ((sum + candidates[i]) <= target) {
                             path.Add(candidates[i]);
-                            Helper(i, sum + candidates[i], target);
+                            Helper(i, sum + candidates[i]);
                             path.RemoveAt(path.Count - 1);
                         } else {
                             break;
@@ -5882,6 +5896,79 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #540
+            public int SingleNonDuplicate(int[] nums) {
+                int left = 0;
+                int right = nums.Length - 1;
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    bool halvesAreEven = (right - mid) % 2 == 0;
+                    if (nums[mid + 1] == nums[mid]) {
+                        if (halvesAreEven) {
+                            left = mid + 2;
+                        } else {
+                            right = mid - 1;
+                        }
+                    } else if (nums[mid - 1] == nums[mid]) {
+                        if (halvesAreEven) {
+                            right = mid - 2;
+                        } else {
+                            left = mid + 1;
+                        }
+                    } else {
+                        return nums[mid];
+                    }
+                }
+                return nums[left];
+            }
+
+            // #526
+            public int CountArrangement(int n) {
+                int res = 0;
+                var vis = new bool[n + 1];
+                void Helper(int idx) {
+                    if (idx == n + 1) res++;
+                    for (int i = 1; i <= n; i++) {
+                        if (!vis[i] && (idx % i == 0 || i % idx == 0)) {
+                            vis[i] = true;
+                            Helper(idx + 1);
+                            vis[i] = false;
+                        }
+                    }
+                }
+                Helper(1);
+                return res;
+            }
+
+            // #784
+            public List<string> LetterCasePermutation(string S) {
+                var n = S.Length;
+                var path = new StringBuilder();
+                var res = new List<string>();
+                void Helper(int idx) {
+                    if (path.Length == n) {
+                        res.Add(path.ToString());
+                        return;
+                    };
+                    var ch = S[idx];
+                    if (char.IsLetter(ch)) {
+                        path.Append(char.ToLower(ch));
+                        Helper(idx + 1);
+                        path.Remove(idx, 1);
+
+                        path.Append(char.ToUpper(ch));
+                        Helper(idx + 1);
+                        path.Remove(idx, 1);
+                    } else {
+                        path.Append(ch);
+                        Helper(idx + 1);
+                        path.Remove(idx, 1);
+                    }
+                }
+                Helper(0);
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -6221,7 +6308,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.NumberOfArithmeticSlices(new int[] { 1, 2, 3, 4 });
+            algorithm.LetterCasePermutation("a1b2");
         }
     }
 }
