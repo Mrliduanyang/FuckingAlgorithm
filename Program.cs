@@ -83,32 +83,28 @@ namespace FuckingAlgorithm {
 
             // #46
             public List<int[]> Permute(int[] nums) {
-                // 存储全排列结果
-                List<int[]> res = new List<int[]>();
-                void backtrack(int[] nums, List<int> track) {
-                    if (track.Count == nums.Length) {
-                        // 结束条件，如果nums中所有元素都在track中，找到一个全排列，添加进全排列结果里
-                        res.Add(track.ToArray());
+                var res = new List<int[]>();
+                var path = new List<int>();
+                void Helper() {
+                    if (path.Count == nums.Length) {
+                        // 搜索结束条件，如果nums中所有元素都在path中，说明找到一个全排列
+                        res.Add(path.ToArray());
                         return;
                     }
-                    // 做选择
                     foreach (var num in nums) {
-                        // 如果路径中已存在元素num，则跳过
-                        if (track.Contains(num)) {
+                        // 剪枝处理，如果路径中已存在元素num，则跳过
+                        if (path.Contains(num)) {
                             continue;
                         }
                         // 做选择
-                        track.Add(num);
-                        // 进入下一层选择
-                        backtrack(nums, track);
-                        // 回溯，撤销选择
-                        track.RemoveAt(track.Count - 1);
+                        path.Add(num);
+                        // 进入调用回溯
+                        Helper();
+                        // 撤销选择
+                        path.RemoveAt(path.Count - 1);
                     }
                 }
-
-                // 回溯路径
-                List<int> track = new List<int>();
-                backtrack(nums, track);
+                Helper();
                 return res;
             }
 
@@ -2137,20 +2133,27 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #39
             public List<List<int>> CombinationSum(int[] candidates, int target) {
                 // candidates中无重复元素，但每个元素可用无限次
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
-                void Helper(int begin, int sum, int target) {
+                void Helper(int begin, int sum) {
+                    // 搜索结束条件，如果path中元素之和==target，说明path是一个有效答案
                     if (sum == target) {
                         res.Add(path.ToList());
                         return;
                     }
+                    // begin用来指示本次回溯的选择起点，去重的关键
                     for (int i = begin; i < candidates.Length; i++) {
+                        // 剪枝处理，减少不必要的回溯
                         if ((sum + candidates[i]) <= target) {
+                            // 选择
                             path.Add(candidates[i]);
-                            Helper(i, sum + candidates[i], target);
+                            // 递归调用回溯。因为candidates中元素可以无限次使用，因此在下一次选择时，依旧可以从当前元素开始
+                            Helper(i, sum + candidates[i]);
+                            // 撤销选择
                             path.RemoveAt(path.Count - 1);
                         } else {
                             break;
@@ -2160,20 +2163,26 @@ namespace FuckingAlgorithm {
                 if (candidates.Length == 0) {
                     return res;
                 }
+                // 排序，去重的关键
                 Array.Sort(candidates);
-                Helper(0, 0, target);
+                Helper(0, 0);
                 return res;
             }
 
+            // #78
             public List<List<int>> Subsets(int[] nums) {
                 var path = new List<int>();
                 var res = new List<List<int>>();
 
-                void Helper(int curr) {
+                void Helper(int begin) {
+                    // 搜索结束条件，任意一个路径都是一个子集
                     res.Add(path.ToList());
-                    for (int i = curr; i < nums.Length; i++) {
+                    for (int i = begin; i < nums.Length; i++) {
+                        // 选择
                         path.Add(nums[i]);
+                        // 递归调用回溯，新的选择列表为当前元素位置之后的所有元素，所以在下一次选择时，从当前元素的下一个开始
                         Helper(i + 1);
+                        // 撤销选择
                         path.RemoveAt(path.Count - 1);
                     }
                 }
@@ -2181,7 +2190,6 @@ namespace FuckingAlgorithm {
                 if (nums.Length == 0) {
                     return res;
                 }
-                Array.Sort(nums);
                 Helper(0);
                 return res;
             }
@@ -6317,3 +6325,4 @@ namespace FuckingAlgorithm {
         }
     }
 }
+
