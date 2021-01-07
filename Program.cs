@@ -6003,6 +6003,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #1219
             public int GetMaximumGold(int[][] grid) {
                 var dirs = new [] { new [] { 0, 1 }, new [] { 0, -1 }, new int[] { 1, 0 }, new [] {-1, 0 } };
                 int res = 0;
@@ -6022,9 +6023,7 @@ namespace FuckingAlgorithm {
                         int tx = i + dir[0];
                         int ty = j + dir[1];
                         if (tx < 0 || ty < 0 || tx >= m || ty >= n) continue;
-
                         Helper(tx, ty, sum);
-
                     }
                     sum -= grid[i][j];
                     vis[i, j] = false;
@@ -6036,8 +6035,45 @@ namespace FuckingAlgorithm {
                         }
                     }
                 }
-                // Helper(1, 2, 0);
                 return res;
+            }
+
+            // #89
+            public List<int> GrayCode(int n) {
+                var res = new List<int>();
+                res.Add(0);
+                int head = 1;
+                for (int i = 0; i < n; i++) {
+                    for (int j = res.Count - 1; j >= 0; j--)
+                        res.Add(head + res[j]);
+                    head <<= 1;
+                }
+                return res;
+            }
+
+            // #967
+            public int[] NumsSameConsecDiff(int n, int k) {
+                // BFS，第一层个数为1，第二层个数为2，依次类推
+                var res = new List<int>();
+                int depth = 0;
+                var queue = new Queue<int>(new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+
+                while (queue.Count != 0) {
+                    int count = queue.Count;
+                    depth++;
+                    if (depth == n) {
+                        res = queue.ToList();
+                        queue.Clear();
+                    } else {
+                        for (int i = 0; i < count; i++) {
+                            var num = queue.Dequeue();
+                            int rem = num % 10;
+                            if (rem + k <= 9) queue.Enqueue(num * 10 + rem + k);
+                            if (rem - k >= 0 && k != 0) queue.Enqueue(num * 10 + rem - k);
+                        }
+                    }
+                }
+                return res.ToArray();
             }
         }
 
@@ -6378,11 +6414,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.GetMaximumGold(
-                new [] {
-                    new [] { 0, 6, 0 }, new int[] { 5, 8, 7 }, new int[] { 0, 9, 0 }
-                }
-            );
+            algorithm.NumsSameConsecDiff(2, 0);
         }
     }
 }
