@@ -6096,6 +6096,68 @@ namespace FuckingAlgorithm {
                 }
                 return false;
             }
+
+            // #671
+            public int FindSecondMinimumValue(TreeNode root) {
+                if (root == null) return -1;
+                int min = root.val;
+
+                int Helper(TreeNode root) {
+                    if (root == null) return -1;
+                    if (root.val > min) return root.val;
+                    int left = Helper(root.left);
+                    int right = Helper(root.right);
+                    if (left == -1) return right;
+                    if (right == -1) return left;
+                    return Math.Min(left, right);
+                }
+
+                return Helper(root);
+            }
+
+            // #572
+            public bool IsSubtree(TreeNode s, TreeNode t) {
+                // 返回t是否是s的子树
+                bool Check(TreeNode s, TreeNode t) {
+                    if (s == null && t == null) {
+                        return true;
+                    }
+                    if (s == null || t == null || s.val != t.val) {
+                        return false;
+                    }
+                    return Check(s.left, t.left) && Check(s.right, t.right);
+                }
+                bool Helper(TreeNode s, TreeNode t) {
+                    if (s == null) {
+                        return false;
+                    }
+                    return Check(s, t) || Helper(s.left, t) || Helper(s.right, t);
+                }
+
+                return Helper(s, t);
+            }
+
+            public bool isSubtree(TreeNode s, TreeNode t) {
+                return dfs(s, t);
+            }
+
+            public bool dfs(TreeNode s, TreeNode t) {
+                if (s == null) {
+                    return false;
+                }
+                return check(s, t) || dfs(s.left, t) || dfs(s.right, t);
+            }
+
+            public boolean check(TreeNode s, TreeNode t) {
+                if (s == null && t == null) {
+                    return true;
+                }
+                if (s == null || t == null || s.val != t.val) {
+                    return false;
+                }
+                return check(s.left, t.left) && check(s.right, t.right);
+            }
+
         }
 
         public class DataStructure {
