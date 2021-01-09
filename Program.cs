@@ -408,6 +408,7 @@ namespace FuckingAlgorithm {
             }
 
             // #188
+            // #123
             public int MaxProfit(int k, int[] prices) {
                 int n = prices.Length;
                 if (k > n / 2)
@@ -427,7 +428,6 @@ namespace FuckingAlgorithm {
                         dp[i, j, 1] = Math.Max(dp[i - 1, j, 1], dp[i - 1, j - 1, 0] - prices[i - 1]);
                     }
                 }
-                System.Console.WriteLine(dp[n, k, 0]);
                 return dp[n, k, 0];
             }
 
