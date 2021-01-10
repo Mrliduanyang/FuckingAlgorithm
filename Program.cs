@@ -6137,27 +6137,23 @@ namespace FuckingAlgorithm {
                 return Helper(s, t);
             }
 
-            public bool isSubtree(TreeNode s, TreeNode t) {
-                return dfs(s, t);
-            }
-
-            public bool dfs(TreeNode s, TreeNode t) {
-                if (s == null) {
-                    return false;
+            // #228
+            public List<String> summaryRanges(int[] nums) {
+                var res = new List<string>();
+                int i = 0;
+                for (int j = 0; j < nums.Length; j++) {
+                    if (j + 1 == nums.Length || nums[j] + 1 != nums[j + 1]) {
+                        var sb = new StringBuilder();
+                        sb.Append(nums[i]);
+                        if (i != j) {
+                            sb.Append("->").Append(nums[j]);
+                        }
+                        res.Add(sb.ToString());
+                        i = j + 1;
+                    }
                 }
-                return check(s, t) || dfs(s.left, t) || dfs(s.right, t);
+                return res;
             }
-
-            public boolean check(TreeNode s, TreeNode t) {
-                if (s == null && t == null) {
-                    return true;
-                }
-                if (s == null || t == null || s.val != t.val) {
-                    return false;
-                }
-                return check(s.left, t.left) && check(s.right, t.right);
-            }
-
         }
 
         public class DataStructure {
