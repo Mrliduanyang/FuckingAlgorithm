@@ -1282,6 +1282,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #116
             public TreeNode Connect(TreeNode root) {
                 // 将相邻的两个节点连接起来。
                 void Helper(TreeNode node1, TreeNode node2) {
@@ -1297,6 +1298,8 @@ namespace FuckingAlgorithm {
                 Helper(root.left, root.right);
                 return root;
             }
+
+            // #117
             public TreeNode Connect_1(TreeNode root) {
                 if (root == null) return null;
                 var queue = new Queue<TreeNode>();
@@ -1342,6 +1345,7 @@ namespace FuckingAlgorithm {
                 p.right = right;
             }
 
+            // #654
             public TreeNode ConstructMaximumBinaryTree(int[] nums) {
                 TreeNode Helper(int[] nums, int lo, int hi) {
                     // 递归base。
@@ -1429,6 +1433,7 @@ namespace FuckingAlgorithm {
                     postorder, 0, postorder.Length - 1);
             }
 
+            // #508
             public int[] FindFrequentTreeSum(TreeNode root) {
                 var map = new Dictionary<int, int>();
                 int max = 0;
@@ -1671,6 +1676,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #98
             public bool IsValidBST(TreeNode root) {
                 //rot为当前节点值，low为子树下限，up为上限
                 bool Helper(TreeNode rot, int low, int up) {
@@ -1747,6 +1753,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #129
             public int SumNumbers(TreeNode root) {
                 int Helper(TreeNode root, int curr) {
                     if (root == null) return 0;
@@ -1973,10 +1980,11 @@ namespace FuckingAlgorithm {
                 return partition;
             }
 
+            // #77
             public List<List<int>> Combine(int n, int k) {
                 var res = new List<List<int>>();
                 var path = new List<int>();
-                void Helper(int n, int k, int begin) {
+                void Helper(int begin) {
                     if (path.Count == k) {
                         res.Add(path.ToList());
                         return;
@@ -1984,17 +1992,18 @@ namespace FuckingAlgorithm {
 
                     for (int i = begin; i <= n; i++) {
                         path.Add(i);
-                        Helper(n, k, i + 1);
+                        Helper(i + 1);
                         path.RemoveAt(path.Count - 1);
                     }
                 }
                 if (k <= 0 || n < k) {
                     return res;
                 }
-                Helper(n, k, 1);
+                Helper(1);
                 return res;
             }
 
+            // #491
             public List<List<int>> FindSubsequences(int[] nums) {
                 // 回溯法
                 var res = new List<List<int>>();
@@ -2012,7 +2021,6 @@ namespace FuckingAlgorithm {
                         Helper(cur + 1, nums[cur]);
                         path.RemoveAt(path.Count - 1);
                     }
-                    // 还不懂，没明白如何保证不重复
                     if (nums[cur] != last) {
                         Helper(cur + 1, last);
                     }
@@ -2084,6 +2092,7 @@ namespace FuckingAlgorithm {
                 return ret;
             }
 
+            // #17
             public List<string> LetterCombinations(string digits) {
                 var numCharMap = new Dictionary<char, char[]>() { { '2', new char[] { 'a', 'b', 'c' } }, { '3', new char[] { 'd', 'e', 'f' } }, { '4', new char[] { 'g', 'h', 'i' } }, { '5', new char[] { 'j', 'k', 'l' } }, { '6', new char[] { 'm', 'n', 'o' } }, { '7', new char[] { 'p', 'q', 'r', 's' } }, { '8', new char[] { 't', 'u', 'v' } }, { '9', new char[] { 'w', 'x', 'y', 'z' } },
                     };
@@ -2110,6 +2119,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #22
             public List<string> GenerateParenthesis(int n) {
                 var res = new List<string>();
                 var path = new List<char>();
@@ -2163,8 +2173,6 @@ namespace FuckingAlgorithm {
                 if (candidates.Length == 0) {
                     return res;
                 }
-                // 排序，去重的关键
-                Array.Sort(candidates);
                 Helper(0, 0);
                 return res;
             }
@@ -2211,6 +2219,7 @@ namespace FuckingAlgorithm {
                 return res == 0;
             }
 
+            // #1079
             public int NumTilePossibilities(string tiles) {
                 var res = new List<List<int>>();
                 var path = new List<int>();
@@ -2236,6 +2245,7 @@ namespace FuckingAlgorithm {
                 return res.Count - 1;
             }
 
+            // #47
             public List<List<int>> PermuteUnique(int[] nums) {
                 var res = new List<List<int>>();
                 var path = new List<int>();
@@ -2264,6 +2274,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #216
             public List<List<int>> CombinationSum3(int k, int n) {
                 // 只有1-9，每个元素只能使用一次
                 var path = new List<int>();
@@ -2286,6 +2297,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #40
             public List<List<int>> CombinationSum2(int[] candidates, int target) {
                 // candidates中有重复元素，每个只能用一次
                 // 排序+标记
@@ -2342,6 +2354,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #79
             public bool Exist(char[][] board, string word) {
                 int h = board.Length;
                 int w = board[0].Length;
@@ -2384,6 +2397,7 @@ namespace FuckingAlgorithm {
                 return false;
             }
 
+            // #90
             public List<List<int>> SubsetsWithDup(int[] nums) {
                 var path = new List<int>();
                 var res = new List<List<int>>();
@@ -2406,6 +2420,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #130
             public void Solve(char[][] board) {
                 int rows = board.Length;
                 if (rows == 0) return;
@@ -3324,6 +3339,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #92
             public ListNode ReverseBetween(ListNode head, int m, int n) {
                 ListNode successor = null;
                 ListNode Helper(ListNode node, int n) {
@@ -3347,6 +3363,7 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
+            // #206
             public ListNode ReverseList(ListNode head) {
                 ListNode Helper(ListNode node) {
                     if (node.next == null) {
@@ -3387,6 +3404,7 @@ namespace FuckingAlgorithm {
                 return ans.ToArray();
             }
 
+            // #110
             public bool IsBalanced(TreeNode root) {
                 // 计算子树高度
                 int GetHeight(TreeNode root) {
@@ -3424,6 +3442,7 @@ namespace FuckingAlgorithm {
                 return minDepth + 1;
             }
 
+            // #109
             public TreeNode SortedListToBST(ListNode head) {
                 ListNode GetMedian(ListNode left, ListNode right) {
                     var slow = left;
@@ -4221,6 +4240,7 @@ namespace FuckingAlgorithm {
                 return false;
             }
 
+            // #235
             public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
                 TreeNode Helper(TreeNode root, TreeNode p, TreeNode q) {
                     if (p.val < root.val && q.val < root.val) {
@@ -4278,6 +4298,7 @@ namespace FuckingAlgorithm {
                 return 0;
             }
 
+            // #236
             public TreeNode LowestCommonAncestor_1(TreeNode root, TreeNode p, TreeNode q) {
                 TreeNode ans = null;
                 // 当p和q分别在左右子树，或者p或q其中一个为根
@@ -4498,6 +4519,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #337
             public int Rob_3(TreeNode root) {
                 var memo = new Dictionary<TreeNode, int>();
                 // 利用备忘录消除重叠子问题
@@ -4523,6 +4545,7 @@ namespace FuckingAlgorithm {
                 return Helper(root);
             }
 
+            // #543
             public int DiameterOfBinaryTree(TreeNode root) {
                 int ans = 1;
                 int Helper(TreeNode root) {
@@ -4608,6 +4631,7 @@ namespace FuckingAlgorithm {
                 return $"{bulls}A{cows}B";
             }
 
+            // #652
             public List<TreeNode> FindDuplicateSubtrees(TreeNode root) {
                 var dict = new Dictionary<string, int>();
                 var res = new List<TreeNode>();
@@ -4688,6 +4712,7 @@ namespace FuckingAlgorithm {
                 return true;
             }
 
+            // #965
             public bool IsUnivalTree(TreeNode root) {
                 int val = root.val;
                 bool Helper(TreeNode root) {
@@ -4699,6 +4724,7 @@ namespace FuckingAlgorithm {
                 return Helper(root);
             }
 
+            // #1026
             public int MaxAncestorDiff(TreeNode root) {
                 if (root == null) return 0;
                 var res = int.MinValue;
@@ -4758,6 +4784,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #988
             public string SmallestFromLeaf(TreeNode root) {
                 var res = new List<string>();
                 var str = new StringBuilder();
@@ -4835,6 +4862,7 @@ namespace FuckingAlgorithm {
                 return -1;
             }
 
+            // #842
             public List<int> SplitIntoFibonacci(string S) {
                 var res = new List<int>();
                 int length = S.Length;
