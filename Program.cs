@@ -5876,7 +5876,7 @@ namespace FuckingAlgorithm {
                     return Find(parent, parent[i]);
                 }
 
-                void union(int[] parent, int x, int y) {
+                void Union(int[] parent, int x, int y) {
                     int xP = Find(parent, x);
                     int yP = Find(parent, y);
                     if (xP != yP)
@@ -5888,7 +5888,7 @@ namespace FuckingAlgorithm {
                 for (int i = 0; i < M.Length; i++) {
                     for (int j = 0; j < M.Length; j++) {
                         if (M[i][j] == 1 && i != j) {
-                            union(parent, i, j);
+                            Union(parent, i, j);
                         }
                     }
                 }
@@ -6181,6 +6181,62 @@ namespace FuckingAlgorithm {
                     }
                 }
                 return res;
+            }
+
+            // #1202
+            public string SmallestStringWithSwaps(string s, List<List<int>> pairs) {
+                if (pairs.Count == 0) {
+                    return s;
+                }
+                int len = s.Length;
+                var parent = new int[len];
+
+                // 这里的并查集没有优化，超时
+                int Find(int x) {
+                    // 寻找根
+                    if (parent[x] == x)
+                        return x;
+                    return Find(parent[x]);
+                }
+
+                void Union(int x, int y) {
+                    int xP = Find(x);
+                    int yP = Find(y);
+                    if (xP != yP)
+                        parent[xP] = yP;
+                }
+
+                for (int i = 0; i < len; i++) {
+                    parent[i] = i;
+                }
+
+                foreach (var pair in pairs) {
+                    var idx1 = pair[0];
+                    var idx2 = pair[1];
+                    Union(idx1, idx2);
+                }
+
+                var dict = new Dictionary<int, List<char>>();
+                for (int i = 0; i < s.Length; i++) {
+                    int p = Find(i);
+                    if (!dict.ContainsKey(p)) {
+                        dict[p] = new List<char>();
+                    }
+                    dict[p].Add(s[i]);
+                }
+
+                foreach (var(key, val) in dict) {
+                    val.Sort();
+                }
+
+                var sb = new StringBuilder();
+                for (int i = 0; i < s.Length; i++) {
+                    int x = Find(i);
+                    var list = dict[x];
+                    sb.Append(list[0]);
+                    list.RemoveAt(0);
+                }
+                return sb.ToString();
             }
         }
 
@@ -6521,7 +6577,10 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Find132pattern(new int[] { 3, 5, 0, 3, 4 });
+            algorithm.SmallestStringWithSwaps("dcab", new List<List<int>> {
+                new List<int>() { 0, 3 },
+                new List<int>() { 1, 2 },
+            });
         }
     }
 }
