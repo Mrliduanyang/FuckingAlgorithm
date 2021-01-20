@@ -6302,6 +6302,13 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
+
+            // #628
+            public int MaximumProduct(int[] nums) {
+                Array.Sort(nums);
+                int n = nums.Length;
+                return Math.Max(nums[0] * nums[1] * nums[n - 1], nums[n - 3] * nums[n - 2] * nums[n - 1]);
+            }
         }
 
         public class DataStructure {
@@ -6641,7 +6648,6 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            // 0119
         }
     }
 }
