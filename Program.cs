@@ -6309,6 +6309,27 @@ namespace FuckingAlgorithm {
                 int n = nums.Length;
                 return Math.Max(nums[0] * nums[1] * nums[n - 1], nums[n - 3] * nums[n - 2] * nums[n - 1]);
             }
+
+            // #989
+            public List<int> AddToArrayForm(int[] A, int K) {
+                var res = new List<int>();
+                int n = A.Length;
+                for (int i = n - 1; i >= 0; --i) {
+                    int sum = A[i] + K % 10;
+                    K /= 10;
+                    if (sum >= 10) {
+                        K++;
+                        sum -= 10;
+                    }
+                    res.Add(sum);
+                }
+                for (; K > 0; K /= 10) {
+                    res.Add(K % 10);
+                }
+                res.Reverse();
+                return res;
+            }
+
         }
 
         public class DataStructure {
