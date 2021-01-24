@@ -3406,21 +3406,16 @@ namespace FuckingAlgorithm {
 
             // #110
             public bool IsBalanced(TreeNode root) {
-                // 计算子树高度
-                int GetHeight(TreeNode root) {
+                (int height, bool isBalanced) Helper(TreeNode root) {
                     if (root == null) {
-                        return 0;
-                    }
-                    return Math.Max(GetHeight(root.left), GetHeight(root.right)) + 1;
-                }
-                bool Helper(TreeNode root) {
-                    if (root == null) {
-                        return true;
+                        return (0, true);
                     } else {
-                        return Math.Abs(GetHeight(root.left) - GetHeight(root.right)) <= 1 && IsBalanced(root.left) && IsBalanced(root.right);
+                        var(lHeight, lBalanced) = Helper(root.left);
+                        var(rHeight, rBalanced) = Helper(root.right);
+                        return (Math.Max(lHeight, rHeight) + 1, Math.Abs(lHeight - rHeight) <= 1 && lBalanced && rBalanced);
                     }
                 }
-                return Helper(root);
+                return Helper(root).isBalanced;
             }
 
             public int MinDepth(TreeNode root) {
@@ -4251,7 +4246,6 @@ namespace FuckingAlgorithm {
                         return root;
                     }
                 }
-
                 return Helper(root, p, q);
             }
 
