@@ -6357,6 +6357,19 @@ namespace FuckingAlgorithm {
                 }
                 return r - l > 0 ? r - l + 1 : 0;
             }
+
+            // #554
+            public int LeastBricks(List<List<int>> wall) {
+                var dict = new Dictionary<int, int>();
+                foreach (var row in wall) {
+                    int sum = 0;
+                    for (int i = 0; i < row.Count - 1; i++) {
+                        sum += row[i];
+                        dict[sum] = dict.GetValueOrDefault(sum, 0) + 1;
+                    }
+                }
+                return dict.Count > 0 ? wall.Count - dict.Values.Max() : wall.Count;
+            }
         }
 
         public class DataStructure {
