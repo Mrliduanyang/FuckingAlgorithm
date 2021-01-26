@@ -6370,6 +6370,18 @@ namespace FuckingAlgorithm {
                 }
                 return dict.Count > 0 ? wall.Count - dict.Values.Max() : wall.Count;
             }
+
+            // #1128
+            public int NumEquivDominoPairs(int[][] dominoes) {
+                int[] num = new int[100];
+                int ret = 0;
+                foreach (var domino in dominoes) {
+                    int val = domino[0] < domino[1] ? domino[0] * 10 + domino[1] : domino[1] * 10 + domino[0];
+                    ret += num[val];
+                    num[val]++;
+                }
+                return ret;
+            }
         }
 
         public class DataStructure {
