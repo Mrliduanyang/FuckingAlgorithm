@@ -6394,6 +6394,30 @@ namespace FuckingAlgorithm {
                 }
                 return -1;
             }
+
+            // #394
+            public String DecodeString(String s) {
+                var res = new StringBuilder();
+                int num = 0;
+                var numStack = new Stack<int>();
+                var strStack = new Stack<string>();
+                foreach (var ch in s) {
+                    if (ch == '[') {
+                        numStack.Push(num);
+                        strStack.Push(res.ToString());
+                        num = 0;
+                        res.Clear();
+                    } else if (ch == ']') {
+                        StringBuilder tmp = new StringBuilder();
+                        int curNum = numStack.Pop();
+                        for (int i = 0; i < curNum; i++) tmp.Append(res.ToString());
+                        // res保存[]之间的字符串
+                        res = new StringBuilder(strStack.Pop() + tmp.ToString());
+                    } else if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0';
+                    else res.Append(ch);
+                }
+                return res.ToString();
+            }
         }
 
         public class DataStructure {
@@ -6730,9 +6754,46 @@ namespace FuckingAlgorithm {
                     return true;
                 }
             }
+
+            // #232
+            public class MyQueue {
+                Stack<int> pushStack;
+                Stack<int> popStack;
+                public MyQueue() {
+                    pushStack = new Stack<int>();
+                    popStack = new Stack<int>();
+                }
+
+                public void Push(int x) {
+                    pushStack.Push(x);
+                }
+
+                public int Pop() {
+                    if (popStack.Count == 0) {
+                        while (pushStack.Count != 0) {
+                            popStack.Push(pushStack.Pop());
+                        }
+                    }
+                    return popStack.Pop();
+                }
+
+                public int Peek() {
+                    if (popStack.Count == 0) {
+                        while (pushStack.Count != 0) {
+                            popStack.Push(pushStack.Pop());
+                        }
+                    }
+                    return popStack.Peek();
+                }
+
+                public bool Empty() {
+                    return pushStack.Count == 0 && popStack.Count == 0;
+                }
+            }
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.DecodeString("3[a2[c]b]");
         }
     }
 }
