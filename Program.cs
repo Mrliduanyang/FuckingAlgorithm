@@ -6793,7 +6793,6 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.DecodeString("3[a2[c]b]");
         }
     }
 }
