@@ -6817,7 +6817,10 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+<<<<<<< HEAD
             algorithm.JudgeCircle("UDUUDD");
+=======
+>>>>>>> eed345f5c52560f84fb2de7c5e5e86b4cb3be490
         }
     }
 }
