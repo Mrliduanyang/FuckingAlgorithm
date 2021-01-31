@@ -6411,12 +6411,36 @@ namespace FuckingAlgorithm {
                         StringBuilder tmp = new StringBuilder();
                         int curNum = numStack.Pop();
                         for (int i = 0; i < curNum; i++) tmp.Append(res.ToString());
-                        // res保存[]之间的字符串
+                        // res保存]和上一个[之间的字符串
                         res = new StringBuilder(strStack.Pop() + tmp.ToString());
                     } else if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0';
                     else res.Append(ch);
                 }
                 return res.ToString();
+            }
+
+            // #657
+            public bool JudgeCircle(string moves) {
+                int x = 0, y = 0;
+                foreach (var ch in moves) {
+                    switch (ch) {
+                        case 'R':
+                            x--;
+                            break;
+                        case 'L':
+                            x++;
+                            break;
+                        case 'U':
+                            y--;
+                            break;
+                        case 'D':
+                            y++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return x == 0 && y == 0;
             }
         }
 
@@ -6793,7 +6817,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.DecodeString("3[a2[c]b]");
+            algorithm.JudgeCircle("UDUUDD");
         }
     }
 }
