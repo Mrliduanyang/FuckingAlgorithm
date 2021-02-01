@@ -6442,6 +6442,18 @@ namespace FuckingAlgorithm {
                 }
                 return x == 0 && y == 0;
             }
+
+            // #888
+            public int[] FairCandySwap(int[] A, int[] B) {
+                int diff = A.Sum() - B.Sum();
+                var set = new HashSet<int>(A);
+                foreach (var num in B) {
+                    if (set.Contains((diff + 2 * num) / 2))
+                        return new int[] {
+                            (diff + 2 * num) / 2, num };
+                }
+                return new int[0];
+            }
         }
 
         public class DataStructure {
@@ -6817,10 +6829,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-<<<<<<< HEAD
             algorithm.JudgeCircle("UDUUDD");
-=======
->>>>>>> eed345f5c52560f84fb2de7c5e5e86b4cb3be490
         }
     }
 }
