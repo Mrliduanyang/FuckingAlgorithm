@@ -6450,9 +6450,82 @@ namespace FuckingAlgorithm {
                 foreach (var num in B) {
                     if (set.Contains((diff + 2 * num) / 2))
                         return new int[] {
-                            (diff + 2 * num) / 2, num };
+                            (diff + 2 * num) / 2, num
+                        };
                 }
                 return new int[0];
+            }
+
+            // #661
+            public int[][] ImageSmoother(int[][] M) {
+                int R = M.Length, C = M[0].Length;
+                var ans = new int[R][];
+                for (int r = 0; r < R; ++r) {
+                    ans[r] = new int[C];
+                    for (int c = 0; c < C; ++c) {
+                        int count = 0;
+                        for (int nr = r - 1; nr <= r + 1; ++nr) {
+                            for (int nc = c - 1; nc <= c + 1; ++nc) {
+                                if (0 <= nr && nr < R && 0 <= nc && nc < C) {
+                                    ans[r][c] += M[nr][nc];
+                                    count++;
+                                }
+                            }
+                        }
+                        ans[r][c] /= count;
+                    }
+                }
+                return ans;
+            }
+
+            // #665
+            public bool CheckPossibility(int[] nums) {
+                int n = nums.Length;
+                if (n <= 1) return true;
+                int down = 0;
+                for (int i = 1; i < n; i++) {
+                    if (nums[i] < nums[i - 1]) {
+                        down++;
+                        if (down > 1) {
+                            return false;
+                        }
+                        if (i > 1 && i < n - 1 && nums[i - 1] > nums[i + 1] && nums[i - 2] > nums[i]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            // #673
+            public int FindNumberOfLIS(int[] nums) {
+                int[] dp = new int[nums.Length];
+                int[] counter = new int[nums.Length];
+                Array.Fill(dp, 1);
+                Array.Fill(counter, 1);
+                int max = -1;
+                for (int i = 0; i < nums.Length; i++) {
+                    for (int j = 0; j < i; j++) {
+                        if (nums[i] > nums[j]) {
+                            if (dp[j] + 1 > dp[i]) {
+                                dp[i] = Math.Max(dp[i], dp[j] + 1);
+                                counter[i] = counter[j];
+                            } else if (dp[j] + 1 == dp[i]) {
+                                counter[i] += counter[j];
+
+                            }
+                        }
+                    }
+                    max = Math.Max(max, dp[i]);
+                }
+                int res = 0;
+                for (int i = 0; i < nums.Length; i++) {
+                    if (dp[i] == max)
+                        res += counter[i];
+                }
+
+                return res;
+
             }
         }
 
@@ -6829,7 +6902,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.JudgeCircle("UDUUDD");
+            algorithm.FindNumberOfLIS(new int[] { 1, 3, 5, 4, 7 });
         }
     }
 }
