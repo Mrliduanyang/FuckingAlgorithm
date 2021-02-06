@@ -6607,7 +6607,6 @@ namespace FuckingAlgorithm {
                 }
                 return cardPoints.Sum() - minSum;
             }
-
         }
 
         public class DataStructure {
