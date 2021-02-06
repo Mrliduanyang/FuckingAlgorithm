@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -3406,21 +3406,16 @@ namespace FuckingAlgorithm {
 
             // #110
             public bool IsBalanced(TreeNode root) {
-                // 计算子树高度
-                int GetHeight(TreeNode root) {
+                (int height, bool isBalanced) Helper(TreeNode root) {
                     if (root == null) {
-                        return 0;
-                    }
-                    return Math.Max(GetHeight(root.left), GetHeight(root.right)) + 1;
-                }
-                bool Helper(TreeNode root) {
-                    if (root == null) {
-                        return true;
+                        return (0, true);
                     } else {
-                        return Math.Abs(GetHeight(root.left) - GetHeight(root.right)) <= 1 && IsBalanced(root.left) && IsBalanced(root.right);
+                        var(lHeight, lBalanced) = Helper(root.left);
+                        var(rHeight, rBalanced) = Helper(root.right);
+                        return (Math.Max(lHeight, rHeight) + 1, Math.Abs(lHeight - rHeight) <= 1 && lBalanced && rBalanced);
                     }
                 }
-                return Helper(root);
+                return Helper(root).isBalanced;
             }
 
             public int MinDepth(TreeNode root) {
@@ -4251,7 +4246,6 @@ namespace FuckingAlgorithm {
                         return root;
                     }
                 }
-
                 return Helper(root, p, q);
             }
 
@@ -6104,6 +6098,40 @@ namespace FuckingAlgorithm {
                 return res.ToArray();
             }
 
+            // #684
+            public int[] FindRedundantConnection(int[][] edges) {
+                int nodesCount = edges.Length;
+                int[] parent = new int[nodesCount + 1];
+                for (int i = 1; i <= nodesCount; i++) {
+                    parent[i] = i;
+                }
+                void Union(int x, int y) {
+                    int px = Find(x);
+                    int py = Find(y);
+                    if (px == py) {
+                        return;
+                    }
+                    parent[px] = py;
+                }
+
+                int Find(int x) {
+                    if (parent[x] == x) {
+                        return x;
+                    }
+                    return Find(parent[x]);
+                }
+
+                for (int i = 0; i < nodesCount; i++) {
+                    int[] edge = edges[i];
+                    int node1 = edge[0], node2 = edge[1];
+                    if (Find(node1) != Find(node2)) {
+                        Union(node1, node2);
+                    } else {
+                        return edge;
+                    }
+                }
+                return new int[0];
+            }
             // #456
             public bool Find132pattern(int[] nums) {
                 if (nums.Length < 3)
@@ -6237,6 +6265,347 @@ namespace FuckingAlgorithm {
                     list.RemoveAt(0);
                 }
                 return sb.ToString();
+            }
+
+            // #1018
+            public List<bool> PrefixesDivBy5(int[] A) {
+                var list = new List<bool>();
+                int prefix = 0;
+                int length = A.Length;
+                for (int i = 0; i < length; i++) {
+                    prefix = ((prefix << 1) + A[i]) % 5;
+                    list.Add(prefix == 0);
+                }
+                return list;
+            }
+
+            // #1232
+            public bool CheckStraightLine(int[][] coordinates) {
+                int deltaX = coordinates[0][0], deltaY = coordinates[0][1];
+                int n = coordinates.Length;
+                for (int i = 0; i < n; i++) {
+                    coordinates[i][0] -= deltaX;
+                    coordinates[i][1] -= deltaY;
+                }
+                int A = coordinates[1][1], B = -coordinates[1][0];
+                for (int i = 2; i < n; i++) {
+                    int x = coordinates[i][0], y = coordinates[i][1];
+                    if (A * x + B * y != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // #628
+            public int MaximumProduct(int[] nums) {
+                Array.Sort(nums);
+                int n = nums.Length;
+                return Math.Max(nums[0] * nums[1] * nums[n - 1], nums[n - 3] * nums[n - 2] * nums[n - 1]);
+            }
+
+            // #989
+            public List<int> AddToArrayForm(int[] A, int K) {
+                var res = new List<int>();
+                int n = A.Length;
+                for (int i = n - 1; i >= 0; --i) {
+                    int sum = A[i] + K % 10;
+                    K /= 10;
+                    if (sum >= 10) {
+                        K++;
+                        sum -= 10;
+                    }
+                    res.Add(sum);
+                }
+                for (; K > 0; K /= 10) {
+                    res.Add(K % 10);
+                }
+                res.Reverse();
+                return res;
+            }
+
+            // #674
+            public int FindLengthOfLCIS(int[] nums) {
+                int ans = 0;
+                int n = nums.Length;
+                int start = 0;
+                for (int i = 0; i < n; i++) {
+                    if (i > 0 && nums[i] <= nums[i - 1]) {
+                        start = i;
+                    }
+                    ans = Math.Max(ans, i - start + 1);
+                }
+                return ans;
+            }
+
+            // #581
+            public int FindUnsortedSubarray(int[] nums) {
+                var stack = new Stack<int>();
+                int l = nums.Length, r = 0;
+                for (int i = 0; i < nums.Length; i++) {
+                    while (stack.Count != 0 && nums[stack.Peek()] > nums[i]) {
+                        l = Math.Min(l, stack.Pop());
+                    }
+                    stack.Push(i);
+                }
+
+                for (int i = nums.Length - 1; i >= 0; i--) {
+                    while (stack.Count != 0 && nums[stack.Peek()] < nums[i]) {
+                        r = Math.Max(r, stack.Pop());
+                    }
+                    stack.Push(i);
+                }
+                return r - l > 0 ? r - l + 1 : 0;
+            }
+
+            // #554
+            public int LeastBricks(List<List<int>> wall) {
+                var dict = new Dictionary<int, int>();
+                foreach (var row in wall) {
+                    int sum = 0;
+                    for (int i = 0; i < row.Count - 1; i++) {
+                        sum += row[i];
+                        dict[sum] = dict.GetValueOrDefault(sum, 0) + 1;
+                    }
+                }
+                return dict.Count > 0 ? wall.Count - dict.Values.Max() : wall.Count;
+            }
+
+            // #1128
+            public int NumEquivDominoPairs(int[][] dominoes) {
+                int[] num = new int[100];
+                int ret = 0;
+                foreach (var domino in dominoes) {
+                    int val = domino[0] < domino[1] ? domino[0] * 10 + domino[1] : domino[1] * 10 + domino[0];
+                    ret += num[val];
+                    num[val]++;
+                }
+                return ret;
+            }
+
+            // #724
+            public int PivotIndex(int[] nums) {
+                if (nums == null || nums.Length < 3) return -1;
+                int leftSum = 0, rightSum = 0, sum = nums.Sum();
+                for (int i = 0, l = nums.Length; i < l; i++) {
+                    if (leftSum == (sum - leftSum - nums[i]))
+                        return i;
+                    leftSum += nums[i];
+                }
+                return -1;
+            }
+
+            // #394
+            public String DecodeString(String s) {
+                var res = new StringBuilder();
+                int num = 0;
+                var numStack = new Stack<int>();
+                var strStack = new Stack<string>();
+                foreach (var ch in s) {
+                    if (ch == '[') {
+                        numStack.Push(num);
+                        strStack.Push(res.ToString());
+                        num = 0;
+                        res.Clear();
+                    } else if (ch == ']') {
+                        StringBuilder tmp = new StringBuilder();
+                        int curNum = numStack.Pop();
+                        for (int i = 0; i < curNum; i++) tmp.Append(res.ToString());
+                        // res保存]和上一个[之间的字符串
+                        res = new StringBuilder(strStack.Pop() + tmp.ToString());
+                    } else if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0';
+                    else res.Append(ch);
+                }
+                return res.ToString();
+            }
+
+            // #657
+            public bool JudgeCircle(string moves) {
+                int x = 0, y = 0;
+                foreach (var ch in moves) {
+                    switch (ch) {
+                        case 'R':
+                            x--;
+                            break;
+                        case 'L':
+                            x++;
+                            break;
+                        case 'U':
+                            y--;
+                            break;
+                        case 'D':
+                            y++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return x == 0 && y == 0;
+            }
+
+            // #888
+            public int[] FairCandySwap(int[] A, int[] B) {
+                int diff = A.Sum() - B.Sum();
+                var set = new HashSet<int>(A);
+                foreach (var num in B) {
+                    if (set.Contains((diff + 2 * num) / 2))
+                        return new int[] {
+                            (diff + 2 * num) / 2, num
+                        };
+                }
+                return new int[0];
+            }
+
+            // #661
+            public int[][] ImageSmoother(int[][] M) {
+                int R = M.Length, C = M[0].Length;
+                var ans = new int[R][];
+                for (int r = 0; r < R; ++r) {
+                    ans[r] = new int[C];
+                    for (int c = 0; c < C; ++c) {
+                        int count = 0;
+                        for (int nr = r - 1; nr <= r + 1; ++nr) {
+                            for (int nc = c - 1; nc <= c + 1; ++nc) {
+                                if (0 <= nr && nr < R && 0 <= nc && nc < C) {
+                                    ans[r][c] += M[nr][nc];
+                                    count++;
+                                }
+                            }
+                        }
+                        ans[r][c] /= count;
+                    }
+                }
+                return ans;
+            }
+
+            // #665
+            public bool CheckPossibility(int[] nums) {
+                int n = nums.Length;
+                if (n <= 1) return true;
+                int down = 0;
+                for (int i = 1; i < n; i++) {
+                    if (nums[i] < nums[i - 1]) {
+                        down++;
+                        if (down > 1) {
+                            return false;
+                        }
+                        if (i > 1 && i < n - 1 && nums[i - 1] > nums[i + 1] && nums[i - 2] > nums[i]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            // #673
+            public int FindNumberOfLIS(int[] nums) {
+                int[] dp = new int[nums.Length];
+                int[] counter = new int[nums.Length];
+                Array.Fill(dp, 1);
+                Array.Fill(counter, 1);
+                int max = -1;
+                for (int i = 0; i < nums.Length; i++) {
+                    for (int j = 0; j < i; j++) {
+                        if (nums[i] > nums[j]) {
+                            if (dp[j] + 1 > dp[i]) {
+                                dp[i] = Math.Max(dp[i], dp[j] + 1);
+                                counter[i] = counter[j];
+                            } else if (dp[j] + 1 == dp[i]) {
+                                counter[i] += counter[j];
+
+                            }
+                        }
+                    }
+                    max = Math.Max(max, dp[i]);
+                }
+                int res = 0;
+                for (int i = 0; i < nums.Length; i++) {
+                    if (dp[i] == max)
+                        res += counter[i];
+                }
+                return res;
+            }
+
+            // #424
+            public int CharacterReplacement(string s, int k) {
+                //存放窗口内各大写字母出现的最大次数
+                var t = new int[26];
+                //左右指针
+                int left = 0, right = 0;
+                //窗口内出现过的字母最大重复次数
+                int maxlen = 0;
+                //左指针不变，右指针右移时，窗口扩展
+                while (right < s.Length) {
+                    //右指针所在字母的出现次数加一
+                    t[s[right] - 'A']++;
+                    //更新字母最大重复次数
+                    maxlen = Math.Max(maxlen, t[s[right] - 'A']);
+                    //右指针右移指向下一个字母，方便计算窗口长度
+                    right++;
+                    //扩展后的窗口长度大于字母最大重复次数加允许更改次数
+                    if (right - left > maxlen + k) {
+                        //扩展后的窗口过大不满足要求，需要窗口滑动
+                        //左指针所指的字母将离开窗口，出现次数减一
+                        t[s[left] - 'A']--;
+                        //窗口不能扩展，左指针右移，窗口滑动
+                        left++;
+                    }
+                }
+                //窗口移动到最后，返回长度
+                return right - left;
+            }
+
+            // #643
+            public double FindMaxAverage(int[] nums, int k) {
+                int sum = 0;
+                int n = nums.Length;
+                for (int i = 0; i < k; i++) {
+                    sum += nums[i];
+                }
+                int maxSum = sum;
+                for (int i = k; i < n; i++) {
+                    sum = sum - nums[i - k] + nums[i];
+                    maxSum = Math.Max(maxSum, sum);
+                }
+                return 1.0 * maxSum / k;
+            }
+
+            // #1208
+            public int EqualSubstring(string s, string t, int maxCost) {
+                var window = 0;
+                var res = 0;
+                int left = 0, right = 0;
+                var diff = new int[s.Length];
+                for (int i = 0; i < s.Length; i++) {
+                    diff[i] = Math.Abs(s[i] - t[i]);
+                }
+                while (right < s.Length) {
+                    var ch = s[right];
+                    window += diff[right];
+                    right++;
+                    while (window > maxCost) {
+                        window -= diff[left];
+                        left++;
+                    }
+                    res = Math.Max(res, right - left);
+                }
+                return res;
+            }
+
+            // #1423
+            public int MaxScore(int[] cardPoints, int k) {
+                int n = cardPoints.Length;
+                int windowSize = n - k;
+                int sum = 0;
+                for (int i = 0; i < windowSize; ++i) {
+                    sum += cardPoints[i];
+                }
+                int minSum = sum;
+                for (int i = windowSize; i < n; ++i) {
+                    sum += cardPoints[i] - cardPoints[i - windowSize];
+                    minSum = Math.Min(minSum, sum);
+                }
+                return cardPoints.Sum() - minSum;
             }
         }
 
@@ -6574,13 +6943,46 @@ namespace FuckingAlgorithm {
                     return true;
                 }
             }
+
+            // #232
+            public class MyQueue {
+                Stack<int> pushStack;
+                Stack<int> popStack;
+                public MyQueue() {
+                    pushStack = new Stack<int>();
+                    popStack = new Stack<int>();
+                }
+
+                public void Push(int x) {
+                    pushStack.Push(x);
+                }
+
+                public int Pop() {
+                    if (popStack.Count == 0) {
+                        while (pushStack.Count != 0) {
+                            popStack.Push(pushStack.Pop());
+                        }
+                    }
+                    return popStack.Pop();
+                }
+
+                public int Peek() {
+                    if (popStack.Count == 0) {
+                        while (pushStack.Count != 0) {
+                            popStack.Push(pushStack.Pop());
+                        }
+                    }
+                    return popStack.Peek();
+                }
+
+                public bool Empty() {
+                    return pushStack.Count == 0 && popStack.Count == 0;
+                }
+            }
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.SmallestStringWithSwaps("dcab", new List<List<int>> {
-                new List<int>() { 0, 3 },
-                new List<int>() { 1, 2 },
-            });
+            algorithm.FindNumberOfLIS(new int[] { 1, 3, 5, 4, 7 });
         }
     }
 }
