@@ -6569,6 +6569,45 @@ namespace FuckingAlgorithm {
                 }
                 return 1.0 * maxSum / k;
             }
+
+            // #1208
+            public int EqualSubstring(string s, string t, int maxCost) {
+                var window = 0;
+                var res = 0;
+                int left = 0, right = 0;
+                var diff = new int[s.Length];
+                for (int i = 0; i < s.Length; i++) {
+                    diff[i] = Math.Abs(s[i] - t[i]);
+                }
+                while (right < s.Length) {
+                    var ch = s[right];
+                    window += diff[right];
+                    right++;
+                    while (window > maxCost) {
+                        window -= diff[left];
+                        left++;
+                    }
+                    res = Math.Max(res, right - left);
+                }
+                return res;
+            }
+
+            // #1423
+            public int MaxScore(int[] cardPoints, int k) {
+                int n = cardPoints.Length;
+                int windowSize = n - k;
+                int sum = 0;
+                for (int i = 0; i < windowSize; ++i) {
+                    sum += cardPoints[i];
+                }
+                int minSum = sum;
+                for (int i = windowSize; i < n; ++i) {
+                    sum += cardPoints[i] - cardPoints[i - windowSize];
+                    minSum = Math.Min(minSum, sum);
+                }
+                return cardPoints.Sum() - minSum;
+            }
+
         }
 
         public class DataStructure {
