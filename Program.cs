@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6607,6 +6607,7 @@ namespace FuckingAlgorithm {
                 }
                 return cardPoints.Sum() - minSum;
             }
+<<<<<<< HEAD
 
             // #700
             public TreeNode SearchBST(TreeNode root, int val) {
@@ -6616,6 +6617,8 @@ namespace FuckingAlgorithm {
                 }
                 return Helper(root);
             }
+=======
+>>>>>>> 9d89e9e674e059b70f53343572622e00dc8a685a
         }
 
         public class DataStructure {
