@@ -6607,6 +6607,15 @@ namespace FuckingAlgorithm {
                 }
                 return cardPoints.Sum() - minSum;
             }
+
+            // #700
+            public TreeNode SearchBST(TreeNode root, int val) {
+                TreeNode Helper(TreeNode node) {
+                    if (node == null || node.val == val) return node;
+                    return val < node.val ? Helper(node.left) : Helper(node.right);
+                }
+                return Helper(root);
+            }
         }
 
         public class DataStructure {
