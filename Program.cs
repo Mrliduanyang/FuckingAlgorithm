@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6607,7 +6607,6 @@ namespace FuckingAlgorithm {
                 }
                 return cardPoints.Sum() - minSum;
             }
-<<<<<<< HEAD
 
             // #700
             public TreeNode SearchBST(TreeNode root, int val) {
@@ -6617,8 +6616,31 @@ namespace FuckingAlgorithm {
                 }
                 return Helper(root);
             }
-=======
->>>>>>> 9d89e9e674e059b70f53343572622e00dc8a685a
+
+            // #978
+            public int MaxTurbulenceSize(int[] arr) {
+                int res = 1;
+                int left = 0, right = 0;
+                var window = new List<int>();
+                while (right < arr.Length - 1) {
+                    if (left == right) {
+                        if (arr[left] == arr[left + 1]) {
+                            left++;
+                        }
+                        right++;
+                    } else {
+                        if (arr[right - 1] < arr[right] && arr[right] > arr[right + 1]) {
+                            right++;
+                        } else if (arr[right - 1] > arr[right] && arr[right] < arr[right + 1]) {
+                            right++;
+                        } else {
+                            left = right;
+                        }
+                    }
+                    res = Math.Max(res, right - left + 1);
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
