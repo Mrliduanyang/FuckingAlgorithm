@@ -6641,6 +6641,59 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #670
+            public int MaximumSwap(int num) {
+                var nums = num.ToString().ToArray();
+                int[] idx = new int[nums.Length];
+                int maxIdx = nums.Length - 1;
+                for (int i = nums.Length - 1; i >= 0; i--) {
+                    if (nums[i] > nums[maxIdx]) maxIdx = i;
+                    idx[i] = maxIdx;
+                }
+                for (int i = 0; i < nums.Length; i++) {
+                    if (nums[i] != nums[idx[i]]) {
+                        var temp = nums[i];
+                        nums[i] = nums[idx[i]];
+                        nums[idx[i]] = temp;
+                        break;
+                    }
+                }
+                return int.Parse(nums);
+            }
+
+            // #678
+            public bool CheckValidString(string s) {
+                var leftStack = new Stack<int>();
+                var starStack = new Stack<int>();
+                for (int i = 0; i < s.Length; i++) {
+                    if (s[i] == '(') {
+                        leftStack.Push(i);
+                    } else if (s[i] == '*') {
+                        starStack.Push(i);
+                    } else {
+                        if (leftStack.Count != 0) {
+                            leftStack.Pop();
+                        } else if (starStack.Count != 0) {
+                            starStack.Pop();
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                if (leftStack.Count > starStack.Count) return false;
+                while (leftStack.Count != 0 & starStack.Count != 0) {
+                    if (leftStack.Peek() > starStack.Peek())
+                        return false;
+                    else {
+                        leftStack.Pop();
+                        starStack.Pop();
+                    }
+                }
+                if (leftStack.Count == 0) return true;
+                return false;
+            }
+
         }
 
         public class DataStructure {
