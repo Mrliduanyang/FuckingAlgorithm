@@ -6771,6 +6771,42 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #733
+            public int[][] FloodFill(int[][] image, int sr, int sc, int newColor) {
+                if (image[sr][sc] == newColor) return image;
+                int[] dx = { 0, 1, 0, -1 };
+                int[] dy = { 1, 0, -1, 0 };
+                int m = image.Length, n = image[0].Length, oldColor = image[sr][sc];
+                var stack = new Stack<Tuple<int, int>>();
+                stack.Push(new Tuple<int, int>(sr, sc));
+                while (stack.Count != 0) {
+                    var(curRow, curCol) = stack.Pop();
+                    image[curRow][curCol] = newColor;
+                    for (int i = 0; i < 4; i++) {
+                        var tx = curRow + dx[i];
+                        var ty = curCol + dy[i];
+                        if (tx >= 0 && tx < m && ty >= 0 && ty < n && image[tx][ty] == oldColor) {
+                            stack.Push(new Tuple<int, int>(tx, ty));
+                        }
+                    }
+                }
+                return image;
+            }
+
+            // #739
+            public int[] DailyTemperatures(int[] T) {
+                var res = new int[T.Length];
+                var monoStack = new Stack<int>();
+                for (int i = 0; i < T.Length; i++) {
+                    while (monoStack.Count != 0 && T[i] > T[monoStack.Peek()]) {
+                        var prevIdx = monoStack.Pop();
+                        res[prevIdx] = i - prevIdx;
+                    }
+                    monoStack.Push(i);
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -7146,7 +7182,11 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.TopKFrequent(new [] { "a", "b", "b", "c", "c", "c", "d", "d", "d" }, 2);
+            algorithm.FloodFill(new [] {
+                new [] { 1, 1, 1 },
+                new [] { 1, 1, 0 },
+                new [] { 1, 0, 1 },
+            }, 1, 1, 2);
         }
     }
 }
