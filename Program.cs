@@ -6807,6 +6807,20 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #747
+            public int DominantIndex(int[] nums) {
+                int maxIdx = 0;
+                for (int i = 0; i < nums.Length; ++i) {
+                    if (nums[i] > nums[maxIdx])
+                        maxIdx = i;
+                }
+                for (int i = 0; i < nums.Length; ++i) {
+                    if (maxIdx != i && nums[maxIdx] < 2 * nums[i])
+                        return -1;
+                }
+                return maxIdx;
+            }
         }
 
         public class DataStructure {
@@ -7179,14 +7193,49 @@ namespace FuckingAlgorithm {
                     return pushStack.Count == 0 && popStack.Count == 0;
                 }
             }
+
+            // #703
+            public class KthLargest {
+                class KthLargestComparer : IComparer {
+                    public int Compare(object item1, object item2) {
+                        var x1 = (int) item1;
+                        var x2 = (int) item2;
+                        // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
+                        return x1 <= x2 ? -1 : 1;
+                    }
+                }
+
+                SortedList heap;
+                int k;
+                public KthLargest(int k, int[] nums) {
+                    this.k = k;
+                    heap = new SortedList(new KthLargestComparer());
+                    foreach (var num in nums) {
+                        this.Add(num);
+                    }
+                }
+                public int Add(int val) {
+                    heap.Add(val, val);
+                    if (heap.Count > k) {
+                        heap.RemoveAt(0);
+                    }
+                    return (int) (heap.GetKeyList()) [0];
+                }
+            }
         }
         static void Main(string[] args) {
-            var algorithm = new Algorithm();
-            algorithm.FloodFill(new [] {
-                new [] { 1, 1, 1 },
-                new [] { 1, 1, 0 },
-                new [] { 1, 0, 1 },
-            }, 1, 1, 2);
+            // var algorithm = new Algorithm();
+            // algorithm.FloodFill(new [] {
+            // new [] { 1, 1, 1 },
+            // new [] { 1, 1, 0 },
+            // new [] { 1, 0, 1 },
+            // }, 1, 1, 2);
+            var dataStructure = new DataStructure.KthLargest(3, new int[] { 4, 5, 8, 2 });
+            dataStructure.Add(3);
+            dataStructure.Add(5);
+            dataStructure.Add(10);
+            dataStructure.Add(9);
+            dataStructure.Add(4);
         }
     }
 }
