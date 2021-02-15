@@ -7225,7 +7225,6 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            
         }
     }
 }
