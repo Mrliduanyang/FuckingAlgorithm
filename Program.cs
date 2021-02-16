@@ -6821,6 +6821,16 @@ namespace FuckingAlgorithm {
                 }
                 return maxIdx;
             }
+
+            // #561
+            public int ArrayPairSum(int[] nums) {
+                Array.Sort(nums);
+                int max = 0;
+                for (int i = 0; i < nums.Length; i += 2) {
+                    max += nums[i];
+                }
+                return max;
+            }
         }
 
         public class DataStructure {
@@ -7224,18 +7234,7 @@ namespace FuckingAlgorithm {
             }
         }
         static void Main(string[] args) {
-            // var algorithm = new Algorithm();
-            // algorithm.FloodFill(new [] {
-            // new [] { 1, 1, 1 },
-            // new [] { 1, 1, 0 },
-            // new [] { 1, 0, 1 },
-            // }, 1, 1, 2);
-            var dataStructure = new DataStructure.KthLargest(3, new int[] { 4, 5, 8, 2 });
-            dataStructure.Add(3);
-            dataStructure.Add(5);
-            dataStructure.Add(10);
-            dataStructure.Add(9);
-            dataStructure.Add(4);
+            var algorithm = new Algorithm();
         }
     }
 }
