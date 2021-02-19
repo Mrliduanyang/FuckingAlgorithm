@@ -6852,23 +6852,36 @@ namespace FuckingAlgorithm {
 
             // #995
             public int MinKBitFlips(int[] A, int K) {
-                int n = A.Length;
-                int ans = 0, revCnt = 0;
-                for (int i = 0; i < n; ++i) {
-                    if (i >= K && A[i - K] > 1) {
-                        revCnt ^= 1;
-                        A[i - K] -= 2; // 复原数组元素，若允许修改数组 A，则可以省略
+                int res = 0;
+                var dequeue = new LinkedList<int>();
+                for (int i = 0; i < A.Length; i++) {
+                    if (dequeue.Count > 0 && i > dequeue.First() + K - 1) {
+                        dequeue.RemoveFirst();
                     }
-                    if (A[i] == revCnt) {
-                        if (i + K > n) {
-                            return -1;
-                        }
-                        ++ans;
-                        revCnt ^= 1;
-                        A[i] += 2;
+                    if (dequeue.Count % 2 == A[i]) {
+                        if (i + K > A.Length) return -1;
+                        dequeue.AddLast(i);
+                        res += 1;
                     }
                 }
-                return ans;
+                return res;
+            }
+
+            // #1004
+            public int LongestOnes(int[] A, int K) {
+                int left = 0, right = 0;
+                int res = 0;
+                int zeroCount = 0;
+                while (right < A.Length) {
+                    if (A[right] == 0) zeroCount++;
+                    right++;
+                    while (zeroCount > K) {
+                        if (A[left] == 0) zeroCount--;
+                        left++;
+                    }
+                    res = Math.Max(res, right - left + 1);
+                }
+                return res;
             }
         }
 
