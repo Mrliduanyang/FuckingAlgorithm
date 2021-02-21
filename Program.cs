@@ -6908,6 +6908,38 @@ namespace FuckingAlgorithm {
                 }
                 return minLen;
             }
+
+            // #735
+            // public int[] AsteroidCollision(int[] asteroids) {
+            //     var stack = new Stack<int>();
+            //     foreach (var asteriod in asteroids) {
+            //         if (asteriod > 0) {
+            //             stack.Push(asteriod);
+            //         } else if (asteriod < 0) {
+            //             while (stack.Count != 0 && (stack.Peek() > 0 && stack.Peek() < -asteriod)) {
+            //                 stack.Pop();
+            //             }
+            //         }
+            //     }
+            // }
+
+            // #1438
+            public int LongestSubarray(int[] nums, int limit) {
+                int left = 0, right = 0, n = nums.Length;
+                var max = new LinkedList<int>();
+                var min = new LinkedList<int>();
+                while (right < n) {
+                    while (max.Count > 0 && nums[max.Last()] <= nums[right]) max.RemoveLast();
+                    while (min.Count > 0 && nums[min.Last()] >= nums[right]) min.RemoveLast();
+                    max.AddLast(right);
+                    min.AddLast(right);
+                    right++;
+                    if (max.First() < left) max.RemoveFirst();
+                    if (min.First() < left) min.RemoveFirst();
+                    if (nums[max.First()] - nums[min.First()] > limit) left++;
+                }
+                return right - left;
+            }
         }
 
         public class DataStructure {
@@ -7312,6 +7344,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.LongestSubarray(new int[] { 4, 2, 2, 2, 4, 4, 2, 2 }, 0);
         }
     }
 }
