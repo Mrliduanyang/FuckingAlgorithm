@@ -5900,13 +5900,13 @@ namespace FuckingAlgorithm {
                 int[] res = new int[n - k + 1];
                 LinkedList<int> deque = new LinkedList<int>();
                 for (int i = 0; i < n; i++) {
-                    if (deque.Count != 0 && deque.First() < (i - k + 1)) {
-                        deque.RemoveFirst();
-                    }
                     while (deque.Count != 0 && nums[i] >= nums[deque.Last()]) {
                         deque.RemoveLast();
                     }
                     deque.AddLast(i);
+                    if (deque.Count != 0 && deque.First() < (i - k + 1)) {
+                        deque.RemoveFirst();
+                    }
                     if (i >= k - 1) {
                         res[i - k + 1] = nums[deque.First()];
                     }
@@ -6939,6 +6939,19 @@ namespace FuckingAlgorithm {
                     if (nums[max.First()] - nums[min.First()] > limit) left++;
                 }
                 return right - left;
+            }
+
+            // #766
+            public bool IsToeplitzMatrix(int[][] matrix) {
+                int m = matrix.Length, n = matrix[0].Length;
+                for (int i = 1; i < m; i++) {
+                    for (int j = 1; j < n; j++) {
+                        if (matrix[i][j] != matrix[i - 1][j - 1]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
         }
 
