@@ -6953,6 +6953,23 @@ namespace FuckingAlgorithm {
                 }
                 return true;
             }
+
+            // #1052
+            public int MaxSatisfied(int[] customers, int[] grumpy, int X) {
+                int n = customers.Length, sum = 0, window = 0, res = 0;
+                for (int i = 0; i < n; i++) {
+                    sum += customers[i] * (1 - grumpy[i]);
+                }
+                for (int i = 0; i < X; i++) {
+                    window += customers[i] * grumpy[i];
+                }
+                for (int i = X; i < n; i++) {
+                    window = window + customers[i] * grumpy[i] - customers[i - X] * grumpy[i - X];
+                    res = Math.Max(res, window);
+                }
+                return sum + res;
+            }
+
         }
 
         public class DataStructure {
