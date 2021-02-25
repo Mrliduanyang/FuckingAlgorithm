@@ -6970,6 +6970,70 @@ namespace FuckingAlgorithm {
                 return sum + res;
             }
 
+            // #832
+            public int[][] FlipAndInvertImage(int[][] A) {
+                int n = A.Length;
+                for (int i = 0; i < n; i++) {
+                    int left = 0, right = n - 1;
+                    while (left < right) {
+                        if (A[i][left] == A[i][right]) {
+                            A[i][left] ^= 1;
+                            A[i][right] ^= 1;
+                        }
+                        left++;
+                        right--;
+                    }
+                    if (left == right) {
+                        A[i][left] ^= 1;
+                    }
+                }
+                return A;
+            }
+
+            // #704
+            public int Search(int[] nums, int target) {
+                int left = 0, right = nums.Length;
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    if (nums[mid] == target) {
+                        return mid;
+                    } else if (nums[mid] < target) {
+                        left = mid + 1;
+                    } else {
+                        right = mid;
+                    }
+                }
+                return -1;
+            }
+
+            // #718
+            public int FindLength(int[] A, int[] B) {
+                int n = A.Length, m = B.Length;
+                int[, ] dp = new int[n + 1, m + 1];
+                int ans = 0;
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        dp[i, j] = A[i - 1] == B[j - 1] ? dp[i - 1, j - 1] + 1 : 0;
+                        ans = Math.Max(ans, dp[i, j]);
+                    }
+                }
+                return ans;
+            }
+
+            // #867
+            public int[][] Transpose(int[][] matrix) {
+                int m = matrix.Length, n = matrix[0].Length;
+                int[][] transposed = new int[n][];
+                for (int i = 0; i < n; i++) {
+                    transposed[i] = new int[m];
+                }
+                for (int i = 0; i < m; i++) {
+                    for (int j = 0; j < n; j++) {
+                        transposed[j][i] = matrix[i][j];
+                    }
+                }
+                return transposed;
+            }
         }
 
         public class DataStructure {
