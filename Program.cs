@@ -7034,6 +7034,28 @@ namespace FuckingAlgorithm {
                 }
                 return transposed;
             }
+
+            // #781
+            public int NumRabbits(int[] answers) {
+                int res = 0;
+                var dict = new Dictionary<int, int>();
+                foreach (var answer in answers) {
+                    if (answer == 0) {
+                        res += 1;
+                    } else {
+                        if (!dict.ContainsKey(answer)) {
+                            dict[answer] = answer;
+                            res += (answer + 1);
+                        } else {
+                            dict[answer]--;
+                            if (dict[answer] == 0) {
+                                dict.Remove(answer);
+                            }
+                        }
+                    }
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
