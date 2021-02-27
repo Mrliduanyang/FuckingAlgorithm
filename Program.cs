@@ -7500,7 +7500,6 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.LongestSubarray(new int[] { 4, 2, 2, 2, 4, 4, 2, 2 }, 0);
         }
     }
 }
