@@ -7126,6 +7126,31 @@ namespace FuckingAlgorithm {
                 }
                 return inc || dec;
             }
+
+            // #754
+            public int ReachNumber(int target) {
+                target = Math.Abs(target);
+                int k = 0;
+                while (target > 0)
+                    target -= ++k;
+                return target % 2 == 0 ? k : k + 1 + k % 2;
+            }
+
+            // #303
+            class NumArray {
+                int[] sums;
+                public NumArray(int[] nums) {
+                    int n = nums.Length;
+                    sums = new int[n + 1];
+                    for (int i = 0; i < n; i++) {
+                        sums[i + 1] = sums[i] + nums[i];
+                    }
+                }
+
+                public int SumRange(int i, int j) {
+                    return sums[j + 1] - sums[i];
+                }
+            }
         }
 
         public class DataStructure {
