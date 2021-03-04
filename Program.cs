@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5900,13 +5900,13 @@ namespace FuckingAlgorithm {
                 int[] res = new int[n - k + 1];
                 LinkedList<int> deque = new LinkedList<int>();
                 for (int i = 0; i < n; i++) {
-                    if (deque.Count != 0 && deque.First() < (i - k + 1)) {
-                        deque.RemoveFirst();
-                    }
                     while (deque.Count != 0 && nums[i] >= nums[deque.Last()]) {
                         deque.RemoveLast();
                     }
                     deque.AddLast(i);
+                    if (deque.Count != 0 && deque.First() < (i - k + 1)) {
+                        deque.RemoveFirst();
+                    }
                     if (i >= k - 1) {
                         res[i - k + 1] = nums[deque.First()];
                     }
@@ -6607,6 +6607,615 @@ namespace FuckingAlgorithm {
                 }
                 return cardPoints.Sum() - minSum;
             }
+
+            // #700
+            public TreeNode SearchBST(TreeNode root, int val) {
+                TreeNode Helper(TreeNode node) {
+                    if (node == null || node.val == val) return node;
+                    return val < node.val ? Helper(node.left) : Helper(node.right);
+                }
+                return Helper(root);
+            }
+
+            // #978
+            public int MaxTurbulenceSize(int[] arr) {
+                int res = 1;
+                int left = 0, right = 0;
+                var window = new List<int>();
+                while (right < arr.Length - 1) {
+                    if (left == right) {
+                        if (arr[left] == arr[left + 1]) {
+                            left++;
+                        }
+                        right++;
+                    } else {
+                        if (arr[right - 1] < arr[right] && arr[right] > arr[right + 1]) {
+                            right++;
+                        } else if (arr[right - 1] > arr[right] && arr[right] < arr[right + 1]) {
+                            right++;
+                        } else {
+                            left = right;
+                        }
+                    }
+                    res = Math.Max(res, right - left + 1);
+                }
+                return res;
+            }
+
+            // #670
+            public int MaximumSwap(int num) {
+                var nums = num.ToString().ToArray();
+                int[] idx = new int[nums.Length];
+                int maxIdx = nums.Length - 1;
+                for (int i = nums.Length - 1; i >= 0; i--) {
+                    if (nums[i] > nums[maxIdx]) maxIdx = i;
+                    idx[i] = maxIdx;
+                }
+                for (int i = 0; i < nums.Length; i++) {
+                    if (nums[i] != nums[idx[i]]) {
+                        var temp = nums[i];
+                        nums[i] = nums[idx[i]];
+                        nums[idx[i]] = temp;
+                        break;
+                    }
+                }
+                return int.Parse(nums);
+            }
+
+            // #678
+            public bool CheckValidString(string s) {
+                var leftStack = new Stack<int>();
+                var starStack = new Stack<int>();
+                for (int i = 0; i < s.Length; i++) {
+                    if (s[i] == '(') {
+                        leftStack.Push(i);
+                    } else if (s[i] == '*') {
+                        starStack.Push(i);
+                    } else {
+                        if (leftStack.Count != 0) {
+                            leftStack.Pop();
+                        } else if (starStack.Count != 0) {
+                            starStack.Pop();
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+                if (leftStack.Count > starStack.Count) return false;
+                while (leftStack.Count != 0 & starStack.Count != 0) {
+                    if (leftStack.Peek() > starStack.Peek())
+                        return false;
+                    else {
+                        leftStack.Pop();
+                        starStack.Pop();
+                    }
+                }
+                if (leftStack.Count == 0) return true;
+                return false;
+            }
+
+            // #992
+            public int SubarraysWithKDistinct(int[] A, int K) {
+                int Helper(int[] A, int K) {
+                    int len = A.Length;
+                    int[] freq = new int[len + 1];
+                    int left = 0;
+                    int right = 0;
+                    int count = 0;
+                    int res = 0;
+                    while (right < len) {
+                        if (freq[A[right]] == 0) {
+                            count++;
+                        }
+                        freq[A[right]]++;
+                        right++;
+
+                        while (count > K) {
+                            freq[A[left]]--;
+                            if (freq[A[left]] == 0) {
+                                count--;
+                            }
+                            left++;
+                        }
+                        res += right - left;
+                    }
+                    return res;
+                }
+                return Helper(A, K) - Helper(A, K - 1);
+            }
+
+            // #567
+            public bool CheckInclusion(string s1, string s2) {
+                if (s1.Length > s2.Length) return false;
+                var counter1 = new int[26];
+                var counter2 = new int[26];
+                for (int i = 0; i < s1.Length; i++) {
+                    counter1[s1[i] - 'a']++;
+                    counter2[s2[i] - 'a']++;
+                }
+                if (Enumerable.SequenceEqual(counter1, counter2)) {
+                    return true;
+                }
+                for (int i = s1.Length; i < s2.Length; i++) {
+                    counter2[s2[i] - 'a']++;
+                    counter2[s2[i - s1.Length] - 'a']--;
+                    if (Enumerable.SequenceEqual(counter1, counter2)) {
+                        return true;
+                    };
+                }
+                return false;
+            }
+
+            // #692
+
+            class MaxHeapComparer : IComparer {
+                public int Compare(object item1, object item2) {
+                    var x1 = (KeyValuePair<string, int>) item1;
+                    var x2 = (KeyValuePair<string, int>) item2;
+                    // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
+                    return x1.Value == x2.Value ? x1.Key.CompareTo(x2.Key) : x1.Value >= x2.Value ? -1 : 1;
+                }
+            }
+            public List<string> TopKFrequent(string[] words, int k) {
+                var countDict = words.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+                var heap = new SortedList(new MaxHeapComparer());
+                foreach (var item in countDict) {
+                    heap.Add(item, 0);
+                    if (heap.Count > k) {
+                        heap.RemoveAt(heap.Count - 1);
+                    }
+                }
+                var res = new List<string>();
+                foreach (var item in heap.GetKeyList()) {
+                    res.Add(((KeyValuePair<string, int>) item).Key);
+                }
+                return res;
+            }
+
+            // #733
+            public int[][] FloodFill(int[][] image, int sr, int sc, int newColor) {
+                if (image[sr][sc] == newColor) return image;
+                int[] dx = { 0, 1, 0, -1 };
+                int[] dy = { 1, 0, -1, 0 };
+                int m = image.Length, n = image[0].Length, oldColor = image[sr][sc];
+                var stack = new Stack<Tuple<int, int>>();
+                stack.Push(new Tuple<int, int>(sr, sc));
+                while (stack.Count != 0) {
+                    var(curRow, curCol) = stack.Pop();
+                    image[curRow][curCol] = newColor;
+                    for (int i = 0; i < 4; i++) {
+                        var tx = curRow + dx[i];
+                        var ty = curCol + dy[i];
+                        if (tx >= 0 && tx < m && ty >= 0 && ty < n && image[tx][ty] == oldColor) {
+                            stack.Push(new Tuple<int, int>(tx, ty));
+                        }
+                    }
+                }
+                return image;
+            }
+
+            // #739
+            public int[] DailyTemperatures(int[] T) {
+                var res = new int[T.Length];
+                var monoStack = new Stack<int>();
+                for (int i = 0; i < T.Length; i++) {
+                    while (monoStack.Count != 0 && T[i] > T[monoStack.Peek()]) {
+                        var prevIdx = monoStack.Pop();
+                        res[prevIdx] = i - prevIdx;
+                    }
+                    monoStack.Push(i);
+                }
+                return res;
+            }
+
+            // #747
+            public int DominantIndex(int[] nums) {
+                int maxIdx = 0;
+                for (int i = 0; i < nums.Length; ++i) {
+                    if (nums[i] > nums[maxIdx])
+                        maxIdx = i;
+                }
+                for (int i = 0; i < nums.Length; ++i) {
+                    if (maxIdx != i && nums[maxIdx] < 2 * nums[i])
+                        return -1;
+                }
+                return maxIdx;
+            }
+
+            // #561
+            public int ArrayPairSum(int[] nums) {
+                Array.Sort(nums);
+                int max = 0;
+                for (int i = 0; i < nums.Length; i += 2) {
+                    max += nums[i];
+                }
+                return max;
+            }
+
+            // #566
+            public int[][] MatrixReshape(int[][] nums, int r, int c) {
+                int m = nums.Length;
+                int n = nums[0].Length;
+                if (m * n != r * c) {
+                    return nums;
+                }
+
+                int[][] ans = new int[r][];
+                for (int i = 0; i < r; i++) {
+                    ans[i] = new int[c];
+                }
+                for (int x = 0; x < m * n; ++x) {
+                    ans[x / c][x % c] = nums[x / n][x % n];
+                }
+                return ans;
+            }
+
+            // #995
+            public int MinKBitFlips(int[] A, int K) {
+                int res = 0;
+                var dequeue = new LinkedList<int>();
+                for (int i = 0; i < A.Length; i++) {
+                    if (dequeue.Count > 0 && i > dequeue.First() + K - 1) {
+                        dequeue.RemoveFirst();
+                    }
+                    if (dequeue.Count % 2 == A[i]) {
+                        if (i + K > A.Length) return -1;
+                        dequeue.AddLast(i);
+                        res += 1;
+                    }
+                }
+                return res;
+            }
+
+            // #1004
+            public int LongestOnes(int[] A, int K) {
+                int left = 0, right = 0;
+                int res = 0;
+                int zeroCount = 0;
+                while (right < A.Length) {
+                    if (A[right] == 0) zeroCount++;
+                    right++;
+                    while (zeroCount > K) {
+                        if (A[left] == 0) zeroCount--;
+                        left++;
+                    }
+                    res = Math.Max(res, right - left + 1);
+                }
+                return res;
+            }
+
+            // #697
+            public int FindShortestSubArray(int[] nums) {
+                var dict = new Dictionary<int, int[]>();
+                for (int i = 0; i < nums.Length; i++) {
+                    if (dict.ContainsKey(nums[i])) {
+                        dict[nums[i]][0]++;
+                        dict[nums[i]][2] = i;
+                    } else {
+                        dict[nums[i]] = new int[] { 1, i, i };
+                    }
+                }
+                int maxCount = 0, minLen = 0;
+                foreach (var(key, val) in dict) {
+                    if (maxCount < val[0]) {
+                        maxCount = val[0];
+                        minLen = val[2] - val[1] + 1;
+                    } else if (maxCount == val[0]) {
+                        if (minLen > val[2] - val[1] + 1) {
+                            minLen = val[2] - val[1] + 1;
+                        }
+                    }
+                }
+                return minLen;
+            }
+
+            // #735
+            // public int[] AsteroidCollision(int[] asteroids) {
+            //     var stack = new Stack<int>();
+            //     foreach (var asteriod in asteroids) {
+            //         if (asteriod > 0) {
+            //             stack.Push(asteriod);
+            //         } else if (asteriod < 0) {
+            //             while (stack.Count != 0 && (stack.Peek() > 0 && stack.Peek() < -asteriod)) {
+            //                 stack.Pop();
+            //             }
+            //         }
+            //     }
+            // }
+
+            // #1438
+            public int LongestSubarray(int[] nums, int limit) {
+                int left = 0, right = 0, n = nums.Length;
+                var max = new LinkedList<int>();
+                var min = new LinkedList<int>();
+                while (right < n) {
+                    while (max.Count > 0 && nums[max.Last()] <= nums[right]) max.RemoveLast();
+                    while (min.Count > 0 && nums[min.Last()] >= nums[right]) min.RemoveLast();
+                    max.AddLast(right);
+                    min.AddLast(right);
+                    right++;
+                    if (max.First() < left) max.RemoveFirst();
+                    if (min.First() < left) min.RemoveFirst();
+                    if (nums[max.First()] - nums[min.First()] > limit) left++;
+                }
+                return right - left;
+            }
+
+            // #766
+            public bool IsToeplitzMatrix(int[][] matrix) {
+                int m = matrix.Length, n = matrix[0].Length;
+                for (int i = 1; i < m; i++) {
+                    for (int j = 1; j < n; j++) {
+                        if (matrix[i][j] != matrix[i - 1][j - 1]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            // #1052
+            public int MaxSatisfied(int[] customers, int[] grumpy, int X) {
+                int n = customers.Length, sum = 0, window = 0, res = 0;
+                for (int i = 0; i < n; i++) {
+                    sum += customers[i] * (1 - grumpy[i]);
+                }
+                for (int i = 0; i < X; i++) {
+                    window += customers[i] * grumpy[i];
+                }
+                for (int i = X; i < n; i++) {
+                    window = window + customers[i] * grumpy[i] - customers[i - X] * grumpy[i - X];
+                    res = Math.Max(res, window);
+                }
+                return sum + res;
+            }
+
+            // #832
+            public int[][] FlipAndInvertImage(int[][] A) {
+                int n = A.Length;
+                for (int i = 0; i < n; i++) {
+                    int left = 0, right = n - 1;
+                    while (left < right) {
+                        if (A[i][left] == A[i][right]) {
+                            A[i][left] ^= 1;
+                            A[i][right] ^= 1;
+                        }
+                        left++;
+                        right--;
+                    }
+                    if (left == right) {
+                        A[i][left] ^= 1;
+                    }
+                }
+                return A;
+            }
+
+            // #704
+            public int Search(int[] nums, int target) {
+                int left = 0, right = nums.Length;
+                while (left < right) {
+                    int mid = left + (right - left) / 2;
+                    if (nums[mid] == target) {
+                        return mid;
+                    } else if (nums[mid] < target) {
+                        left = mid + 1;
+                    } else {
+                        right = mid;
+                    }
+                }
+                return -1;
+            }
+
+            // #718
+            public int FindLength(int[] A, int[] B) {
+                int n = A.Length, m = B.Length;
+                int[, ] dp = new int[n + 1, m + 1];
+                int ans = 0;
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        dp[i, j] = A[i - 1] == B[j - 1] ? dp[i - 1, j - 1] + 1 : 0;
+                        ans = Math.Max(ans, dp[i, j]);
+                    }
+                }
+                return ans;
+            }
+
+            // #867
+            public int[][] Transpose(int[][] matrix) {
+                int m = matrix.Length, n = matrix[0].Length;
+                int[][] transposed = new int[n][];
+                for (int i = 0; i < n; i++) {
+                    transposed[i] = new int[m];
+                }
+                for (int i = 0; i < m; i++) {
+                    for (int j = 0; j < n; j++) {
+                        transposed[j][i] = matrix[i][j];
+                    }
+                }
+                return transposed;
+            }
+
+            // #781
+            public int NumRabbits(int[] answers) {
+                int res = 0;
+                var dict = new Dictionary<int, int>();
+                foreach (var answer in answers) {
+                    if (answer == 0) {
+                        res += 1;
+                    } else {
+                        if (!dict.ContainsKey(answer)) {
+                            dict[answer] = answer;
+                            res += (answer + 1);
+                        } else {
+                            dict[answer]--;
+                            if (dict[answer] == 0) {
+                                dict.Remove(answer);
+                            }
+                        }
+                    }
+                }
+                return res;
+            }
+
+            // #395
+            public int LongestSubstring(String s, int k) {
+                int ret = 0;
+                int n = s.Length;
+                for (int t = 1; t <= 26; t++) {
+                    int l = 0, r = 0;
+                    int[] cnt = new int[26];
+                    int tot = 0;
+                    int less = 0;
+                    while (r < n) {
+                        cnt[s[r] - 'a']++;
+                        if (cnt[s[r] - 'a'] == 1) {
+                            tot++;
+                            less++;
+                        }
+                        if (cnt[s[r] - 'a'] == k) {
+                            less--;
+                        }
+
+                        while (tot > t) {
+                            cnt[s[l] - 'a']--;
+                            if (cnt[s[l] - 'a'] == k - 1) {
+                                less++;
+                            }
+                            if (cnt[s[l] - 'a'] == 0) {
+                                tot--;
+                                less--;
+                            }
+                            l++;
+                        }
+                        if (less == 0) {
+                            ret = Math.Max(ret, r - l + 1);
+                        }
+                        r++;
+                    }
+                }
+                return ret;
+            }
+
+            // #788
+            public int RotatedDigits(int N) {
+                bool Helper(int n, bool flag) {
+                    if (n == 0) return flag;
+
+                    int d = n % 10;
+                    if (d == 3 || d == 4 || d == 7) return false;
+                    if (d == 0 || d == 1 || d == 8) return Helper(n / 10, flag);
+                    return Helper(n / 10, true);
+                }
+                int ans = 0;
+                for (int n = 1; n <= N; ++n)
+                    if (Helper(n, false)) ans++;
+                return ans;
+            }
+
+            // #
+            public bool IsMonotonic(int[] A) {
+                bool inc = true, dec = true;
+                int n = A.Length;
+                for (int i = 0; i < n - 1; ++i) {
+                    if (A[i] > A[i + 1]) {
+                        inc = false;
+                    }
+                    if (A[i] < A[i + 1]) {
+                        dec = false;
+                    }
+                }
+                return inc || dec;
+            }
+
+            // #754
+            public int ReachNumber(int target) {
+                target = Math.Abs(target);
+                int k = 0;
+                while (target > 0)
+                    target -= ++k;
+                return target % 2 == 0 ? k : k + 1 + k % 2;
+            }
+
+            // #303
+            class NumArray {
+                int[] sums;
+                public NumArray(int[] nums) {
+                    int n = nums.Length;
+                    sums = new int[n + 1];
+                    for (int i = 0; i < n; i++) {
+                        sums[i + 1] = sums[i] + nums[i];
+                    }
+                }
+
+                public int SumRange(int i, int j) {
+                    return sums[j + 1] - sums[i];
+                }
+            }
+
+            // #799
+            public double ChampagneTower(int poured, int query_row, int query_glass) {
+                var A = new double[102, 102];
+                A[0, 0] = (double) poured;
+                for (int r = 0; r <= query_row; ++r) {
+                    for (int c = 0; c <= r; ++c) {
+                        double q = (A[r, c] - 1.0) / 2.0;
+                        if (q > 0) {
+                            A[r + 1, c] += q;
+                            A[r + 1, c + 1] += q;
+                        }
+                    }
+                }
+                return Math.Min(1, A[query_row, query_glass]);
+            }
+
+            // #848
+            public string shiftingLetters(string S, int[] shifts) {
+                var res = new char[S.Length];
+                var times = 0;
+                for (int i = shifts.Length - 1; i >= 0; i--) {
+                    times = (times + shifts[i]) % 26;
+                    var idx = S[i] - 'a';
+                    res[i] = (char) ((idx + times) % 26 + 97);
+                }
+                return new string(res);
+            }
+
+            // #338
+            public int[] CountBits(int num) {
+                var res = new int[num + 1];
+                res[0] = 0;
+                for (int i = 0; i <= num; i++) {
+                    if (i % 2 == 1) {
+                        res[i] = res[i - 1] + 1;
+                    } else {
+                        res[i] = res[i / 2];
+                    }
+                }
+                return res;
+            }
+
+            // #415
+            public string AddStrings(string num1, string num2) {
+                int carry = 0, i = num1.Length - 1, j = num2.Length - 1;
+                var res = new StringBuilder();
+                while (i >= 0 || j >= 0 || carry != 0) {
+                    int x = i >= 0 ? num1[i] - '0' : 0;
+                    int y = j >= 0 ? num2[j] - '0' : 0;
+                    int tmp = x + y + carry;
+                    res.Append(tmp % 10);
+                    carry = tmp / 10;
+                    i--;
+                    j--;
+                }
+                return new string(res.ToString().Reverse().ToArray());
+            }
+
+            // #179
+            public string LargestNumber(int[] nums) {
+                Array.Sort(nums, (a, b) => {
+                    
+                });
+            }
         }
 
         public class DataStructure {
@@ -6979,10 +7588,39 @@ namespace FuckingAlgorithm {
                     return pushStack.Count == 0 && popStack.Count == 0;
                 }
             }
+
+            // #703
+            public class KthLargest {
+                class KthLargestComparer : IComparer {
+                    public int Compare(object item1, object item2) {
+                        var x1 = (int) item1;
+                        var x2 = (int) item2;
+                        // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
+                        return x1 <= x2 ? -1 : 1;
+                    }
+                }
+
+                SortedList heap;
+                int k;
+                public KthLargest(int k, int[] nums) {
+                    this.k = k;
+                    heap = new SortedList(new KthLargestComparer());
+                    foreach (var num in nums) {
+                        this.Add(num);
+                    }
+                }
+                public int Add(int val) {
+                    heap.Add(val, val);
+                    if (heap.Count > k) {
+                        heap.RemoveAt(0);
+                    }
+                    return (int) (heap.GetKeyList()) [0];
+                }
+            }
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.FindNumberOfLIS(new int[] { 1, 3, 5, 4, 7 });
+            algorithm.AddStrings("123", "789");
         }
     }
 }
