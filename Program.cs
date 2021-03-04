@@ -1080,7 +1080,7 @@ namespace FuckingAlgorithm {
                 stack.Push(root);
                 while (stack.Count != 0) {
                     var node = stack.Pop();
-                    res.Insert(0, node.val);
+                    res.Add(node.val);
                     if (node.left != null) {
                         stack.Push(node.left);
                     }
@@ -1088,6 +1088,7 @@ namespace FuckingAlgorithm {
                         stack.Push(node.right);
                     }
                 }
+                res.Reverse();
                 return res;
             }
 
@@ -7212,9 +7213,30 @@ namespace FuckingAlgorithm {
 
             // #179
             public string LargestNumber(int[] nums) {
-                Array.Sort(nums, (a, b) => {
-                    
+                var numStrs = nums.Select(x => x.ToString()).ToArray();
+                Array.Sort(numStrs, (a, b) => {
+                    var order1 = a + b;
+                    var order2 = b + a;
+                    return order2.CompareTo(order1);
                 });
+                if (numStrs[0].Equals("0")) return "0";
+                var res = new StringBuilder();
+                foreach (var numStr in numStrs) {
+                    res.Append(numStr);
+                }
+                return res.ToString();
+            }
+
+            // #419
+            public int CountBattleships(char[][] board) {
+                int res = 0;
+                if (board.Length == 0) return 0;
+                for (int i = 0; i < board.Length; i++) {
+                    for (int j = 0; j < board[0].Length; j++) {
+                        if (board[i][j] == 'X' && (i == 0 || board[i - 1][j] == '.') && (j == 0 || board[i][j - 1] == '.')) res++;
+                    }
+                }
+                return res;
             }
         }
 
@@ -7620,7 +7642,7 @@ namespace FuckingAlgorithm {
         }
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.AddStrings("123", "789");
+            algorithm.LargestNumber(new int[] { 10, 20 });
         }
     }
 }
