@@ -1055,38 +1055,69 @@ namespace FuckingAlgorithm {
                 return level;
             }
 
+            // #144
+            // public IList<int> PreorderTraversal(TreeNode root) {
+            //     if (root == null) return new List<int> { };
+            //     var stack = new Stack<TreeNode>();
+            //     var res = new List<int>();
+            //     stack.Push(root);
+            //     while (stack.Count != 0) {
+            //         var node = stack.Pop();
+            //         res.Add(node.val);
+            //         if (node.right != null) {
+            //             stack.Push(node.right);
+            //         }
+            //         if (node.left != null) {
+            //             stack.Push(node.left);
+            //         }
+            //     }
+            //     return res;
+            // }
+
             public IList<int> PreorderTraversal(TreeNode root) {
-                if (root == null) return new List<int> { };
                 var stack = new Stack<TreeNode>();
                 var res = new List<int>();
-                stack.Push(root);
-                while (stack.Count != 0) {
-                    var node = stack.Pop();
-                    res.Add(node.val);
-                    if (node.right != null) {
-                        stack.Push(node.right);
+                while (true) {
+                    while (root != null) {
+                        res.Add(root.val);
+                        stack.Push(root.right);
+                        root = root.left;
                     }
-                    if (node.left != null) {
-                        stack.Push(node.left);
-                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
                 }
                 return res;
             }
 
+            // #94
+            public IList<int> InorderTraversal(TreeNode root) {
+                var res = new List<int>();
+                var stack = new Stack<TreeNode>();
+                // root为null并且栈空，结束
+                while (true) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
+                    res.Add(root.val);
+                    root = root.right;
+                }
+                return res;
+            }
+            // #145
             public IList<int> PostorderTraversal(TreeNode root) {
-                if (root == null) return new List<int> { };
                 var stack = new Stack<TreeNode>();
                 var res = new List<int>();
-                stack.Push(root);
-                while (stack.Count != 0) {
-                    var node = stack.Pop();
-                    res.Add(node.val);
-                    if (node.left != null) {
-                        stack.Push(node.left);
+                while (true) {
+                    while (root != null) {
+                        res.Add(root.val);
+                        stack.Push(root.left);
+                        root = root.right;
                     }
-                    if (node.right != null) {
-                        stack.Push(node.right);
-                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
                 }
                 res.Reverse();
                 return res;
@@ -7741,6 +7772,7 @@ namespace FuckingAlgorithm {
                 }
             }
         }
+
         static void Main(string[] args) {
             var algorithm = new Algorithm();
             algorithm.MinMeetingRooms(new [] {
