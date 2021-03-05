@@ -7238,6 +7238,32 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #200
+            public int NumIslands(char[][] grid) {
+                int m = grid.Length;
+                if (m == 0) return 0;
+
+                int n = grid[0].Length;
+                void Helper(int r, int c) {
+                    grid[r][c] = '0';
+                    if (r - 1 >= 0 && grid[r - 1][c] == '1') Helper(r - 1, c);
+                    if (r + 1 < m && grid[r + 1][c] == '1') Helper(r + 1, c);
+                    if (c - 1 >= 0 && grid[r][c - 1] == '1') Helper(r, c - 1);
+                    if (c + 1 < n && grid[r][c + 1] == '1') Helper(r, c + 1);
+                }
+
+                int res = 0;
+                for (int r = 0; r < m; ++r) {
+                    for (int c = 0; c < n; ++c) {
+                        if (grid[r][c] == '1') {
+                            res++;
+                            Helper(r, c);
+                        }
+                    }
+                }
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -7314,7 +7340,7 @@ namespace FuckingAlgorithm {
                     public void AddRecently(int key, int val) {
                         Node x = new Node(key, val);
                         cache.AddLast(x);
-                        map.Add(key, x);
+                        map[key] = x;
                     }
 
                     // 删除某一个key，从表中删除，从map中删除
@@ -7331,7 +7357,7 @@ namespace FuckingAlgorithm {
                         map.Remove(key);
                     }
 
-                    public int get(int key) {
+                    public int Get(int key) {
                         if (!map.ContainsKey(key)) {
                             return -1;
                         }
@@ -7340,11 +7366,12 @@ namespace FuckingAlgorithm {
                         return map[key].val;
                     }
 
-                    public void put(int key, int val) {
+                    public void Put(int key, int val) {
                         // 如果key存在，将key对应的val修改，并提到最近使用
                         if (map.ContainsKey(key)) {
                             map[key].val = val;
                             MakeRecently(key);
+                            return;
                         }
                         // 如果缓存满了，删除掉最近最少使用的元素
                         if (cap == cache.Size()) {
