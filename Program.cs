@@ -7357,6 +7357,10 @@ namespace FuckingAlgorithm {
 
             // #277
             public int FindCelebrity(int n) {
+                bool Knows(int i, int j) {
+                    return true;
+                }
+
                 int candidate = 0;
                 for (int i = 0; i < n; i++) {
                     if (Knows(candidate, i)) {
@@ -7370,6 +7374,55 @@ namespace FuckingAlgorithm {
                     }
                 }
                 return candidate;
+            }
+
+            // #165
+            public int CompareVersion(string version1, string version2) {
+                var nums1 = version1.Split('.').Select(x => int.Parse(x)).ToArray();
+                var nums2 = version2.Split('.').Select(x => int.Parse(x)).ToArray();
+                int m = nums1.Length, n = nums2.Length;
+                int i1, i2;
+                for (int i = 0; i < Math.Max(m, n); i++) {
+                    i1 = i < m ? nums1[i] : 0;
+                    i2 = i < n ? nums2[i] : 0;
+                    if (i1 != i2) {
+                        return i1 > i2 ? 1 : -1;
+                    }
+                }
+                return 0;
+            }
+
+            // #12
+            public String intToRoman(int num) {
+                var values = new [] { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+                var symbols = new [] { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+                var res = new StringBuilder();
+                for (int i = 0; i < values.Length && num >= 0; i++) {
+                    while (values[i] <= num) {
+                        num -= values[i];
+                        res.Append(symbols[i]);
+                    }
+                }
+                return res.ToString();
+            }
+
+            // #50
+            public double MyPow(double x, int n) {
+                double QuickMul(double x, long N) {
+                    double ans = 1.0;
+                    double xContribute = x;
+                    while (N > 0) {
+                        if (N % 2 == 1) {
+                            ans *= xContribute;
+                        }
+                        xContribute *= xContribute;
+                        N /= 2;
+                    }
+                    return ans;
+                }
+                // 分别在x的二进制表示为1的地方乘上对应贡献
+                long N = n;
+                return N >= 0 ? QuickMul(x, N) : 1.0 / QuickMul(x, -N);
             }
         }
 
@@ -7777,9 +7830,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MinMeetingRooms(new [] {
-                new [] { 1, 5 }, new [] { 8, 9 }, new [] { 8, 9 }
-            });
+            algorithm.CompareVersion("1.01", "1.001");
         }
     }
 }
