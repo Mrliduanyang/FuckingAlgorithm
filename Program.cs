@@ -4119,6 +4119,7 @@ namespace FuckingAlgorithm {
                 return area1 + area2 - area3;
             }
 
+            // #207
             public bool CanFinish(int numCourses, int[][] prerequisites) {
                 var indegree = new int[numCourses];
                 var adjacency = new List<List<int>>();
@@ -4150,6 +4151,7 @@ namespace FuckingAlgorithm {
                 return numCourses == 0;
             }
 
+            // #210
             public int[] FindOrder(int numCourses, int[][] prerequisites) {
                 var indegree = new int[numCourses];
                 var adjacency = new List<List<int>>();
