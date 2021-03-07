@@ -162,7 +162,7 @@ namespace FuckingAlgorithm {
                 int n = nums.Length;
                 sum = sum / 2;
                 // 对于前i个物体，当背包容量为j时，是否可以装满
-                bool[, ] dp = new bool[n + 1, sum + 1];
+                bool[,] dp = new bool[n + 1, sum + 1];
                 // base当背包容量为0，肯定已经装满，当没有物体，肯定无法装满
                 for (int i = 1; i <= n; i++) {
                     dp[i, 0] = true;
@@ -183,7 +183,7 @@ namespace FuckingAlgorithm {
 
             public int Change(int amount, int[] coins) {
                 int n = coins.Length;
-                int[, ] dp = new int[n + 1, amount + 1];
+                int[,] dp = new int[n + 1, amount + 1];
                 // base不用任何硬币，凑不去任何金额，当要凑出0，只有一种方案
                 for (int i = 0; i <= n; i++) {
                     dp[i, 0] = 1;
@@ -204,7 +204,7 @@ namespace FuckingAlgorithm {
 
             public int MinDistance(string s1, string s2) {
                 int m = s1.Length, n = s2.Length;
-                int[, ] dp = new int[m + 1, n + 1];
+                int[,] dp = new int[m + 1, n + 1];
                 // base，“”到m的编辑距离为0-m，“”到n的编辑距离为0-n
                 for (int i = 0; i <= m; i++) {
                     dp[i, 0] = i;
@@ -270,7 +270,7 @@ namespace FuckingAlgorithm {
                 // dp定义为给定k个鸡蛋，可以尝试扔m次鸡蛋，最坏情况下能确切测试一栋n层的楼
                 // base dp[0][..] = 0 dp[..][0] = 0
                 // m最大为n，线性扫描
-                int[, ] dp = new int[k + 1, n + 1];
+                int[,] dp = new int[k + 1, n + 1];
                 int m = 0;
                 while (dp[k, m] < n) {
                     m++;
@@ -317,7 +317,7 @@ namespace FuckingAlgorithm {
                 int n = s.Length;
                 // 涉及两个字符串，用二维dp数组
                 // dp定义为在array[i..j]中，最长回文子序列的长度为dp[i][j]
-                int[, ] dp = new int[n, n];
+                int[,] dp = new int[n, n];
                 // base如果只有一个字符，最长回文子序列长度为1
                 for (int i = 0; i < n; i++) {
                     dp[i, i] = 1;
@@ -414,7 +414,7 @@ namespace FuckingAlgorithm {
                 if (k > n / 2)
                     return MaxProfit_2(prices);
 
-                int[, , ] dp = new int[n + 1, k + 1, 2];
+                int[,,] dp = new int[n + 1, k + 1, 2];
                 for (int i = 0; i <= n; i++) {
                     for (int j = k; j >= 1; j--) {
                         if (i - 1 == -1) {
@@ -447,8 +447,8 @@ namespace FuckingAlgorithm {
                     string s1 = Palindrome(s, i, i);
                     // 以s[i]和s[i+1]为中心的最长回文子串
                     string s2 = Palindrome(s, i, i + 1);
-                    res = res.Length > s1.Length? res : s1;
-                    res = res.Length > s2.Length? res : s2;
+                    res = res.Length > s1.Length ? res : s1;
+                    res = res.Length > s2.Length ? res : s2;
                 }
                 return res;
             }
@@ -699,7 +699,7 @@ namespace FuckingAlgorithm {
                         return new int[] { i, index[other] };
                     }
                 }
-                return new int[] {-1, -1 };
+                return new int[] { -1, -1 };
             }
 
             class TwoSum {
@@ -943,8 +943,8 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            public int[, ] FloodFill(int[, ] iamge, int sr, int sc, int newColor) {
-                void Fill(int[, ] iamge, int x, int y, int origColor, int newColor) {
+            public int[,] FloodFill(int[,] iamge, int sr, int sc, int newColor) {
+                void Fill(int[,] iamge, int x, int y, int origColor, int newColor) {
                     // 出界。
                     if (!InArea(iamge, x, y)) {
                         return;
@@ -967,7 +967,7 @@ namespace FuckingAlgorithm {
                     iamge[x, y] = newColor;
                 }
 
-                bool InArea(int[, ] iamge, int x, int y) {
+                bool InArea(int[,] iamge, int x, int y) {
                     return x >= 0 && x < iamge.GetLength(0) && y >= 0 && y < iamge.GetLength(1);
                 }
                 int origColor = iamge[sr, sc];
@@ -976,7 +976,7 @@ namespace FuckingAlgorithm {
             }
 
             class KMP {
-                int[, ] dp;
+                int[,] dp;
                 string pat;
 
                 public KMP(string pat) {
@@ -1779,7 +1779,7 @@ namespace FuckingAlgorithm {
                 var ans = new List<string>();
                 for (int i = 0; i < 26; i++) {
                     for (int j = 0; j < minFreq[i]; j++) {
-                        ans.Add(((char) ('a' + i)).ToString());
+                        ans.Add(((char)('a' + i)).ToString());
                     }
                 }
                 return ans;
@@ -2390,8 +2390,8 @@ namespace FuckingAlgorithm {
             public bool Exist(char[][] board, string word) {
                 int h = board.Length;
                 int w = board[0].Length;
-                var directions = new int[][] { new int[] { 0, 1 }, new int[] { 0, -1 }, new int[] { 1, 0 }, new int[] {-1, 0 } };
-                bool[, ] vis = new bool[h, w];
+                var directions = new int[][] { new int[] { 0, 1 }, new int[] { 0, -1 }, new int[] { 1, 0 }, new int[] { -1, 0 } };
+                bool[,] vis = new bool[h, w];
 
                 bool Helper(int i, int j, int idx) {
                     if (board[i][j] != word[idx]) {
@@ -2563,7 +2563,7 @@ namespace FuckingAlgorithm {
                     }
                     dummy = dummy.next;
                 }
-                dummy.next = head1 == null?head2 : head1;
+                dummy.next = head1 == null ? head2 : head1;
                 return dummy.next;
             }
 
@@ -2883,9 +2883,9 @@ namespace FuckingAlgorithm {
                 if (x == 0) {
                     return 0;
                 }
-                int ans = (int) Math.Exp(0.5 * Math.Log(x));
+                int ans = (int)Math.Exp(0.5 * Math.Log(x));
                 // 浮点数取整可能出现错误
-                return (long) (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
+                return (long)(ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
             }
 
             public string SimplifyPath(string path) {
@@ -3442,8 +3442,8 @@ namespace FuckingAlgorithm {
                     if (root == null) {
                         return (0, true);
                     } else {
-                        var(lHeight, lBalanced) = Helper(root.left);
-                        var(rHeight, rBalanced) = Helper(root.right);
+                        var (lHeight, lBalanced) = Helper(root.left);
+                        var (rHeight, rBalanced) = Helper(root.right);
                         return (Math.Max(lHeight, rHeight) + 1, Math.Abs(lHeight - rHeight) <= 1 && lBalanced && rBalanced);
                     }
                 }
@@ -3609,7 +3609,7 @@ namespace FuckingAlgorithm {
                 foreach (var num in set) {
                     setSum += num;
                 }
-                return (int) ((3 * setSum - numsSum) / 2);
+                return (int)((3 * setSum - numsSum) / 2);
             }
 
             public void MoveZeroes(int[] nums) {
@@ -3810,8 +3810,8 @@ namespace FuckingAlgorithm {
             }
 
             public int MaxProduct(int[] nums) {
-                var max = (int[]) nums.Clone();
-                var min = (int[]) nums.Clone();
+                var max = (int[])nums.Clone();
+                var min = (int[])nums.Clone();
                 for (int i = 1; i < nums.Length; i++) {
                     max[i] = Math.Max(Math.Max(max[i - 1] * nums[i], min[i - 1] * nums[i]), nums[i]);
                     min[i] = Math.Min(Math.Min(min[i - 1] * nums[i], max[i - 1] * nums[i]), nums[i]);
@@ -3934,7 +3934,7 @@ namespace FuckingAlgorithm {
                 var s = new StringBuilder();
                 while (n != 0) {
                     n--;
-                    s.Insert(0, (char) ('A' + n % 26));
+                    s.Insert(0, (char)('A' + n % 26));
                     n = n / 26;
                 }
                 return s.ToString();
@@ -3950,7 +3950,7 @@ namespace FuckingAlgorithm {
                     var segment = s.Substring(i, 10);
                     dict[segment] = dict.GetValueOrDefault(segment, 0) + 1;
                 }
-                foreach (var(key, val) in dict) {
+                foreach (var (key, val) in dict) {
                     if (val >= 2) {
                         res.Add(key);
                     }
@@ -3967,13 +3967,13 @@ namespace FuckingAlgorithm {
                 while (res.Length != s.Length) {
                     for (int i = 0; i < 26; i++) {
                         if (dict[i] > 0) {
-                            res.Append((char) (i + 'a'));
+                            res.Append((char)(i + 'a'));
                             dict[i]--;
                         }
                     }
                     for (int i = 25; i >= 0; i--) {
                         if (dict[i] > 0) {
-                            res.Append((char) (i + 'a'));
+                            res.Append((char)(i + 'a'));
                             dict[i]--;
                         }
                     }
@@ -4042,7 +4042,7 @@ namespace FuckingAlgorithm {
                 while (maxVal >= exp) {
                     int[] cnt = new int[10];
                     for (int i = 0; i < n; i++) {
-                        int digit = (nums[i] / (int) exp) % 10;
+                        int digit = (nums[i] / (int)exp) % 10;
                         cnt[digit]++;
                     }
                     // 通过将基数索引累加，可以确定元素按基数顺序在数组中的位置
@@ -4050,7 +4050,7 @@ namespace FuckingAlgorithm {
                         cnt[i] += cnt[i - 1];
                     }
                     for (int i = n - 1; i >= 0; i--) {
-                        int digit = (nums[i] / (int) exp) % 10;
+                        int digit = (nums[i] / (int)exp) % 10;
                         buf[cnt[digit] - 1] = nums[i];
                         cnt[digit]--;
                     }
@@ -4254,11 +4254,11 @@ namespace FuckingAlgorithm {
                 var set = new SortedSet<long?>();
                 for (int i = 0; i < nums.Length; i++) {
                     var s = set.FirstOrDefault(item => item >= nums[i]);
-                    if (s != null && s <= (long) nums[i] + t) {
+                    if (s != null && s <= (long)nums[i] + t) {
                         return true;
                     }
                     var g = set.LastOrDefault(item => item <= nums[i]);
-                    if (g != null && g >= (long) nums[i] - t) {
+                    if (g != null && g >= (long)nums[i] - t) {
                         return true;
                     }
                     set.Add(nums[i]);
@@ -4407,7 +4407,7 @@ namespace FuckingAlgorithm {
 
             public int[] SearchRange(int[] nums, int target) {
                 if (nums.Length == 0) {
-                    return new int[] {-1, -1 };
+                    return new int[] { -1, -1 };
                 }
                 int left = 0, right = nums.Length - 1;
                 while (left <= right) {
@@ -4427,7 +4427,7 @@ namespace FuckingAlgorithm {
                         right = mid - 1;
                     }
                 }
-                return new int[] {-1, -1 };
+                return new int[] { -1, -1 };
             }
 
             public int[] SingleNumber_1(int[] nums) {
@@ -4625,7 +4625,7 @@ namespace FuckingAlgorithm {
                 for (int i = 2; i < n; ++i) {
                     if (isPrime[i] == 1) {
                         ans += 1;
-                        if ((long) i * i < n) {
+                        if ((long)i * i < n) {
                             for (int j = i * i; j < n; j += i) {
                                 isPrime[j] = 0;
                             }
@@ -4761,8 +4761,8 @@ namespace FuckingAlgorithm {
                         return (100001, -1);
                     }
                     var curVal = root.val;
-                    var(lMin, lMax) = Helper(root.left);
-                    var(rMin, rMax) = Helper(root.right);
+                    var (lMin, lMax) = Helper(root.left);
+                    var (rMin, rMax) = Helper(root.right);
                     lMin = lMin == 100001 ? curVal : lMin;
                     lMax = lMax == -1 ? curVal : lMax;
                     rMin = rMin == 100001 ? curVal : rMin;
@@ -4818,7 +4818,7 @@ namespace FuckingAlgorithm {
                 var str = new StringBuilder();
                 void Helper(TreeNode root) {
                     if (root == null) return;
-                    str.Append((char) ('a' + root.val));
+                    str.Append((char)('a' + root.val));
                     if (root.left == null && root.right == null) {
                         var tmp = new string(str.ToString().Reverse().ToArray());
                         res.Add(tmp);
@@ -4903,7 +4903,7 @@ namespace FuckingAlgorithm {
                         if (i > idx && S[idx] == '0') break;
                         curLong = curLong * 10 + (S[i] - '0');
                         if (curLong > int.MaxValue) break;
-                        int cur = (int) curLong;
+                        int cur = (int)curLong;
                         if (res.Count >= 2) {
                             if (cur < sum) continue;
                             else if (cur > sum) break;
@@ -5013,7 +5013,7 @@ namespace FuckingAlgorithm {
             }
             // #304
             public class NumMatrix {
-                int[, ] dp;
+                int[,] dp;
                 public NumMatrix(int[][] matrix) {
                     if (matrix.Length == 0 || matrix[0].Length == 0) return;
                     dp = new int[matrix.Length + 1, matrix[0].Length + 1];
@@ -5091,8 +5091,8 @@ namespace FuckingAlgorithm {
             // #347
             class TopKComparer : IComparer {
                 public int Compare(object x, object y) {
-                    var x1 = (int) x;
-                    var y1 = (int) y;
+                    var x1 = (int)x;
+                    var y1 = (int)y;
                     return x1 < y1 ? -1 : 1;
                 }
             }
@@ -5103,7 +5103,7 @@ namespace FuckingAlgorithm {
                     dict[num] = dict.GetValueOrDefault(num, 0) + 1;
                 }
                 var heap = new SortedList(new TopKComparer());
-                foreach (var(key, val) in dict) {
+                foreach (var (key, val) in dict) {
                     heap.Add(val, key);
                     if (heap.Count > k) {
                         heap.RemoveAt(0);
@@ -5218,21 +5218,21 @@ namespace FuckingAlgorithm {
                 long idxCount = digit * 9 * start; // digit位数范围内索引长度
 
                 while (n > idxCount) {
-                    n = (int) (n - idxCount);
+                    n = (int)(n - idxCount);
                     ++digit;
                     start *= 10;
                     idxCount = digit * 9 * start;
                 }
                 long num = start + (n - 1) / digit;
                 int remainder = (n - 1) % digit;
-                return (int) (num.ToString() [remainder] - '0');
+                return (int)(num.ToString()[remainder] - '0');
             }
 
             // #373
             class KSmallComparer : IComparer {
                 public int Compare(object x, object y) {
-                    var x1 = (long) x;
-                    var y1 = (long) y;
+                    var x1 = (long)x;
+                    var y1 = (long)y;
                     // 小顶堆比较器，小于返回-1
                     return x1 < y1 ? -1 : 1;
                 }
@@ -5250,7 +5250,7 @@ namespace FuckingAlgorithm {
                 }
                 var res = new List<List<int>>();
                 foreach (var item in heap.GetValueList()) {
-                    res.Add((List<int>) item);
+                    res.Add((List<int>)item);
                 }
                 return res;
             }
@@ -5303,8 +5303,8 @@ namespace FuckingAlgorithm {
             // #378
             class KthSmallestComparer : IComparer {
                 public int Compare(object x, object y) {
-                    var x1 = (int) x;
-                    var y1 = (int) y;
+                    var x1 = (int)x;
+                    var y1 = (int)y;
                     // 小顶堆比较器，小于返回-1
                     return x1 < y1 ? -1 : 1;
                 }
@@ -5319,7 +5319,7 @@ namespace FuckingAlgorithm {
                         }
                     }
                 }
-                return (int) heap.GetValueList() [k - 1];
+                return (int)heap.GetValueList()[k - 1];
             }
 
             // #386
@@ -5436,7 +5436,7 @@ namespace FuckingAlgorithm {
                         var dis = dx * dx + dy * dy;
                         dict[dis] = dict.GetValueOrDefault(dis, 0) + 1;
                     }
-                    foreach (var(key, value) in dict) {
+                    foreach (var (key, value) in dict) {
                         res += (value * (value - 1));
                     }
                 }
@@ -5459,7 +5459,7 @@ namespace FuckingAlgorithm {
 
             // #414
             public int ThirdMax(int[] nums) {
-                long first = (long) int.MinValue - 1, second = (long) int.MinValue - 1, third = (long) int.MinValue - 1;
+                long first = (long)int.MinValue - 1, second = (long)int.MinValue - 1, third = (long)int.MinValue - 1;
                 foreach (var num in nums) {
                     if (num > first) {
                         third = second;
@@ -5474,7 +5474,7 @@ namespace FuckingAlgorithm {
                         third = num;
                     }
                 }
-                return (int) (third != (long) int.MinValue - 1 ? third : first);
+                return (int)(third != (long)int.MinValue - 1 ? third : first);
             }
 
             // #401
@@ -5517,7 +5517,7 @@ namespace FuckingAlgorithm {
                 }
 
                 int ans = 0;
-                foreach (var(key, val) in dict) {
+                foreach (var (key, val) in dict) {
                     ans += val / 2 * 2;
                     if (val % 2 == 1 && ans % 2 == 0) {
                         ans++;
@@ -5671,7 +5671,7 @@ namespace FuckingAlgorithm {
                     dict[ch] = dict.GetValueOrDefault(ch, 0) + 1;
                 }
                 var tmp = dict.OrderByDescending(x => x.Value);
-                foreach (var(key, val) in tmp) {
+                foreach (var (key, val) in tmp) {
                     for (int i = 0; i < val; i++) {
                         res.Append(key);
                     }
@@ -5805,8 +5805,8 @@ namespace FuckingAlgorithm {
             // #1046
             class StoneComparer : IComparer {
                 public int Compare(object x, object y) {
-                    var x1 = (int) x;
-                    var y1 = (int) y;
+                    var x1 = (int)x;
+                    var y1 = (int)y;
                     // 大顶堆比较器，大于返回-1
                     return x1 > y1 ? -1 : 1;
 
@@ -5819,27 +5819,27 @@ namespace FuckingAlgorithm {
                     heap.Add(stone, stone);
                 }
                 while (heap.Count > 1) {
-                    var fisrt = (int) heap.GetByIndex(0);
+                    var fisrt = (int)heap.GetByIndex(0);
                     heap.RemoveAt(0);
-                    var second = (int) heap.GetByIndex(0);
+                    var second = (int)heap.GetByIndex(0);
                     heap.RemoveAt(0);
                     var residual = fisrt - second;
                     if (residual > 0) {
                         heap.Add(residual, residual);
                     }
                 }
-                return heap.Count == 0 ? 0 : (int) heap.GetByIndex(0);
+                return heap.Count == 0 ? 0 : (int)heap.GetByIndex(0);
             }
 
             // #542
             public int[][] UpdateMatrix(int[][] matrix) {
                 int m = matrix.Length, n = matrix[0].Length;
-                var dirs = new [] { new [] {-1, 0 }, new [] { 1, 0 }, new [] { 0, -1 }, new [] { 0, 1 } };
+                var dirs = new[] { new[] { -1, 0 }, new[] { 1, 0 }, new[] { 0, -1 }, new[] { 0, 1 } };
                 var res = new int[m][];
                 for (int i = 0; i < m; i++) {
                     res[i] = new int[n];
                 }
-                bool[, ] vis = new bool[m, n];
+                bool[,] vis = new bool[m, n];
                 var queue = new Queue<Tuple<int, int>>();
                 for (int i = 0; i < m; ++i) {
                     for (int j = 0; j < n; ++j) {
@@ -6061,7 +6061,7 @@ namespace FuckingAlgorithm {
 
             // #1219
             public int GetMaximumGold(int[][] grid) {
-                var dirs = new [] { new [] { 0, 1 }, new [] { 0, -1 }, new int[] { 1, 0 }, new [] {-1, 0 } };
+                var dirs = new[] { new[] { 0, 1 }, new[] { 0, -1 }, new int[] { 1, 0 }, new[] { -1, 0 } };
                 int res = 0;
                 int m = grid.Length, n = grid[0].Length;
                 var vis = new bool[m, n];
@@ -6112,7 +6112,7 @@ namespace FuckingAlgorithm {
                 // BFS，第一层个数为1，第二层个数为2，依次类推
                 var res = new List<int>();
                 int depth = 0;
-                var queue = new Queue<int>(new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                var queue = new Queue<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
 
                 while (queue.Count != 0) {
                     int count = queue.Count;
@@ -6287,7 +6287,7 @@ namespace FuckingAlgorithm {
                     dict[p].Add(s[i]);
                 }
 
-                foreach (var(key, val) in dict) {
+                foreach (var (key, val) in dict) {
                     val.Sort();
                 }
 
@@ -6784,8 +6784,8 @@ namespace FuckingAlgorithm {
 
             class MaxHeapComparer : IComparer {
                 public int Compare(object item1, object item2) {
-                    var x1 = (KeyValuePair<string, int>) item1;
-                    var x2 = (KeyValuePair<string, int>) item2;
+                    var x1 = (KeyValuePair<string, int>)item1;
+                    var x2 = (KeyValuePair<string, int>)item2;
                     // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
                     return x1.Value == x2.Value ? x1.Key.CompareTo(x2.Key) : x1.Value >= x2.Value ? -1 : 1;
                 }
@@ -6801,7 +6801,7 @@ namespace FuckingAlgorithm {
                 }
                 var res = new List<string>();
                 foreach (var item in heap.GetKeyList()) {
-                    res.Add(((KeyValuePair<string, int>) item).Key);
+                    res.Add(((KeyValuePair<string, int>)item).Key);
                 }
                 return res;
             }
@@ -6815,7 +6815,7 @@ namespace FuckingAlgorithm {
                 var stack = new Stack<Tuple<int, int>>();
                 stack.Push(new Tuple<int, int>(sr, sc));
                 while (stack.Count != 0) {
-                    var(curRow, curCol) = stack.Pop();
+                    var (curRow, curCol) = stack.Pop();
                     image[curRow][curCol] = newColor;
                     for (int i = 0; i < 4; i++) {
                         var tx = curRow + dx[i];
@@ -6930,7 +6930,7 @@ namespace FuckingAlgorithm {
                     }
                 }
                 int maxCount = 0, minLen = 0;
-                foreach (var(key, val) in dict) {
+                foreach (var (key, val) in dict) {
                     if (maxCount < val[0]) {
                         maxCount = val[0];
                         minLen = val[2] - val[1] + 1;
@@ -7043,7 +7043,7 @@ namespace FuckingAlgorithm {
             // #718
             public int FindLength(int[] A, int[] B) {
                 int n = A.Length, m = B.Length;
-                int[, ] dp = new int[n + 1, m + 1];
+                int[,] dp = new int[n + 1, m + 1];
                 int ans = 0;
                 for (int i = 1; i <= n; i++) {
                     for (int j = 1; j <= m; j++) {
@@ -7189,7 +7189,7 @@ namespace FuckingAlgorithm {
             // #799
             public double ChampagneTower(int poured, int query_row, int query_glass) {
                 var A = new double[102, 102];
-                A[0, 0] = (double) poured;
+                A[0, 0] = (double)poured;
                 for (int r = 0; r <= query_row; ++r) {
                     for (int c = 0; c <= r; ++c) {
                         double q = (A[r, c] - 1.0) / 2.0;
@@ -7209,7 +7209,7 @@ namespace FuckingAlgorithm {
                 for (int i = shifts.Length - 1; i >= 0; i--) {
                     times = (times + shifts[i]) % 26;
                     var idx = S[i] - 'a';
-                    res[i] = (char) ((idx + times) % 26 + 97);
+                    res[i] = (char)((idx + times) % 26 + 97);
                 }
                 return new string(res);
             }
@@ -7317,8 +7317,8 @@ namespace FuckingAlgorithm {
             // #253
             class MinMeetingRoomsComparer : IComparer {
                 public int Compare(object item1, object item2) {
-                    var x = (int) item1;
-                    var y = (int) item2;
+                    var x = (int)item1;
+                    var y = (int)item2;
                     // 比较器，原顺序-1，交换顺序1，不做0
                     return x <= y ? -1 : 1;
                 }
@@ -7330,7 +7330,7 @@ namespace FuckingAlgorithm {
                 var heap = new SortedList(new MinMeetingRoomsComparer());
                 heap.Add(intervals[0][1], 0);
                 for (int i = 1; i < intervals.Length; i++) {
-                    if (intervals[i][0] >= (int) heap.GetKey(0)) {
+                    if (intervals[i][0] >= (int)heap.GetKey(0)) {
                         heap.RemoveAt(0);
                     }
                     heap.Add(intervals[i][1], 0);
@@ -7394,8 +7394,8 @@ namespace FuckingAlgorithm {
 
             // #12
             public String intToRoman(int num) {
-                var values = new [] { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
-                var symbols = new [] { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+                var values = new[] { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+                var symbols = new[] { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
                 var res = new StringBuilder();
                 for (int i = 0; i < values.Length && num >= 0; i++) {
                     while (values[i] <= num) {
@@ -7507,8 +7507,8 @@ namespace FuckingAlgorithm {
             public class KthLargest {
                 class KthLargestComparer : IComparer {
                     public int Compare(object item1, object item2) {
-                        var x1 = (int) item1;
-                        var x2 = (int) item2;
+                        var x1 = (int)item1;
+                        var x2 = (int)item2;
                         // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
                         return x1 <= x2 ? -1 : 1;
                     }
@@ -7528,7 +7528,7 @@ namespace FuckingAlgorithm {
                     if (heap.Count > k) {
                         heap.RemoveAt(0);
                     }
-                    return (int) (heap.GetKeyList()) [0];
+                    return (int)(heap.GetKeyList())[0];
                 }
             }
 
@@ -7537,16 +7537,16 @@ namespace FuckingAlgorithm {
 
                 class MinHeapComparer : IComparer {
                     public int Compare(object item1, object item2) {
-                        var x1 = (int) item1;
-                        var x2 = (int) item2;
+                        var x1 = (int)item1;
+                        var x2 = (int)item2;
                         return x1 <= x2 ? -1 : 1;
                     }
                 }
 
                 class MaxHeapComparer : IComparer {
                     public int Compare(object item1, object item2) {
-                        var x1 = (int) item1;
-                        var x2 = (int) item2;
+                        var x1 = (int)item1;
+                        var x2 = (int)item2;
                         return x1 >= x2 ? -1 : 1;
                     }
                 }
@@ -7570,7 +7570,7 @@ namespace FuckingAlgorithm {
                 }
 
                 public double FindMedian() {
-                    return min.Count > max.Count ? (int) min.GetKey(0) : ((int) min.GetKey(0) + (int) max.GetKey(0)) * 0.5;
+                    return min.Count > max.Count ? (int)min.GetKey(0) : ((int)min.GetKey(0) + (int)max.GetKey(0)) * 0.5;
                 }
             }
 
