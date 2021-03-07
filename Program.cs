@@ -7445,6 +7445,157 @@ namespace FuckingAlgorithm {
                 }
                 return dp.Last();
             }
+
+            // #131
+            public List<List<string>> Partition(string s) {
+                int n = s.Length;
+                var mem = new int[n, n];
+                var res = new List<List<string>>();
+                var path = new List<string>();
+
+                int IsPalindrome(int i, int j) {
+                    if (mem[i, j] != 0) {
+                        return mem[i, j];
+                    }
+                    if (i >= j) {
+                        mem[i, j] = 1;
+                    } else if (s[i] == s[j]) {
+                        mem[i, j] = IsPalindrome(i + 1, j - 1);
+                    } else {
+                        mem[i, j] = -1;
+                    }
+                    return mem[i, j];
+                }
+
+                void Helper(int idx) {
+                    if (idx == n) {
+                        res.Add(path.ToList());
+                        return;
+                    }
+                    for (int i = idx; i < n; i++) {
+                        if (IsPalindrome(idx, i) == 1) {
+                            path.Add(s.Substring(idx, i - idx + 1));
+                            Helper(i + 1);
+                            path.RemoveAt(path.Count - 1);
+                        }
+                    }
+                }
+
+                Helper(0);
+                return res;
+            }
+
+            // #42
+            public int Trap(int[] height) {
+                var monoStack = new Stack<int>();
+                var res = 0;
+                for (int i = 0; i < height.Length; i++) {
+                    while (monoStack.Count != 0 && height[i] > height[monoStack.Peek()]) {
+                        var top = monoStack.Pop();
+                        if (monoStack.Count == 0) break;
+                        int distance = i - monoStack.Peek() - 1;
+                        // i是右边第一个比top高的，Pop之后的Peek是左边第一个比top高的
+                        int relaHeight = Math.Min(height[i], height[monoStack.Peek()]) - height[top];
+                        res += (distance * relaHeight);
+                    }
+                    monoStack.Push(i);
+                }
+                return res;
+            }
+
+            // #703
+            public class KthLargest {
+                class KthLargestComparer : IComparer {
+                    public int Compare(object item1, object item2) {
+                        var x1 = (int) item1;
+                        var x2 = (int) item2;
+                        // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
+                        return x1 <= x2 ? -1 : 1;
+                    }
+                }
+
+                SortedList heap;
+                int k;
+                public KthLargest(int k, int[] nums) {
+                    this.k = k;
+                    heap = new SortedList(new KthLargestComparer());
+                    foreach (var num in nums) {
+                        this.Add(num);
+                    }
+                }
+                public int Add(int val) {
+                    heap.Add(val, val);
+                    if (heap.Count > k) {
+                        heap.RemoveAt(0);
+                    }
+                    return (int) (heap.GetKeyList()) [0];
+                }
+            }
+
+            // #295
+            public class MedianFinder {
+
+                class MinHeapComparer : IComparer {
+                    public int Compare(object item1, object item2) {
+                        var x1 = (int) item1;
+                        var x2 = (int) item2;
+                        return x1 <= x2 ? -1 : 1;
+                    }
+                }
+
+                class MaxHeapComparer : IComparer {
+                    public int Compare(object item1, object item2) {
+                        var x1 = (int) item1;
+                        var x2 = (int) item2;
+                        return x1 >= x2 ? -1 : 1;
+                    }
+                }
+
+                SortedList min;
+                SortedList max;
+                public MedianFinder() {
+                    max = new SortedList(new MinHeapComparer()); // 存大的
+                    min = new SortedList(new MaxHeapComparer()); // 存小的
+                }
+
+                public void AddNum(int num) {
+                    // 不能保证num一定在min中，所以需要调整两次，保证num被插入到正确的堆中
+                    min.Add(num, 0);
+                    max.Add(min.GetKey(0), 0);
+                    min.RemoveAt(0);
+                    if (min.Count < max.Count) {
+                        min.Add(max.GetKey(0), 0);
+                        max.RemoveAt(0);
+                    }
+                }
+
+                public double FindMedian() {
+                    return min.Count > max.Count ? (int) min.GetKey(0) : ((int) min.GetKey(0) + (int) max.GetKey(0)) * 0.5;
+                }
+            }
+
+            // 
+            public int FirstMissingPositive(int[] nums) {
+                // 长度为n的数组，最多放n个数字，如果有放入>n的数字，那肯定会缺少在1-n内的数字，反之，缺少n+1
+                var n = nums.Length;
+                for (int i = 0; i < n; i++) {
+                    if (nums[i] <= 0) {
+                        nums[i] = n + 1;
+                    }
+                }
+                for (int i = 0; i < n; i++) {
+                    var num = Math.Abs(nums[i]);
+                    if (num <= n) {
+                        nums[num - 1] = -Math.Abs(nums[num - 1]);
+                    }
+                }
+                for (int i = 0; i < n; ++i) {
+                    if (nums[i] > 0) {
+                        return i + 1;
+                    }
+                }
+                return n + 1;
+            }
         }
 
         public class DataStructure {
@@ -7818,40 +7969,13 @@ namespace FuckingAlgorithm {
                     return pushStack.Count == 0 && popStack.Count == 0;
                 }
             }
-
-            // #703
-            public class KthLargest {
-                class KthLargestComparer : IComparer {
-                    public int Compare(object item1, object item2) {
-                        var x1 = (int) item1;
-                        var x2 = (int) item2;
-                        // 对比较器的理解，本来的顺序是x，y；如果保持这个顺序就返回-1，交换顺序就返回1，什么都不做就返回0；
-                        return x1 <= x2 ? -1 : 1;
-                    }
-                }
-
-                SortedList heap;
-                int k;
-                public KthLargest(int k, int[] nums) {
-                    this.k = k;
-                    heap = new SortedList(new KthLargestComparer());
-                    foreach (var num in nums) {
-                        this.Add(num);
-                    }
-                }
-                public int Add(int val) {
-                    heap.Add(val, val);
-                    if (heap.Count > k) {
-                        heap.RemoveAt(0);
-                    }
-                    return (int) (heap.GetKeyList()) [0];
-                }
-            }
         }
 
         static void Main(string[] args) {
-            var algorithm = new Algorithm();
-            algorithm.NumDecodings("2101");
+            var algorithm = new Algorithm.MedianFinder();
+            algorithm.AddNum(1);
+            algorithm.AddNum(2);
+            algorithm.FindMedian();
         }
     }
 }
