@@ -5089,28 +5089,17 @@ namespace FuckingAlgorithm {
             }
 
             // #347
-            class TopKComparer : IComparer {
-                public int Compare(object x, object y) {
-                    var x1 = (int)x;
-                    var y1 = (int)y;
-                    return x1 < y1 ? -1 : 1;
-                }
-            }
-
             public int[] TopKFrequent(int[] nums, int k) {
-                var dict = new Dictionary<int, int>();
-                foreach (var num in nums) {
-                    dict[num] = dict.GetValueOrDefault(num, 0) + 1;
-                }
-                var heap = new SortedList(new TopKComparer());
+                var dict = nums.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+                // [val, key]，大顶堆，先比较val大，key大的在堆顶
+                var heap = new SortedSet<int[]>(Comparer<int[]>.Create((x, y) => x[0] != y[0] ? y[0] - x[0] : y[1] - x[1]));
                 foreach (var (key, val) in dict) {
-                    heap.Add(val, key);
+                    heap.Add(new[] { val, key });
                     if (heap.Count > k) {
-                        heap.RemoveAt(0);
+                        heap.Remove(heap.Last());
                     }
                 }
-                var res = new int[k];
-                heap.GetValueList().CopyTo(res, 0);
+                var res = heap.Select(x => x[1]).ToArray();
                 return res;
             }
 
@@ -7649,6 +7638,63 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #23
+            public class ListNodeIndex {
+                public ListNode Node { get; set; }
+                public int Index { get; set; }
+                public ListNodeIndex(ListNode node, int index) { Node = node; Index = index; }
+            }
+            public ListNode MergeKLists(ListNode[] lists) {
+                SortedSet<ListNodeIndex> heap = new SortedSet<ListNodeIndex>(Comparer<ListNodeIndex>.Create((a, b) => a.Node.val == b.Node.val ? a.Index - b.Index : a.Node.val - b.Node.val));
+                ListNode dummy = new ListNode(0), head = dummy;
+
+                for (int i = 0; i < lists.Length; i++) {
+                    if (lists[i] != null) heap.Add(new ListNodeIndex(lists[i], i));
+                }
+
+                while (heap.Count != 0) {
+                    ListNodeIndex min = heap.Min;
+                    heap.Remove(min);
+                    head.next = min.Node;
+                    head = head.next;
+
+                    min.Node = min.Node.next;
+                    if (min.Node.next != null) heap.Add(new ListNodeIndex(min.Node.next, min.Index));
+                }
+
+                return dummy.next;
+            }
+
+            // #132
+            public int MinCut(String s) {
+                int n = s.Length;
+                var isPalindrome = new bool[n][];
+                for (int i = 0; i < n; ++i) {
+                    isPalindrome[i] = new bool[n];
+                    Array.Fill(isPalindrome[i], true);
+                }
+
+                for (int i = n - 1; i >= 0; --i) {
+                    for (int j = i + 1; j < n; ++j) {
+                        isPalindrome[i][j] = s[i] == s[j] && isPalindrome[i + 1][j - 1];
+                    }
+                }
+
+                int[] dp = new int[n];
+                Array.Fill(dp, int.MaxValue);
+                for (int i = 0; i < n; ++i) {
+                    if (isPalindrome[0][i]) {
+                        dp[i] = 0;
+                    } else {
+                        for (int j = 0; j < i; ++j) {
+                            if (isPalindrome[j + 1][i]) {
+                                dp[i] = Math.Min(dp[i], dp[j] + 1);
+                            }
+                        }
+                    }
+                }
+                return dp[n - 1];
+            }
         }
 
         public class DataStructure {
@@ -8025,10 +8071,7 @@ namespace FuckingAlgorithm {
         }
 
         static void Main(string[] args) {
-            var algorithm = new Algorithm.MedianFinder();
-            algorithm.AddNum(1);
-            algorithm.AddNum(2);
-            algorithm.FindMedian();
+            var algorithm = new Algorithm();
         }
     }
 }
