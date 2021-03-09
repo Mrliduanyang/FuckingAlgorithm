@@ -144,6 +144,7 @@ namespace FuckingAlgorithm {
                 return dp.Max();
             }
 
+            // #53
             public int MaxSubArray(int[] nums) {
                 int pre = 0, maxAns = nums[0];
                 foreach (int x in nums) {
@@ -356,14 +357,16 @@ namespace FuckingAlgorithm {
                 return count;
             }
 
-            public int MaxProfit_1(int[] prices) {
+            // #121
+            public int MaxProfit(int[] prices) {
                 int n = prices.Length;
-                int dp_i_0 = 0, dp_i_1 = int.MinValue;
-                for (int i = 0; i < n; i++) {
-                    dp_i_0 = Math.Max(dp_i_0, dp_i_1 + prices[i]);
-                    dp_i_1 = Math.Max(dp_i_1, -prices[i]);
+                var dp = new int[n, 2];
+                dp[0, 1] = -prices[0];
+                for (int i = 1; i < n; i++) {
+                    dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
+                    dp[i, 1] = Math.Max(dp[i - 1, 1], -prices[i]);
                 }
-                return dp_i_0;
+                return dp[n - 1, 0];
             }
 
             public int MaxProfit_2(int[] prices) {
@@ -378,7 +381,6 @@ namespace FuckingAlgorithm {
                 }
                 return dp_i_0;
             }
-
             public int MaxProfit_3(int[] prices) {
                 // 交易次数k=无穷，加入冷冻期，间隔一天才能交易
                 int n = prices.Length;
@@ -770,10 +772,7 @@ namespace FuckingAlgorithm {
                 return jumps;
             }
 
-            public List<int[]> MergeIntervals(int[][] intervals) {
-                if (intervals.Length == 0) {
-                    return new List<int[]>();
-                }
+            public int[][] MergeIntervals(int[][] intervals) {
                 // 按区间start升序排列
                 Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
                 List<int[]> res = new List<int[]>();
@@ -781,7 +780,7 @@ namespace FuckingAlgorithm {
                 for (int i = 1; i < intervals.Length; i++) {
                     var curr = intervals[i];
                     // res中最后一个元素的引用，所以可以不断修改last的end。
-                    var last = res[res.Count - 1];
+                    var last = res.Last();
                     // 如果curr的start小于last的end，说明curr可能在last的区间内，这时需要比较curr的end和last的end，确定是否更新last的end。
                     if (curr[0] <= last[1]) {
                         last[1] = Math.Max(last[1], curr[1]);
@@ -789,7 +788,7 @@ namespace FuckingAlgorithm {
                         res.Add(curr);
                     }
                 }
-                return res;
+                return res.ToArray();
             }
 
             public List<int[]> IntervalIntersection(int[][] a, int[][] b) {
@@ -1281,6 +1280,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #15
             public List<List<int>> ThreeSumTarget(int[] nums, int start, int target) {
                 Array.Sort(nums);
                 int n = nums.Length;
@@ -1676,6 +1676,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #103
             public List<List<int>> ZigzagLevelOrder(TreeNode root) {
                 var res = new List<List<int>>();
                 if (root == null) return res;
@@ -1711,25 +1712,42 @@ namespace FuckingAlgorithm {
             // #98
             public bool IsValidBST(TreeNode root) {
                 //rot为当前节点值，low为子树下限，up为上限
-                bool Helper(TreeNode rot, int low, int up) {
-                    if (rot == null) {
+                bool Helper(TreeNode node, int low, int up) {
+                    if (node == null) {
                         return true;
                     }
                     //当前为左子树时，无下限，上限为根节点
-                    if (!Helper(rot.left, low, rot.val))
+                    if (!Helper(node.left, low, node.val))
                         return false;
                     //当前为右子树时，无上限，下限为根节点
-                    if (!Helper(rot.right, rot.val, up))
+                    if (!Helper(node.right, node.val, up))
                         return false;
 
-                    if (low != -1 && rot.val <= low)
+                    if (low != -1 && node.val <= low)
                         return false;
-                    if (up != -1 && rot.val >= up)
+                    if (up != -1 && node.val >= up)
                         return false;
 
                     return true;
                 }
                 return Helper(root, -1, -1);
+            }
+
+            public bool IsValidBST_2(TreeNode root) {
+                var stack = new Stack<TreeNode>();
+                var pre = int.MinValue;
+                while (true) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
+                    if (root.val > pre) return false;
+                    pre = root.val;
+                    root = root.right;
+                }
+                return true;
             }
 
             public ListNode ReverseKGroup(ListNode head, int k) {
@@ -2567,19 +2585,16 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
+            // #20
             public bool IsValid(string str) {
-                char LeftOf(char c) {
-                    if (c == ')') return '(';
-                    if (c == ']') return '[';
-                    return '{';
-                }
+                var dict = new Dictionary<char, char>() { { ')', '(' }, { ']', '[' }, { '}', '{' } };
                 var left = new Stack<char>();
                 foreach (var c in str) {
                     if (c == '(' || c == '{' || c == '[') {
                         left.Push(c);
                     } else {
                         // 字符是右括号，要开始和栈顶的左括号匹配。匹配成功，栈顶元素弹出，否则是非法的括号组合
-                        if (left.Count != 0 && LeftOf(c) == left.Peek()) {
+                        if (left.Count != 0 && dict[c] == left.Peek()) {
                             left.Pop();
                         } else {
                             return false;
@@ -2845,6 +2860,7 @@ namespace FuckingAlgorithm {
                 return arr;
             }
 
+            // #54
             public List<int> SpiralOrder(int[][] matrix) {
                 var res = new List<int>();
                 int m = matrix.Length;
@@ -3031,11 +3047,8 @@ namespace FuckingAlgorithm {
                 while (right < s.Length) {
                     var ch = s[right];
                     right++;
-                    if (window.ContainsKey(ch)) {
-                        window[ch]++;
-                    } else {
-                        window[ch] = 1;
-                    }
+                    window[ch] = window.GetValueOrDefault(ch, 0) + 1;
+
                     while (window[ch] > 1) {
                         var tmp = s[left];
                         left++;
@@ -3186,6 +3199,7 @@ namespace FuckingAlgorithm {
                 return res.ToArray();
             }
 
+            // #48
             public void Rotate(int[][] matrix) {
                 // matrix[i,j] -> matrix[k=j,n-i]
                 int n = matrix.Length;
@@ -3424,6 +3438,7 @@ namespace FuckingAlgorithm {
                 return slow;
             }
 
+            // #88
             public void Merge(int[] nums1, int m, int[] nums2, int n) {
                 var tmp = new int[m];
                 Array.Copy(nums1, tmp, m);
@@ -3806,6 +3821,7 @@ namespace FuckingAlgorithm {
                 return vis[head];
             }
 
+            // #151
             public string ReverseWords(string s) {
                 int slow = 0, fast = 0;
                 var stack = new Stack<string>();
@@ -7675,7 +7691,7 @@ namespace FuckingAlgorithm {
                     head = head.next;
 
                     min.Node = min.Node.next;
-                    if (min.Node.next != null) heap.Add(new ListNodeIndex(min.Node.next, min.Index));
+                    if (min.Node != null) heap.Add(min);
                 }
 
                 return dummy.next;
@@ -7757,6 +7773,23 @@ namespace FuckingAlgorithm {
                 if (l1 != null) head.next = l1;
                 if (l2 != null) head.next = l2;
                 return dummy.next;
+            }
+
+            // #13
+            public int RomanToInt(string s) {
+                var dict = new Dictionary<char, int>() { { 'I', 1 }, { 'V', 5 }, { 'X', 10 }, { 'L', 50 }, { 'C', 100 }, { 'D', 500 }, { 'M', 1000 } };
+                int sum = 0, pre = dict[s[0]];
+                for (int i = 1; i < s.Length; ++i) {
+                    var num = dict[s[i]];
+                    if (pre < num) {
+                        sum -= pre;
+                    } else {
+                        sum += pre;
+                    }
+                    pre = num;
+                }
+                sum += pre;
+                return sum;
             }
         }
 
@@ -8135,7 +8168,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.IsPalindrome(-121);
+            algorithm.RomanToInt("III");
         }
     }
 }
