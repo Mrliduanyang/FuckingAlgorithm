@@ -1195,14 +1195,14 @@ namespace FuckingAlgorithm {
                 Array.Reverse(nums);
             }
 
+            // #26
             public int RemoveDuplicates(int[] nums) {
                 int n = nums.Length;
                 if (n == 0) return 0;
                 int slow = 0, fast = 1;
                 while (fast < n) {
                     if (nums[fast] != nums[slow]) {
-                        slow++;
-                        nums[slow] = nums[fast];
+                        nums[++slow] = nums[fast];
                     }
                     fast++;
                 }
@@ -3023,6 +3023,7 @@ namespace FuckingAlgorithm {
                 return beforeHead.next;
             }
 
+            // #3
             public int LengthOfLongestSubstring(string s) {
                 var window = new Dictionary<char, int>();
                 int left = 0, right = 0;
@@ -3065,6 +3066,7 @@ namespace FuckingAlgorithm {
                 Array.Reverse(nums, i + 1, nums.Length - i - 1);
             }
 
+            // 6
             public string Convert(string s, int numRows) {
                 if (numRows == 1) return s;
 
@@ -3407,6 +3409,19 @@ namespace FuckingAlgorithm {
                     return last;
                 }
                 return head == null ? head : Helper(head);
+            }
+
+            public ListNode ReverseList_1(ListNode head) {
+                if (head == null) return head;
+                ListNode slow = null;
+                var fast = head;
+                while (fast != null) {
+                    var next = fast.next;
+                    fast.next = slow;
+                    slow = fast;
+                    fast = next;
+                }
+                return slow;
             }
 
             public void Merge(int[] nums1, int m, int[] nums2, int n) {
@@ -3762,6 +3777,7 @@ namespace FuckingAlgorithm {
                 return stack.Pop();
             }
 
+            // #138
             public ListNode CopyRandomList(ListNode head) {
                 if (head == null) {
                     return null;
@@ -7695,6 +7711,53 @@ namespace FuckingAlgorithm {
                 }
                 return dp[n - 1];
             }
+
+            // #7
+            public int Reverse(int x) {
+                int res = 0;
+                while (x != 0) {
+                    int cur = x % 10;
+                    x /= 10;
+                    if (res > int.MaxValue / 10 || (res == int.MaxValue / 10 && cur > int.MaxValue % 10)) return 0;
+
+                    if (res < int.MinValue / 10 || (res == int.MinValue / 10 && cur < int.MinValue % 10)) return 0;
+                    res = res * 10 + cur;
+                }
+                return res;
+            }
+
+            // #9
+            public bool IsPalindrome(int x) {
+                if (x < 0) return false;
+                int res = 0;
+                var oldX = x;
+                while (x != 0) {
+                    int cur = x % 10;
+                    x /= 10;
+                    if (res > int.MaxValue / 10) return false;
+                    res = res * 10 + cur;
+                }
+                return oldX == res;
+            }
+
+            // #21
+            public ListNode MergeTwoLists(ListNode l1, ListNode l2) {
+                var dummy = new ListNode();
+                var head = dummy;
+                while (l1 != null && l2 != null) {
+                    if (l1.val <= l2.val) {
+                        head.next = l1;
+                        l1 = l1.next;
+                    } else {
+                        head.next = l2;
+                        l2 = l2.next;
+                    }
+                    head = head.next;
+                }
+                if (l1 != null) head.next = l1;
+                if (l2 != null) head.next = l2;
+                return dummy.next;
+            }
         }
 
         public class DataStructure {
@@ -8072,6 +8135,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.IsPalindrome(-121);
         }
     }
 }
