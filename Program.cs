@@ -82,25 +82,20 @@ namespace FuckingAlgorithm {
             }
 
             // #46
-            public List<int[]> Permute(int[] nums) {
-                var res = new List<int[]>();
+            public List<List<int>> Permute(int[] nums) {
+                var res = new List<List<int>>();
                 var path = new List<int>();
                 void Helper() {
                     if (path.Count == nums.Length) {
-                        // 搜索结束条件，如果nums中所有元素都在path中，说明找到一个全排列
-                        res.Add(path.ToArray());
+                        res.Add(path.ToList());
                         return;
                     }
                     foreach (var num in nums) {
-                        // 剪枝处理，如果路径中已存在元素num，则跳过
                         if (path.Contains(num)) {
                             continue;
                         }
-                        // 做选择
                         path.Add(num);
-                        // 进入调用回溯
                         Helper();
-                        // 撤销选择
                         path.RemoveAt(path.Count - 1);
                     }
                 }
@@ -1134,6 +1129,7 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
+            // #102
             public IList<IList<int>> LevelOrder(TreeNode root) {
                 var res = new List<IList<int>>();
                 if (root == null) {
@@ -1402,9 +1398,9 @@ namespace FuckingAlgorithm {
                 return Helper(nums, 0, nums.Length - 1);
             }
 
+            // #105
             public TreeNode BuildTree(int[] preorder, int[] inorder) {
-                TreeNode build(int[] preorder, int preStart, int preEnd,
-                    int[] inorder, int inStart, int inEnd) {
+                TreeNode Helper(int preStart, int preEnd, int inStart, int inEnd) {
                     if (preStart > preEnd) {
                         return null;
                     }
@@ -1424,15 +1420,14 @@ namespace FuckingAlgorithm {
                     // 先构造出当前根节点
                     TreeNode root = new TreeNode(rootVal);
                     // 递归构造左右子树
-                    root.left = build(preorder, preStart + 1, preStart + leftSize,
-                        inorder, inStart, index - 1);
+                    root.left = Helper(preStart + 1, preStart + leftSize,
+                         inStart, index - 1);
 
-                    root.right = build(preorder, preStart + leftSize + 1, preEnd,
-                        inorder, index + 1, inEnd);
+                    root.right = Helper(preStart + leftSize + 1, preEnd,
+                         index + 1, inEnd);
                     return root;
                 }
-                return build(preorder, 0, preorder.Length - 1,
-                    inorder, 0, inorder.Length - 1);
+                return Helper(0, preorder.Length - 1, 0, inorder.Length - 1);
             }
 
             public TreeNode BuildTree_1(int[] inorder, int[] postorder) {
@@ -1561,6 +1556,7 @@ namespace FuckingAlgorithm {
                 return new string(stack.ToArray().Reverse().ToArray());
             }
 
+            // #75
             public void SortColors(int[] nums) {
                 int p0 = 0, curr = 0;
                 int p2 = nums.Length - 1;
@@ -1584,6 +1580,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #344
             public void ReverseString(char[] s) {
                 if (s.Length == 0) return;
                 int start = 0, end = s.Length - 1;
@@ -1750,20 +1747,19 @@ namespace FuckingAlgorithm {
                 return true;
             }
 
+            // #25
             public ListNode ReverseKGroup(ListNode head, int k) {
                 ListNode Reverse(ListNode a, ListNode b) {
                     ListNode pre, cur, nxt;
                     pre = null;
                     cur = a;
                     nxt = a;
-                    // while 终止的条件改一下就行了
                     while (cur != b) {
                         nxt = cur.next;
                         cur.next = pre;
                         pre = cur;
                         cur = nxt;
                     }
-                    // 返回反转后的头结点
                     return pre;
                 }
 
@@ -2425,6 +2421,7 @@ namespace FuckingAlgorithm {
                         if (tx >= 0 && tx < h && ty >= 0 && ty < w) {
                             if (!vis[tx, ty]) {
                                 bool flag = Helper(tx, ty, idx + 1);
+                                // 剪枝，找到一个即可返回
                                 if (flag) {
                                     res = true;
                                     break;
@@ -3219,6 +3216,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #49
             public List<List<string>> GroupAnagrams(string[] strs) {
                 if (strs.Length == 0) {
                     return new List<List<string>>();
@@ -3933,6 +3931,7 @@ namespace FuckingAlgorithm {
                 return intervals.Length - count;
             }
 
+            // #160
             public ListNode GetIntersectionNode(ListNode headA, ListNode headB) {
                 var dict = new Dictionary<ListNode, bool>();
                 while (headA != null) {
@@ -4894,6 +4893,7 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
+            // #238
             public int[] ProductExceptSelf(int[] nums) {
                 int n = nums.Length;
                 int[] prev = new int[n];
@@ -5135,6 +5135,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #445
             public ListNode AddTwoNumbers(ListNode l1, ListNode l2) {
                 var stack1 = new Stack<int>();
                 var stack2 = new Stack<int>();
@@ -7625,22 +7626,18 @@ namespace FuckingAlgorithm {
 
                     var res = new List<string>();
                     var queue = new Queue<TreeNode>();
-
                     queue.Enqueue(root);
 
                     while (queue.Count != 0) {
                         var node = queue.Dequeue();
-
                         if (node == null) {
                             res.Add("null");
                             continue;
                         }
                         res.Add(node.val.ToString());
-
                         queue.Enqueue(node.left);
                         queue.Enqueue(node.right);
                     }
-
                     return string.Join(",", res);
                 }
 
@@ -7791,6 +7788,82 @@ namespace FuckingAlgorithm {
                 sum += pre;
                 return sum;
             }
+
+            // #1047
+            public string RemoveDuplicates(string S) {
+                var stack = new Stack<char>();
+                foreach (var ch in S) {
+                    if (stack.Count != 0 && ch == stack.Peek()) {
+                        stack.Pop();
+                    } else {
+                        stack.Push(ch);
+                    }
+                }
+                return new string(stack.Reverse().ToArray());
+            }
+
+            // #224
+            public int Calculate_2(string s) {
+                var ops = new Stack<int>();
+                ops.Push(1);
+                int sign = 1;
+
+                int res = 0;
+                int n = s.Length;
+                int i = 0;
+                while (i < n) {
+                    if (s[i] == ' ') {
+                        i++;
+                    } else if (s[i] == '+') {
+                        sign = ops.Peek();
+                        i++;
+                    } else if (s[i] == '-') {
+                        sign = -ops.Peek();
+                        i++;
+                    } else if (s[i] == '(') {
+                        // 记录括号前面的符号，要变号
+                        ops.Push(sign);
+                        i++;
+                    } else if (s[i] == ')') {
+                        ops.Pop();
+                        i++;
+                    } else {
+                        int num = 0;
+                        while (i < n && char.IsDigit(s[i])) {
+                            num = num * 10 + s[i] - '0';
+                            i++;
+                        }
+                        res += sign * num;
+                    }
+                }
+                return res;
+            }
+
+            public ListNode SwapPairs(ListNode head) {
+                if (head == null) return null;
+
+                ListNode Reverse(ListNode a, ListNode b) {
+                    ListNode pre = null, cur = a, next = a;
+                    while (cur != b) {
+                        next = cur.next;
+                        cur.next = pre;
+                        pre = cur;
+                        cur = next;
+                    }
+                    return pre;
+                }
+
+                ListNode a, b;
+                a = b = head;
+                for (int i = 0; i < 2; ++i) {
+                    if (b == null) return head;
+                    b = b.next;
+                }
+                var newHead = Reverse(a, b);
+                a.next = SwapPairs(b);
+                return newHead;
+            }
+
         }
 
         public class DataStructure {
@@ -8168,7 +8241,6 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.RomanToInt("III");
         }
     }
 }
