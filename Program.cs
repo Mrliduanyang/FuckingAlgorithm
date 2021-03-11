@@ -61,6 +61,7 @@ namespace FuckingAlgorithm {
                 return dp[N];
             }
 
+            // #322
             public int CoinChange(int[] coins, int amount) {
                 // 当目标金额为i时，至少需要dp[i]枚硬币凑出
                 // 初始化dp，dp各元素设置为最大值
@@ -124,6 +125,7 @@ namespace FuckingAlgorithm {
                 return dp(0, target);
             }
 
+            // #300
             public int LengthOfLIS(int[] nums) {
                 int[] dp = new int[nums.Length];
                 // base， 以nums[i]结尾的最长递增子序列起码包含自己
@@ -1945,51 +1947,22 @@ namespace FuckingAlgorithm {
             }
 
             public void ReorderList(ListNode head) {
-                ListNode MiddleNode(ListNode head) {
-                    ListNode slow = head;
-                    ListNode fast = head;
-                    while (fast.next != null && fast.next.next != null) {
-                        slow = slow.next;
-                        fast = fast.next.next;
-                    }
-                    return slow;
+                if (head == null) return;
+                var list = new List<ListNode>();
+                var node = head;
+                while (node != null) {
+                    list.Add(node);
+                    node = node.next;
                 }
-
-                ListNode ReverseList(ListNode head) {
-                    ListNode prev = null;
-                    ListNode curr = head;
-                    while (curr != null) {
-                        ListNode nextTemp = curr.next;
-                        curr.next = prev;
-                        prev = curr;
-                        curr = nextTemp;
-                    }
-                    return prev;
+                int i = 0, j = list.Count - 1;
+                while (i < j) {
+                    list[i].next = list[j];
+                    ++i;
+                    if (i == j) break;
+                    list[j].next = list[i];
+                    --j;
                 }
-
-                void MergeList(ListNode l1, ListNode l2) {
-                    ListNode l1_tmp;
-                    ListNode l2_tmp;
-                    while (l1 != null && l2 != null) {
-                        l1_tmp = l1.next;
-                        l2_tmp = l2.next;
-
-                        l1.next = l2;
-                        l1 = l1_tmp;
-
-                        l2.next = l1;
-                        l2 = l2_tmp;
-                    }
-                }
-                if (head == null) {
-                    return;
-                }
-                ListNode mid = MiddleNode(head);
-                ListNode l1 = head;
-                ListNode l2 = mid.next;
-                mid.next = null;
-                l2 = ReverseList(l2);
-                MergeList(l1, l2);
+                list[i].next = null;
             }
 
             public bool IsLongPressedName(string name, string typed) {
@@ -3095,6 +3068,7 @@ namespace FuckingAlgorithm {
                 return string.Join("", res.Select(item => string.Join("", item)).ToList());
             }
 
+            // #19
             public ListNode RemoveNthFromEnd(ListNode head, int n) {
                 var dummy = new ListNode();
                 dummy.next = head;
@@ -3386,26 +3360,22 @@ namespace FuckingAlgorithm {
             }
 
             // #92
-            public ListNode ReverseBetween(ListNode head, int m, int n) {
-                ListNode successor = null;
-                ListNode Helper(ListNode node, int n) {
-                    if (n == 1) {
-                        successor = node?.next;
-                        return node;
-                    }
-                    var last = Helper(node.next, n - 1);
-                    node.next.next = node;
-                    node.next = successor;
-                    return last;
-                }
-                var dummy = new ListNode();
+            public ListNode ReverseBetween(ListNode head, int left, int right) {
+                var dummy = new ListNode(-1);
                 dummy.next = head;
-                var begin = dummy;
-                for (int i = 1; i < m; i++) {
-                    begin = begin.next;
+                var pre = dummy;
+                for (int i = 0; i < left - 1; ++i) {
+                    pre = pre.next;
                 }
-
-                begin.next = Helper(begin.next, n - m + 1);
+                var cur = pre.next;
+                ListNode next;
+                for (int i = 0; i < right - left; ++i) {
+                    // 每次把next交换到最前面
+                    next = cur.next;
+                    cur.next = next.next;
+                    next.next = pre.next;
+                    pre.next = next;
+                }
                 return dummy.next;
             }
 
@@ -3610,6 +3580,7 @@ namespace FuckingAlgorithm {
                 return totalGas >= 0 ? startIdx : -1;
             }
 
+            // #125
             public bool IsPalindrome(string s) {
                 var sgood = new StringBuilder();
                 foreach (var ch in s) {
@@ -3640,18 +3611,17 @@ namespace FuckingAlgorithm {
                 return (int)((3 * setSum - numsSum) / 2);
             }
 
+            // #283
             public void MoveZeroes(int[] nums) {
                 int slow = -1, fast = 0;
                 while (slow <= fast && fast <= nums.Length - 1) {
-                    if (nums[fast] == 0) {
-                        fast++;
-                    } else {
+                    if (nums[fast] != 0) {
                         slow++;
                         int tmp = nums[slow];
                         nums[slow] = nums[fast];
                         nums[fast] = tmp;
-                        fast++;
                     }
+                    fast++;
                 }
             }
 
@@ -3839,6 +3809,7 @@ namespace FuckingAlgorithm {
                 return string.Join(" ", stack.ToList());
             }
 
+            // #152
             public int MaxProduct(int[] nums) {
                 var max = (int[])nums.Clone();
                 var min = (int[])nums.Clone();
@@ -7596,16 +7567,16 @@ namespace FuckingAlgorithm {
                 }
             }
 
-            // 
+            // #41
             public int FirstMissingPositive(int[] nums) {
                 // 长度为n的数组，最多放n个数字，如果有放入>n的数字，那肯定会缺少在1-n内的数字，反之，缺少n+1
                 var n = nums.Length;
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < n; ++i) {
                     if (nums[i] <= 0) {
                         nums[i] = n + 1;
                     }
                 }
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < n; ++i) {
                     var num = Math.Abs(nums[i]);
                     if (num <= n) {
                         nums[num - 1] = -Math.Abs(nums[num - 1]);
@@ -8097,6 +8068,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #155
             public class MinStack {
                 Stack<int> stack;
                 Stack<int> minStack;
