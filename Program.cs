@@ -1815,31 +1815,32 @@ namespace FuckingAlgorithm {
                 return Helper(root, 0);
             }
 
+            // #173
             public class BSTIterator {
-                List<int> nodesSorted;
-                int index;
+                Stack<TreeNode> stack;
 
                 public BSTIterator(TreeNode root) {
-                    this.nodesSorted = new List<int>();
-                    this.index = -1;
-                    this._inorder(root);
+                    stack = new Stack<TreeNode>();
+                    _inorder(root);
                 }
 
                 public void _inorder(TreeNode root) {
-                    if (root == null) {
-                        return;
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
                     }
-                    this._inorder(root.left);
-                    this.nodesSorted.Add(root.val);
-                    this._inorder(root.right);
                 }
 
                 public int Next() {
-                    return this.nodesSorted[(++this.index)];
+                    var node = stack.Pop();
+                    if (node.right != null) {
+                        _inorder(node.right);
+                    }
+                    return node.val;
                 }
 
                 public bool HasNext() {
-                    return this.index + 1 < this.nodesSorted.Count;
+                    return stack.Count > 0;
                 }
             }
 
@@ -3325,19 +3326,20 @@ namespace FuckingAlgorithm {
                 return dummy.next;
             }
 
+            // #402
             public string RemoveKdigits(string num, int k) {
-                var deque = new List<char>();
+                var monoStack = new Stack<char>();
                 foreach (var item in num) {
-                    while (deque.Count != 0 && k > 0 && deque.Last() > item) {
-                        deque.RemoveAt(deque.Count - 1);
+                    while (monoStack.Count != 0 && k > 0 && monoStack.Peek() > item) {
+                        monoStack.Pop();
                         k--;
                     }
-                    deque.Add(item);
+                    monoStack.Push(item);
                 }
-                for (int i = 0; i < k; i++) {
-                    deque.RemoveAt(deque.Count - 1);
+                for (int i = 0; i < k; ++i) {
+                    monoStack.Pop();
                 }
-                var res = string.Join("", deque).TrimStart('0');
+                var res = string.Join("", monoStack.Reverse()).TrimStart('0');
                 return res.Length == 0 ? "0" : res;
             }
 
@@ -4345,6 +4347,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #215
             public int FindKthLargest(int[] nums, int k) {
                 var random = new Random();
                 void Swap(int i, int j) {
@@ -4974,12 +4977,14 @@ namespace FuckingAlgorithm {
                 int slots = 1;
                 int n = preorder.Length;
                 for (int i = 0; i < n; ++i) {
+                    // 出现一个‘，’意味着前面由字符，如果字符是‘#’，消耗一个槽位，如果是非‘#’，增加两个槽位
                     if (preorder[i] == ',') {
                         --slots;
                         if (slots < 0) return false;
                         if (preorder[i - 1] != '#') slots += 2;
                     }
                 }
+                // 最后一个单独处理
                 slots = (preorder[n - 1] == '#') ? slots - 1 : slots + 1;
                 return slots == 0;
             }
@@ -7810,6 +7815,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #24
             public ListNode SwapPairs(ListNode head) {
                 if (head == null) return null;
 
@@ -7833,6 +7839,40 @@ namespace FuckingAlgorithm {
                 var newHead = Reverse(a, b);
                 a.next = SwapPairs(b);
                 return newHead;
+            }
+
+            // #450
+            public TreeNode DeleteNode(TreeNode root, int key) {
+                int Successor(TreeNode node) {
+                    node = node.right;
+                    while (node.left != null) node = node.left;
+                    return node.val;
+                }
+                int Predecessor(TreeNode node) {
+                    node = node.left;
+                    while (node.right != null) node = node.right;
+                    return node.val;
+                }
+
+                TreeNode Helper(TreeNode node) {
+                    if (node == null) return null;
+                    if (key > node.val) node.right = Helper(node.right);
+                    else if (key < node.val) node.left = Helper(node.left);
+                    else {
+                        if (node.left == null && node.right == null) node = null;
+                        else if (node.right != null) {
+                            node.val = Successor(node);
+                            key = node.val;
+                            node.right = Helper(node.right);
+                        } else {
+                            node.val = Predecessor(node);
+                            key = node.val;
+                            node.left = Helper(node.left);
+                        }
+                    }
+                    return node;
+                }
+                return Helper(root);
             }
 
         }
@@ -8213,6 +8253,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.RemoveKdigits("1432219", 3);
         }
     }
 }
