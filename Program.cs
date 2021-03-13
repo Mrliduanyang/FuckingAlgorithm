@@ -3126,6 +3126,7 @@ namespace FuckingAlgorithm {
                 return left;
             }
 
+            // #36
             public bool IsValidSudoku(char[][] board) {
                 var rows = new int[9, 9];
                 var cols = new int[9, 9];
@@ -3566,12 +3567,14 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #134
             public int CanCompleteCircuit(int[] gas, int[] cost) {
                 int n = gas.Length;
                 int totalGas = 0;
                 int curGas = 0;
                 int startIdx = 0;
                 for (int i = 0; i < n; i++) {
+                    // 保证了从最后一次更新的startIdx出发可以绕一圈
                     totalGas += gas[i] - cost[i];
                     curGas += gas[i] - cost[i];
                     if (curGas < 0) {
@@ -3822,6 +3825,7 @@ namespace FuckingAlgorithm {
                 return max.Max();
             }
 
+            // #153
             public int FindMin(int[] nums) {
                 if (nums.Length == 1) {
                     return nums[0];
@@ -3934,6 +3938,7 @@ namespace FuckingAlgorithm {
                 return left;
             }
 
+            // #168
             public string ConvertToTitle(int n) {
                 var s = new StringBuilder();
                 while (n != 0) {
@@ -4349,40 +4354,37 @@ namespace FuckingAlgorithm {
 
             // #215
             public int FindKthLargest(int[] nums, int k) {
-                var random = new Random();
                 void Swap(int i, int j) {
                     var tmp = nums[i];
                     nums[i] = nums[j];
                     nums[j] = tmp;
                 }
-                int Partition(int l, int r) {
-                    int x = nums[r], i = l - 1;
-                    for (int j = l; j < r; ++j) {
-                        // 遇到j比较大的，跳过，遇到j比较小的，交换到i的下一个位置。把所有小的交换到前面。
-                        if (nums[j] <= x) {
-                            Swap(++i, j);
-                        }
+                void MaxHeapify(int i, int heapSize) {
+                    int l = 2 * i + 1, r = 2 * i + 2, largest = i;
+                    if (l < heapSize && nums[l] > nums[largest]) largest = l;
+                    if (r < heapSize && nums[r] > nums[largest]) largest = r;
+                    if (largest != i) {
+                        Swap(i, largest);
+                        MaxHeapify(largest, heapSize);
                     }
-                    Swap(i + 1, r);
-                    return i + 1;
-                }
-                int RandomPartition(int l, int r) {
-                    int i = random.Next(r - l + 1) + l;
-                    // 把l-r中一个随机位置的元素交换到r
-                    Swap(i, r);
-                    return Partition(l, r);
                 }
 
-                int QuickSelect(int l, int r, int idx) {
-                    int q = RandomPartition(l, r);
-                    if (q == idx) {
-                        return nums[q];
-                    } else {
-                        return q < idx ? QuickSelect(q + 1, r, idx) : QuickSelect(l, q - 1, idx);
+                void BuildMaxHeap(int heapSize) {
+                    // Floyd建堆，从最后一个内部节点开始（即末节点的父亲），依次执行下滤
+                    for (int i = heapSize / 2; i >= 0; --i) {
+                        MaxHeapify(i, heapSize);
                     }
-
                 }
-                return QuickSelect(0, nums.Length - 1, nums.Length - k);
+
+                // 原地堆排序
+                int heapSize = nums.Length;
+                BuildMaxHeap(heapSize);
+                for (int i = nums.Length - 1; i >= nums.Length - k + 1; --i) {
+                    Swap(0, i);
+                    --heapSize;
+                    MaxHeapify(0, heapSize);
+                }
+                return nums[0];
             }
 
             public string ReorganizeString(string S) {
@@ -4883,6 +4885,7 @@ namespace FuckingAlgorithm {
                 return prev.Zip(next, (x, y) => x * y).ToArray();
             }
 
+            // #287
             public int FindDuplicate(int[] nums) {
                 Array.Sort(nums);
                 int slow = 0, fast = 1;
@@ -7391,7 +7394,7 @@ namespace FuckingAlgorithm {
             }
 
             // #12
-            public String intToRoman(int num) {
+            public String IntToRoman(int num) {
                 var values = new[] { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
                 var symbols = new[] { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
                 var res = new StringBuilder();
@@ -7875,6 +7878,16 @@ namespace FuckingAlgorithm {
                 return Helper(root);
             }
 
+            // #70
+            public int ClimbStairs(int n) {
+                var dp = new int[n + 1];
+                dp[0] = dp[1] = 1;
+                for (int i = 2; i <= n; ++i) {
+                    dp[i] = dp[i - 1] + dp[i - 2];
+                }
+                return dp[n];
+            }
+
         }
 
         public class DataStructure {
@@ -8247,6 +8260,34 @@ namespace FuckingAlgorithm {
 
                 public bool Empty() {
                     return pushStack.Count == 0 && popStack.Count == 0;
+                }
+            }
+
+            // #705
+            public class MyHashSet {
+                LinkedList<int>[] data;
+                int BASE = 769;
+                public MyHashSet() {
+                    data = new LinkedList<int>[BASE];
+                    for (int i = 0; i < BASE; ++i) {
+                        data[i] = new LinkedList<int>();
+                    }
+                }
+
+                public void Add(int key) {
+                    int h = key % BASE;
+                    if (data[h].Contains(key)) return;
+                    data[h].AddLast(key);
+                }
+
+                public void Remove(int key) {
+                    int h = key % BASE;
+                    data[h].Remove(key);
+                }
+
+                public bool Contains(int key) {
+                    int h = key % BASE;
+                    return data[h].Contains(key);
                 }
             }
         }
