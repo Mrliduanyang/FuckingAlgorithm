@@ -200,39 +200,32 @@ namespace FuckingAlgorithm {
                 return dp[n, amount];
             }
 
-            public int MinDistance(string s1, string s2) {
-                int m = s1.Length, n = s2.Length;
+            // #72
+            public int MinDistance(string word1, string word2) {
+                int Min(int a, int b, int c) {
+                    return Math.Min(Math.Min(a, b), c);
+                }
+
+                int m = word1.Length, n = word2.Length;
                 int[,] dp = new int[m + 1, n + 1];
                 // base，“”到m的编辑距离为0-m，“”到n的编辑距离为0-n
-                for (int i = 0; i <= m; i++) {
-                    dp[i, 0] = i;
-                }
-                for (int i = 0; i <= n; i++) {
-                    dp[0, i] = i;
-                }
+                for (int i = 0; i <= m; i++) dp[i, 0] = i;
+                for (int i = 0; i <= n; i++) dp[0, i] = i;
+
                 for (int i = 1; i <= m; i++) {
                     for (int j = 1; j <= n; j++) {
-                        if (s1[i - 1] == s2[j - 1]) {
-                            // 如果两个字符串当前位置字符一样，跳过
+                        if (word1[i - 1] == word2[j - 1]) {
                             dp[i, j] = dp[i - 1, j - 1];
                         } else {
-                            // 如果不一致，需要选择操作数最少的操作
                             dp[i, j] = Min(
-                                // 把s[i]这个字符删掉，前移i，继续跟j对比
                                 dp[i - 1, j] + 1,
-                                // s1[i]后面插入一个和s2[j]一样的字符，因为i没变，所以前移j
                                 dp[i, j - 1] + 1,
-                                // 替换，把s1[i] 替换成s2[j]，然后同时前进
                                 dp[i - 1, j - 1] + 1
                             );
                         }
                     }
                 }
                 return dp[m, n];
-            }
-
-            public int Min(int a, int b, int c) {
-                return Math.Min(Math.Min(a, b), c);
             }
 
             public int SuperEggDrop(int k, int n) {
@@ -452,6 +445,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #234
             public bool IsPalindrome(ListNode head) {
                 ListNode left = head;
                 bool Traverse(ListNode right) {
@@ -899,6 +893,7 @@ namespace FuckingAlgorithm {
                 return new int[] { dup, missing };
             }
 
+            // #43
             public string Multiply(string num1, string num2) {
                 if (num1 == "0" || num2 == "0") return "0";
                 int m = num1.Length, n = num2.Length;
@@ -3030,6 +3025,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #31
             public void NextPermutation(int[] nums) {
                 void Swap(int i, int j) {
                     int tmp = nums[i];
@@ -4193,6 +4189,7 @@ namespace FuckingAlgorithm {
                 return numCourses == 0 ? res.ToArray() : new int[] { };
             }
 
+            // #169
             public int MajorityElement(int[] nums) {
                 int count = 0;
                 int candidate = int.MinValue;
@@ -4209,7 +4206,7 @@ namespace FuckingAlgorithm {
                 return candidate;
             }
 
-            public List<int> MajorityElement_1(int[] nums) {
+            public List<int> MajorityElement_2(int[] nums) {
                 var res = new List<int>();
                 if (nums.Length == 0) {
                     return res;
@@ -7888,6 +7885,68 @@ namespace FuckingAlgorithm {
                 return dp[n];
             }
 
+            // #76
+            public string MinWindow(string s, string t) {
+                var need = new Dictionary<char, int>();
+                var window = new Dictionary<char, int>();
+                foreach (var ch in t) {
+                    need[ch] = need.GetValueOrDefault(ch, 0) + 1;
+                }
+                int left = 0, right = 0, valid = 0;
+                int start = 0, len = int.MaxValue;
+                while (right < s.Length) {
+                    var ch = s[right];
+                    ++right;
+                    if (need.ContainsKey(ch)) {
+                        window[ch] = window.GetValueOrDefault(ch, 0) + 1;
+                        if (window[ch] == need[ch]) ++valid;
+                    }
+                    while (valid == need.Count) {
+                        if ((right - left) < len) {
+                            start = left;
+                            len = right - left;
+                        }
+                        var leftCh = s[left];
+                        ++left;
+                        if (need.ContainsKey(leftCh)) {
+                            if (window[leftCh] == need[leftCh]) --valid;
+                            --window[leftCh];
+                        }
+                    }
+                }
+                return len == int.MaxValue ? "" : s.Substring(start, len);
+            }
+
+            // #171    
+            public int TitleToNumber(string columnTitle) {
+                int ans = 0;
+                for (int i = 0; i < columnTitle.Length; i++) {
+                    int num = columnTitle[i] - 'A' + 1;
+                    ans = ans * 26 + num;
+                }
+                return ans;
+            }
+
+            // #557
+            public string ReverseWords_2(string s) {
+                var res = new StringBuilder();
+                int len = s.Length;
+                int i = 0;
+                while (i < len) {
+                    int start = i;
+                    while (i < len && s[i] != ' ') {
+                        i++;
+                    }
+                    for (int p = start; p < i; p++) {
+                        res.Append(s[start + i - 1 - p]);
+                    }
+                    while (i < len && s[i] == ' ') {
+                        i++;
+                        res.Append(' ');
+                    }
+                }
+                return res.ToString();
+            }
         }
 
         public class DataStructure {
@@ -8290,11 +8349,33 @@ namespace FuckingAlgorithm {
                     return data[h].Contains(key);
                 }
             }
+
+            // #348
+            public class TicTacToe {
+                int n;
+                int[,] rows, cols, diagonals;
+                public TicTacToe(int n) {
+                    this.n = n;
+                    rows = new int[3, n];
+                    cols = new int[3, n];
+                    diagonals = new int[3, 2];
+
+                }
+
+                public int Move(int row, int col, int player) {
+                    if (++rows[player, row] == n) return player;
+                    if (++cols[player, col] == n) return player;
+                    if (row == col && ++diagonals[player, 0] == n) return player;
+                    if ((row + col == n - 1) && ++diagonals[player, 1] == n) return player;
+                    return 0;
+
+                }
+            }
         }
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.RemoveKdigits("1432219", 3);
+            algorithm.MinWindow("ADOBECODEBANC", "ABC");
         }
     }
 }
