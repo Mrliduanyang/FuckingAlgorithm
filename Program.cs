@@ -7947,6 +7947,135 @@ namespace FuckingAlgorithm {
                 }
                 return res.ToString();
             }
+
+            // #1239
+            public int MaxLength(List<string> arr) {
+                int res = 0;
+                var path = new List<string>();
+                void Helper(int idx) {
+                    var pathStr = string.Join("", path);
+                    if (pathStr.GroupBy(x => x).All(x => x.Count() == 1)) {
+                        res = Math.Max(res, pathStr.Length);
+                    }
+                    for (int i = idx; i < arr.Count; ++i) {
+                        path.Add(arr[i]);
+                        Helper(i + 1);
+                        path.RemoveAt(path.Count - 1);
+                    }
+                }
+                Helper(0);
+                return res;
+            }
+
+            // #128
+            public int LongestConsecutive(int[] nums) {
+                var set = new HashSet<int>(nums);
+                int res = 0;
+                foreach (var num in set) {
+                    if (!set.Contains(num - 1)) {
+                        int curNum = num;
+                        int curLen = 1;
+                        while (set.Contains(curNum + 1)) {
+                            curNum += 1;
+                            curLen += 1;
+                        }
+                        res = Math.Max(res, curLen);
+                    }
+                }
+                return res;
+            }
+
+            // #44
+            public bool IsMatch(string s, string p) {
+                int m = s.Length, n = p.Length;
+                var dp = new bool[m + 1, n + 1];
+                dp[0, 0] = true;
+                for (int i = 1; i <= n; ++i) {
+                    if (p[i - 1] == '*') {
+                        dp[0, i] = true;
+                    } else {
+                        break;
+                    }
+                }
+                for (int i = 1; i <= m; ++i) {
+                    for (int j = 1; j <= n; j++) {
+                        if (p[j - 1] == '*') {
+                            dp[i, j] = dp[i, j - 1] || dp[i - 1, j];
+                        } else if (p[j - 1] == '?' || s[i - 1] == p[j - 1]) {
+                            dp[i, j] = dp[i - 1, j - 1];
+                        }
+                    }
+                }
+                return dp[m, n];
+            }
+
+            // #124
+            public int MaxPathSum(TreeNode root) {
+                int res = int.MinValue;
+                int Helper(TreeNode node) {
+                    if (node == null) return 0;
+                    int left = Math.Max(Helper(node.left), 0);
+                    int right = Math.Max(Helper(node.right), 0);
+                    int cur = node.val + left + right;
+                    res = Math.Max(res, cur);
+                    return node.val + Math.Max(left, right);
+                }
+                Helper(root);
+                return res;
+            }
+
+            // #212
+            public IList<string> FindWords(char[][] board, string[] words) {
+                int h = board.Length;
+                int w = board[0].Length;
+                var directions = new int[][] { new[] { 0, 1 }, new[] { 0, -1 }, new[] { 1, 0 }, new[] { -1, 0 } };
+                bool[,] vis = new bool[h, w];
+
+                var res = new HashSet<string>();
+
+                bool Exist(int i, int j, string word) {
+                    bool Helper(int i, int j, int idx) {
+                        if (board[i][j] != word[idx]) {
+                            return false;
+                        } else if (idx == word.Length - 1) {
+                            return true;
+                        }
+                        // 回溯的选择
+                        vis[i, j] = true;
+                        bool res = false;
+                        foreach (var direction in directions) {
+                            int tx = i + direction[0], ty = j + direction[1];
+                            if (tx >= 0 && tx < h && ty >= 0 && ty < w) {
+                                if (!vis[tx, ty]) {
+                                    bool flag = Helper(tx, ty, idx + 1);
+                                    // 剪枝，找到一个即可返回
+                                    if (flag) {
+                                        res = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        vis[i, j] = false;
+                        return res;
+                    }
+
+                    return Helper(i, j, 0);
+                }
+
+                for (int i = 0; i < h; i++) {
+                    for (int j = 0; j < w; j++) {
+                        foreach (var word in words) {
+                            if (board[i][j] == word[0]) {
+                                if (Exist(i, j, word)) {
+                                    res.Add(word);
+                                }
+                            }
+                        }
+                    }
+                }
+                return res.ToList();
+            }
         }
 
         public class DataStructure {
@@ -8375,7 +8504,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MinWindow("ADOBECODEBANC", "ABC");
+            algorithm.MaxLength(new List<string>() { "fmxzvqadwtjn", "yomzhxjcedi", "sotcprfm", "zlmpnvwhfyodjb", "yqktubrfxls", "mdekltouhsrwxapyj", "befykzxmw", "azoqkubnspwxtgcjmv", "fwdoluyrpeckzbqjms", "qglzakon", "nvgcsru", "ryinfwutjhozb", "wkzsntjgafvqope", "zpc", "jpei" });
         }
     }
 }
