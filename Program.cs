@@ -845,6 +845,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #268
             public int MissingNumber(int[] nums) {
                 int n = nums.Length;
                 int res = 0;
@@ -857,7 +858,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
-            public int MissingNumber_1(int[] nums) {
+            public int MissingNumber_2(int[] nums) {
                 int n = nums.Length;
                 int res = 0;
                 // 补的新索引位置的元素
@@ -2614,6 +2615,8 @@ namespace FuckingAlgorithm {
                 }
                 return res + need;
             }
+
+            // #62
             public int UniquePaths(int m, int n) {
                 var dp = new int[m, n];
                 for (int i = 0; i < m; i++) {
@@ -2870,6 +2873,7 @@ namespace FuckingAlgorithm {
                 return (long)(ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
             }
 
+            // #71
             public string SimplifyPath(string path) {
                 var stack = new Stack<string>();
                 var paths = path.Split("/");
@@ -3848,12 +3852,9 @@ namespace FuckingAlgorithm {
                 return -1;
             }
 
+            // #242
             public bool IsAnagram(string s, string t) {
-                var dict = new Dictionary<char, int>();
-
-                foreach (var ch in s) {
-                    dict[ch] = dict.GetValueOrDefault(ch, 0) + 1;
-                }
+                var dict = s.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
                 foreach (var ch in t) {
                     if (dict.ContainsKey(ch)) {
                         dict[ch]--;
@@ -8128,6 +8129,88 @@ namespace FuckingAlgorithm {
                 return wordBreaks.Select(x => string.Join(" ", x)).ToList();
             }
 
+            // #61
+            public ListNode RotateRight(ListNode head, int k) {
+                if (head == null) return null;
+                if (head.next == null) return head;
+
+                ListNode oldTail = head;
+                int n = 1;
+                while (oldTail.next != null) {
+                    oldTail = oldTail.next;
+                    ++n;
+                }
+                oldTail.next = head;
+
+                ListNode newTail = head;
+                for (int i = 0; i < n - k % n - 1; i++)
+                    newTail = newTail.next;
+                ListNode new_head = newTail.next;
+                newTail.next = null;
+                return new_head;
+            }
+
+            // #4
+            public double FindMedianSortedArrays(int[] nums1, int[] nums2) {
+                int m = nums1.Length, n = nums2.Length;
+                int len = m + n;
+                int Helper(int k) {
+                    // k表示第k个，而不是下标k
+                    int idx1 = 0, idx2 = 0;
+                    while (true) {
+                        if (idx1 == m) return nums2[idx2 + k - 1];
+                        if (idx2 == n) return nums1[idx1 + k - 1];
+                        if (k == 1) return Math.Min(nums1[idx1], nums2[idx2]);
+                        var half = k / 2;
+                        var newIdx1 = Math.Min(idx1 + half, m) - 1;
+                        var newIdx2 = Math.Min(idx2 + half, n) - 1;
+                        int pivot1 = nums1[newIdx1], pivot2 = nums2[newIdx2];
+                        if (pivot1 <= pivot2) {
+                            // 新旧索引之间的全部移除
+                            k -= (newIdx1 - idx1 + 1);
+                            idx1 = newIdx1 + 1;
+                        } else {
+                            k -= (newIdx2 - idx2 + 1);
+                            idx2 = newIdx2 + 1;
+                        }
+                    }
+                }
+                if (len % 2 == 1) {
+                    int mid = len / 2;
+                    var median = Helper(mid + 1);
+                    return median;
+                } else {
+                    int mid1 = len / 2 - 1, mid2 = len / 2;
+                    var median = (Helper(mid1 + 1) + Helper(mid2 + 1)) / 2.0;
+                    return median;
+                }
+            }
+
+            // #8
+            public int MyAtoi(string s) {
+                int sign = 1, cur = 0, i = 0;
+                while (i < s.Length && s[i] == ' ') ++i;
+                if (i < s.Length && (s[i] == '+' || s[i] == '-')) {
+                    sign = 1 - 2 * ((s[i++] == '-') ? 1 : 0);
+                }
+                while (i < s.Length && s[i] >= '0' && s[i] <= '9') {
+                    if (cur > int.MaxValue / 10 || (cur == int.MaxValue / 10 && s[i] - '0' > int.MaxValue % 10))
+                        return sign == 1 ? int.MaxValue : int.MinValue;
+                    cur = cur * 10 + (s[i++] - '0');
+                }
+                return cur * sign;
+            }
+
+            // #28
+            public int StrStr(string haystack, string needle) {
+                int L = needle.Length, n = haystack.Length;
+                for (int start = 0; start < n - L + 1; ++start) {
+                    if (haystack.Substring(start,  L) == needle) {
+                        return start;
+                    }
+                }
+                return -1;
+            }
         }
 
         public class DataStructure {
@@ -8556,7 +8639,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MaxLength(new List<string>() { "fmxzvqadwtjn", "yomzhxjcedi", "sotcprfm", "zlmpnvwhfyodjb", "yqktubrfxls", "mdekltouhsrwxapyj", "befykzxmw", "azoqkubnspwxtgcjmv", "fwdoluyrpeckzbqjms", "qglzakon", "nvgcsru", "ryinfwutjhozb", "wkzsntjgafvqope", "zpc", "jpei" });
+            algorithm.MyAtoi("432");
         }
     }
 }
