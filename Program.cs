@@ -8076,6 +8076,58 @@ namespace FuckingAlgorithm {
                 }
                 return res.ToList();
             }
+
+            // #560
+            public int SubarraySum(int[] nums, int k) {
+                int res = 0, pre = 0;
+                var dict = new Dictionary<int, int>();
+                dict[0] = 1;
+                for (int i = 0; i < nums.Length; i++) {
+                    pre += nums[i];
+                    if (dict.ContainsKey(pre - k)) {
+                        res += dict[pre - k];
+                    }
+                    dict[pre] = dict.GetValueOrDefault(pre, 0) + 1;
+                }
+                return res;
+            }
+
+            // #237
+            public void DeleteNode(ListNode node) {
+                node.val = node.next.val;
+                node.next = node.next.next;
+            }
+
+            // #140
+            public IList<string> WordBreak_2(string s, IList<string> wordDict) {
+                var map = new Dictionary<int, List<List<string>>>();
+                var wordSet = new HashSet<string>(wordDict);
+                int len = s.Length;
+                List<List<string>> Helper(int idx) {
+                    if (!map.ContainsKey(idx)) {
+                        var wordBreaks = new List<List<string>>();
+                        if (idx == len) {
+                            wordBreaks.Add(new List<string>());
+                        }
+                        for (int i = idx + 1; i <= len; ++i) {
+                            var word = s.Substring(idx, i - idx);
+                            if (wordSet.Contains(word)) {
+                                var nextWordBreaks = Helper(i);
+                                foreach (var nextWordBreak in nextWordBreaks) {
+                                    var wordBreak = new List<string>(nextWordBreak);
+                                    wordBreak.Insert(0, word);
+                                    wordBreaks.Add(wordBreak);
+                                }
+                            }
+                        }
+                        map[idx] = wordBreaks;
+                    }
+                    return map[idx];
+                }
+                var wordBreaks = Helper(0);
+                return wordBreaks.Select(x => string.Join(" ", x)).ToList();
+            }
+
         }
 
         public class DataStructure {
