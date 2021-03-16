@@ -3835,7 +3835,7 @@ namespace FuckingAlgorithm {
                     return nums[0];
                 }
 
-                while (right >= left) {
+                while (left < right) {
                     int mid = left + (right - left) / 2;
                     if (nums[mid] > nums[mid + 1]) {
                         return nums[mid + 1];
@@ -3846,7 +3846,7 @@ namespace FuckingAlgorithm {
                     if (nums[mid] > nums[0]) {
                         left = mid + 1;
                     } else {
-                        right = mid - 1;
+                        right = mid;
                     }
                 }
                 return -1;
@@ -8211,6 +8211,141 @@ namespace FuckingAlgorithm {
                 }
                 return -1;
             }
+
+            // #10
+            public bool IsMatch_2(string s, string p) {
+                if (s == null || p == null) return false;
+                int m = s.Length, n = p.Length;
+                var dp = new bool[m + 1, n + 1];
+                dp[0, 0] = true;
+                for (int i = 1; i <= n; ++i) {
+                    if (p[i - 1] == '*' && dp[0, i - 2]) {
+                        dp[0, i] = true;
+                    }
+                }
+
+                for (int i = 1; i <= m; ++i) {
+                    for (int j = 1; j <= n; ++j) {
+                        if (s[i - 1] == p[j - 1] || p[j - 1] == '.') {
+                            dp[i, j] = dp[i - 1, j - 1];
+                        } else if (p[j - 1] == '*') {
+                            if (p[j - 2] != s[i - 1] && p[j - 2] != '.') {
+                                dp[i, j] = dp[i, j - 2];
+                            } else {
+                                dp[i, j] = (dp[i, j - 2] || dp[i, j - 1] || dp[i - 1, j]);
+                            }
+                        }
+                    }
+                }
+                return dp[m, n];
+            }
+
+            // #59
+            public int[][] GenerateMatrix(int n) {
+                int maxNum = n * n;
+                int curNum = 0;
+                int[][] matrix = new int[n][];
+                for (int i = 0; i < n; ++i) {
+                    matrix[i] = new int[n];
+                }
+                int top = 0, bottom = n - 1, left = 0, right = n - 1;
+                while (curNum < n * n) {
+                    for (int j = left; j <= right; ++j) {
+                        matrix[top][j] = ++curNum;
+                    }
+                    ++top;
+                    for (int i = top; i <= bottom; ++i) {
+                        matrix[i][right] = ++curNum;
+                    }
+                    --right;
+                    for (int j = right; j >= left; j--) {
+                        matrix[bottom][j] = ++curNum;
+                    }
+                    --bottom;
+                    for (int i = bottom; i >= top; i--) {
+                        matrix[i][left] = ++curNum;
+                    }
+                    ++left;
+                }
+                return matrix;
+            }
+
+            // #273
+            public string NumberToWords(int num) {
+                var less20 = new[] { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+                var tens = new[] { "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+                var units = new[] { "", "Thousand", "Million", "Billion" };
+
+                // 只处理千以下的
+                string Helper(int num) {
+                    if (num == 0) return "";
+                    else if (num < 20) {
+                        return less20[num] + " ";
+                    } else if (num < 100) {
+                        return tens[num / 10] + " " + Helper(num % 10);
+                    } else {
+                        return Helper(num / 100) + "Hundred " + Helper(num % 100);
+                    }
+                }
+
+                if (num == 0) return "Zero";
+                int i = 0;
+                string words = "";
+
+                while (num > 0) {
+                    if (num % 1000 != 0) {
+                        words = Helper(num % 1000) + units[i] + " " + words;
+                    }
+                    num /= 1000;
+                    i++;
+                }
+                return words.Trim();
+            }
+
+            // #33
+            public int Search_2(int[] nums, int target) {
+                int n = nums.Length;
+                if (n == 0) return -1;
+                if (n == 1) return nums[0] == target ? 0 : -1;
+                int l = 0, r = n - 1;
+                while (l <= r) {
+                    int mid = l + (r - l) / 2;
+                    if (nums[mid] == target) return mid;
+                    // 左边有序
+                    if (nums[0] <= nums[mid]) {
+                        if (nums[0] <= target && target < nums[mid]) {
+                            r = mid - 1;
+                        } else {
+                            l = mid + 1;
+                        }
+                    } else {
+                        if (nums[mid] < target && target <= nums[n - 1]) {
+                            l = mid + 1;
+                        } else {
+                            r = mid - 1;
+                        }
+                    }
+                }
+                return -1;
+            }
+
+            // #186
+            public void ReverseWords(char[] s) {
+                void Reverse(int left, int right) {
+                    while (left < right) {
+                        char temp = s[left];
+                        s[left++] = s[right];
+                        s[right--] = temp;
+                    }
+                }
+                int i = 0; int j = 0;
+                while (j < s.Length) {
+                    while (s[j] != ' ') ++j;
+                    Reverse(i, j - 1);
+                    i = ++j;
+                }
+                Reverse(0, s.Length - 1);
+            }
         }
 
         public class DataStructure {
@@ -8639,7 +8774,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MyAtoi("432");
+            algorithm.Search_2(new[] { 1, 3 }, 3);
         }
     }
 }
