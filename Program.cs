@@ -8407,7 +8407,6 @@ namespace FuckingAlgorithm {
             // #412
             public List<string> fizzBuzz(int n) {
                 var ans = new List<string>();
-
                 for (int num = 1; num <= n; num++) {
                     bool divisibleBy3 = (num % 3 == 0);
                     bool divisibleBy5 = (num % 5 == 0);
@@ -8424,7 +8423,6 @@ namespace FuckingAlgorithm {
                     }
                     ans.Add(numAnsStr);
                 }
-
                 return ans;
             }
 
