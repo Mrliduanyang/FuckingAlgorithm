@@ -8368,6 +8368,66 @@ namespace FuckingAlgorithm {
                 }
                 return dp[0, 0];
             }
+
+            // #99
+            public void recoverTree(TreeNode root) {
+                var stack = new Stack<TreeNode>();
+                TreeNode x = null, y = null, pred = null;
+                void Swap(TreeNode x, TreeNode y) {
+                    int tmp = x.val;
+                    x.val = y.val;
+                    y.val = tmp;
+                }
+                while (true) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
+                    if (pred != null && root.val < pred.val) {
+                        y = root;
+                        if (x == null) {
+                            x = pred;
+                        } else {
+                            break;
+                        }
+                    }
+                    pred = root;
+                    root = root.right;
+                }
+                Swap(x, y);
+            }
+
+            // // #545
+            // public List<int> BoundaryOfBinaryTree(TreeNode root) {
+
+            // }
+
+            // #412
+            public List<string> fizzBuzz(int n) {
+                var ans = new List<string>();
+
+                for (int num = 1; num <= n; num++) {
+                    bool divisibleBy3 = (num % 3 == 0);
+                    bool divisibleBy5 = (num % 5 == 0);
+
+                    var numAnsStr = "";
+                    if (divisibleBy3) {
+                        numAnsStr += "Fizz";
+                    }
+                    if (divisibleBy5) {
+                        numAnsStr += "Buzz";
+                    }
+                    if (numAnsStr == "") {
+                        numAnsStr += num;
+                    }
+                    ans.Add(numAnsStr);
+                }
+
+                return ans;
+            }
+
         }
 
         public class DataStructure {
