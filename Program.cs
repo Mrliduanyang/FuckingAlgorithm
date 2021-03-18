@@ -2864,6 +2864,7 @@ namespace FuckingAlgorithm {
                 return res.GetRange(0, m * n);
             }
 
+            // #69
             public int MySqrt(int x) {
                 if (x == 0) {
                     return 0;
@@ -8370,7 +8371,7 @@ namespace FuckingAlgorithm {
             }
 
             // #99
-            public void recoverTree(TreeNode root) {
+            public void RecoverTree(TreeNode root) {
                 var stack = new Stack<TreeNode>();
                 TreeNode x = null, y = null, pred = null;
                 void Swap(TreeNode x, TreeNode y) {
@@ -8426,6 +8427,80 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #93
+            public List<string> RestoreIpAddresses(string s) {
+                var res = new List<string>();
+                var segments = new int[4];
+                void Helper(int segIdx, int idx) {
+                    if (segIdx == 4) {
+                        if (idx == s.Length) {
+                            res.Add(string.Join(".", segments));
+                        }
+                        return;
+                    }
+                    if (idx == s.Length) return;
+                    if (s[idx] == '0') {
+                        segments[segIdx] = 0;
+                        Helper(segIdx + 1, idx + 1);
+                    }
+                    int addr = 0;
+                    for (int i = idx; i < s.Length; ++i) {
+                        // 每次都尽可能多的往后选，
+                        addr = addr * 10 + (s[i] - '0');
+                        if (addr > 0 && addr <= 255) {
+                            segments[segIdx] = addr;
+                            Helper(segIdx + 1, i + 1);
+                        } else {
+                            // 剪枝，超过255可以直接退出当前选择了
+                            break;
+                        }
+                    }
+                }
+                Helper(0, 0);
+                return res;
+            }
+
+            // #14
+            public string longestCommonPrefix(string[] strs) {
+                if (strs == null || strs.Length == 0) {
+                    return "";
+                }
+                int len = strs[0].Length;
+                int count = strs.Length;
+                for (int i = 0; i < len; i++) {
+                    char c = strs[0][i];
+                    for (int j = 1; j < count; j++) {
+                        if (i == strs[j].Length || strs[j][i] != c) {
+                            return strs[0].Substring(0, i);
+                        }
+                    }
+                }
+                return strs[0];
+            }
+
+            // #285
+            public TreeNode InorderSuccessor(TreeNode root, TreeNode p) {
+                if (p.right != null) {
+                    p = p.right;
+                    while (p.left != null) p = p.left;
+                    return p;
+                }
+
+                var stack = new Stack<TreeNode>();
+                int inorder = int.MinValue;
+                while (true) {
+                    while (root != null) {
+                        stack.Push(root);
+                        root = root.left;
+                    }
+                    if (stack.Count == 0) break;
+                    root = stack.Pop();
+                    if (inorder == p.val) return root;
+                    inorder = root.val;
+                    root = root.right;
+                }
+                return null;
+            }
         }
 
         public class DataStructure {
@@ -8854,7 +8929,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.Search_2(new[] { 1, 3 }, 3);
+            algorithm.RestoreIpAddresses("25525511135");
         }
     }
 }
