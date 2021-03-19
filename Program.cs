@@ -8929,7 +8929,6 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.RestoreIpAddresses("25525511135");
         }
     }
 }
