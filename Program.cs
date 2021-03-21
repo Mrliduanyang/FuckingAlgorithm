@@ -8031,7 +8031,7 @@ namespace FuckingAlgorithm {
             }
 
             // #212
-            public IList<string> FindWords(char[][] board, string[] words) {
+            public List<string> FindWords(char[][] board, string[] words) {
                 int h = board.Length;
                 int w = board[0].Length;
                 var directions = new int[][] { new[] { 0, 1 }, new[] { 0, -1 }, new[] { 1, 0 }, new[] { -1, 0 } };
@@ -8053,9 +8053,8 @@ namespace FuckingAlgorithm {
                             int tx = i + direction[0], ty = j + direction[1];
                             if (tx >= 0 && tx < h && ty >= 0 && ty < w) {
                                 if (!vis[tx, ty]) {
-                                    bool flag = Helper(tx, ty, idx + 1);
                                     // 剪枝，找到一个即可返回
-                                    if (flag) {
+                                    if (Helper(tx, ty, idx + 1)) {
                                         res = true;
                                         break;
                                     }
@@ -8585,6 +8584,144 @@ namespace FuckingAlgorithm {
                     return Helper(node1.left, node2.right) && Helper(node1.right, node2.left);
                 }
                 return Helper(root, root);
+            }
+
+            // #722
+            public IList<string> RemoveComments(string[] source) {
+                bool inBlock = false;
+                var newline = new StringBuilder();
+                var res = new List<string>();
+                foreach (var line in source) {
+                    int i = 0;
+                    if (!inBlock) newline = new StringBuilder();
+                    while (i < line.Length) {
+                        if (!inBlock && i + 1 < line.Length && line[i] == '/' && line[i + 1] == '*') {
+                            inBlock = true;
+                            i++;
+                        } else if (inBlock && i + 1 < line.Length && line[i] == '*' && line[i + 1] == '/') {
+                            inBlock = false;
+                            i++;
+                        } else if (!inBlock && i + 1 < line.Length && line[i] == '/' && line[i + 1] == '/') {
+                            break;
+                        } else if (!inBlock) {
+                            newline.Append(line[i]);
+                        }
+                        i++;
+                    }
+                    if (!inBlock && newline.Length > 0) {
+                        res.Add(newline.ToString());
+                    }
+                }
+                return res;
+            }
+
+            // #37
+            public void SolveSudoku(char[][] board) {
+                var rows = new bool[9, 10];
+                var cols = new bool[9, 10];
+                var boxes = new bool[3, 3, 10];
+                for (int i = 0; i < board.Length; i++) {
+                    for (int j = 0; j < board[0].Length; j++) {
+                        int num = board[i][j] - '0';
+                        if (1 <= num && num <= 9) {
+                            rows[i, num] = true;
+                            cols[j, num] = true;
+                            boxes[i / 3, j / 3, num] = true;
+                        }
+                    }
+                }
+
+                bool Helper(int row, int col) {
+                    if (col == board[0].Length) {
+                        col = 0;
+                        ++row;
+                        if (row == board.Length) {
+                            return true;
+                        }
+                    }
+                    if (board[row][col] == '.') {
+                        for (int num = 1; num <= 9; num++) {
+                            bool canUsed = !(rows[row, num] || cols[col, num] || boxes[row / 3, col / 3, num]);
+                            if (canUsed) {
+                                rows[row, num] = true;
+                                cols[col, num] = true;
+                                boxes[row / 3, col / 3, num] = true;
+                                board[row][col] = (char)('0' + num);
+                                if (Helper(row, col + 1)) {
+                                    return true;
+                                }
+                                board[row][col] = '.';
+                                rows[row, num] = false;
+                                cols[col, num] = false;
+                                boxes[row / 3, col / 3, num] = false;
+                            }
+                        }
+                    } else {
+                        return Helper(row, col + 1);
+                    }
+                    return false;
+                }
+                Helper(0, 0);
+            }
+
+            // #695
+            public int MaxAreaOfIsland(int[][] grid) {
+                var directions = new int[][] { new int[] { 0, 1 }, new int[] { 0, -1 }, new int[] { -1, 0 }, new int[] { 1, 0 } };
+                int res = 0;
+                int m = grid.Length, n = grid[0].Length;
+
+                for (int i = 0; i != grid.Length; ++i) {
+                    for (int j = 0; j != grid[0].Length; ++j) {
+                        int area = 0;
+                        var stack = new Stack<Tuple<int, int>>();
+                        stack.Push(new Tuple<int, int>(i, j));
+                        while (stack.Count != 0) {
+                            var (row, col) = stack.Pop();
+                            if (row < 0 || col < 0 || row == m || col == n || grid[row][col] != 1) {
+                                continue;
+                            }
+                            ++area;
+                            grid[row][col] = 0;
+                            foreach (var direction in directions) {
+                                int tx = row + direction[0], ty = col + direction[1];
+                                stack.Push(new Tuple<int, int>(tx, ty));
+                            }
+                        }
+                        res = Math.Max(res, area);
+                    }
+                }
+                return res;
+            }
+
+            // 84
+            public int LargestRectangleArea(int[] heights) {
+                int n = heights.Length;
+                int[] left = new int[n];
+                int[] right = new int[n];
+
+                var monoStack = new Stack<int>();
+                for (int i = 0; i < n; ++i) {
+                    while (monoStack.Count != 0 && heights[monoStack.Peek()] >= heights[i]) {
+                        monoStack.Pop();
+                    }
+                    left[i] = (monoStack.Count == 0 ? -1 : monoStack.Peek());
+                    monoStack.Push(i);
+                }
+
+                monoStack.Clear();
+                for (int i = n - 1; i >= 0; --i) {
+                    while (monoStack.Count != 0 && heights[monoStack.Peek()] >= heights[i]) {
+                        monoStack.Pop();
+                    }
+                    right[i] = (monoStack.Count == 0 ? n : monoStack.peek());
+                    monoStack.push(i);
+                }
+
+                int ans = 0;
+                for (int i = 0; i < n; ++i) {
+                    ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
+                }
+                return ans;
             }
 
         }
