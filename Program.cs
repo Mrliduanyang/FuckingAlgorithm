@@ -8707,19 +8707,18 @@ namespace FuckingAlgorithm {
                     left[i] = (monoStack.Count == 0 ? -1 : monoStack.Peek());
                     monoStack.Push(i);
                 }
-
                 monoStack.Clear();
                 for (int i = n - 1; i >= 0; --i) {
                     while (monoStack.Count != 0 && heights[monoStack.Peek()] >= heights[i]) {
                         monoStack.Pop();
                     }
-                    right[i] = (monoStack.Count == 0 ? n : monoStack.peek());
-                    monoStack.push(i);
+                    right[i] = (monoStack.Count == 0 ? n : monoStack.Peek());
+                    monoStack.Push(i);
                 }
 
                 int ans = 0;
                 for (int i = 0; i < n; ++i) {
-                    ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
+                    ans = Math.Max(ans, (right[i] - left[i] - 1) * heights[i]);
                 }
                 return ans;
             }
