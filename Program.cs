@@ -1115,6 +1115,7 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #226
             public TreeNode InvertTree(TreeNode root) {
                 if (root == null) return null;
 
@@ -1350,6 +1351,7 @@ namespace FuckingAlgorithm {
                 return root;
             }
 
+            // #114
             public void Flatten(TreeNode root) {
                 if (root == null) return;
                 // 把左右子树都拉直了。
@@ -1872,51 +1874,49 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #52
             public List<List<string>> TotalNQueens(int n) {
                 var res = new List<List<string>>();
-                bool IsValid(char[][] board, int row, int col) {
-                    int n = board.GetLength(0);
-                    // 判断列上是否有皇后
-                    for (int i = 0; i < n; i++) {
-                        if (board[i][col] == 'Q') {
-                            return false;
-                        }
-                    }
-                    // 检查右上方是否有皇后互相冲突
-                    for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
-                        if (board[i][j] == 'Q')
-                            return false;
-                    }
-                    // 检查左上方是否有皇后互相冲突
-                    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-                        if (board[i][j] == 'Q')
-                            return false;
-                    }
-                    return true;
-                }
-                void Backtrack(char[][] board, int row) {
-                    if (row == board.GetLength(0)) {
-                        res.Add(board.Select(item => String.Join("", item)).ToList());
-                        return;
-                    }
-                    int cols = board.GetLength(0);
-                    for (int col = 0; col < cols; col++) {
-                        if (!IsValid(board, row, col)) {
-                            continue;
-                        }
-                        board[row][col] = 'Q';
-                        Backtrack(board, row + 1);
-                        board[row][col] = '.';
-                    }
-                }
-
                 var board = new char[n][];
                 for (int i = 0; i < n; i++) {
                     var tmp = new char[n];
                     Array.Fill(tmp, '.');
                     board[i] = tmp;
                 }
-                Backtrack(board, 0);
+                bool IsValid(int row, int col) {
+                    int n = board.GetLength(0);
+                    // 判断列上是否有皇后
+                    for (int i = 0; i < n; i++) {
+                        if (board[i][col] == 'Q') return false;
+                    }
+                    // 检查右上方是否有皇后互相冲突
+                    for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+                        if (board[i][j] == 'Q') return false;
+                    }
+                    // 检查左上方是否有皇后互相冲突
+                    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+                        if (board[i][j] == 'Q') return false;
+                    }
+                    return true;
+                }
+                void Backtrack(int row) {
+                    if (row == board.GetLength(0)) {
+                        res.Add(board.Select(item => String.Join("", item)).ToList());
+                        return;
+                    }
+                    int cols = board.GetLength(0);
+                    for (int col = 0; col < cols; col++) {
+                        if (!IsValid(row, col)) {
+                            continue;
+                        }
+                        board[row][col] = 'Q';
+                        Backtrack(row + 1);
+                        board[row][col] = '.';
+                    }
+                }
+
+
+                Backtrack(0);
 
                 return res;
             }
@@ -3210,6 +3210,7 @@ namespace FuckingAlgorithm {
                 return res.Values.ToList();
             }
 
+            // #328
             public ListNode OddEvenList(ListNode head) {
                 if (head == null) {
                     return head;
@@ -3226,6 +3227,7 @@ namespace FuckingAlgorithm {
                 return head;
             }
 
+            // #38
             public string CountAndSay(int n) {
                 List<string> res = new List<string>();
                 res.Add("1");
@@ -3631,6 +3633,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            //#148 
             public ListNode SortList(ListNode head) {
                 if (head == null || head.next == null) {
                     return head;
@@ -3671,6 +3674,7 @@ namespace FuckingAlgorithm {
                     p = p.next;
                 }
 
+                // 自底向上归并
                 var dummy = new ListNode();
                 dummy.next = head;
                 for (int i = 1; i < len; i *= 2) {
@@ -8501,6 +8505,88 @@ namespace FuckingAlgorithm {
                 }
                 return null;
             }
+
+            // #545
+            public List<int> BoundaryOfBinaryTree(TreeNode root) {
+                var res = new List<int>();
+                bool IsLeaf(TreeNode node) {
+                    return node.left == null && node.right == null;
+                }
+                void AddLeaves(TreeNode node) {
+                    if (IsLeaf(node)) {
+                        res.Add(node.val);
+                    } else {
+                        if (node.left != null) {
+                            AddLeaves(node.left);
+                        }
+                        if (node.right != null) {
+                            AddLeaves(node.right);
+                        }
+                    }
+                }
+
+                if (root == null) return res;
+                if (!IsLeaf(root)) res.Add(root.val);
+                // 添加左边界
+                var node = root.left;
+                while (node != null) {
+                    if (!IsLeaf(node)) res.Add(node.val);
+                    if (node.left != null) {
+                        node = node.left;
+                    } else {
+                        node = node.right;
+                    }
+                }
+                // 添加叶子
+                AddLeaves(root);
+                var stack = new Stack<int>();
+                // 添加右边界
+                node = root.right;
+                while (node != null) {
+                    if (!IsLeaf(node)) stack.Push(node.val);
+                    if (node.right != null) {
+                        node = node.right;
+                    } else {
+                        node = node.left;
+                    }
+                }
+                res.AddRange(stack);
+                return res;
+            }
+
+            // #387
+            public int FirstUniqChar(string s) {
+                var dict = s.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+                for (int i = 0; i < s.Length; i++) {
+                    if (dict[s[i]] == 1) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            // #836
+            public bool IsRectangleOverlap(int[] rec1, int[] rec2) {
+                if (rec1[0] == rec1[2] || rec1[1] == rec1[3] || rec2[0] == rec2[2] || rec2[1] == rec2[3]) {
+                    return false;
+                }
+                return !(rec1[2] <= rec2[0] || rec1[3] <= rec2[1] || rec1[0] >= rec2[2] || rec1[1] >= rec2[3]);
+            }
+
+            // #101
+            public bool IsSymmetric(TreeNode root) {
+                bool Helper(TreeNode node1, TreeNode node2) {
+                    if (node1 == null && node2 == null) {
+                        return true;
+                    }
+                    if (node1 == null || node2 == null || node1.val != node2.val) {
+                        return false;
+                    }
+                    return Helper(node1.left, node2.right) && Helper(node1.right, node2.left);
+                }
+                return Helper(root, root);
+            }
+
         }
 
         public class DataStructure {
