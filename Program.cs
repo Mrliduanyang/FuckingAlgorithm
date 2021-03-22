@@ -735,6 +735,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #55
             public bool CanJump(int[] nums) {
                 int n = nums.Length;
                 int farthest = 0;
@@ -8763,6 +8764,40 @@ namespace FuckingAlgorithm {
                 Helper(root, root.val);
                 return res;
             }
+
+            // #32
+            public int LongestValidParentheses(string s) {
+                int res = 0;
+                var dp = new int[s.Length];
+                for (int i = 1; i < s.Length; i++) {
+                    if (s[i] == ')') {
+                        if (s[i - 1] == '(') {
+                            dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                        } else if (i - dp[i - 1] > 0 && s[i - dp[i - 1] - 1] == '(') {
+                            // 例如："()(()())" 当前在计算最后一个位置时，dp[7]已经等于 dp[6]+2 = 4+2，但需要再往前看一眼，dp[1]还有有效长度，合并过来 dp[7] = 4+2+2
+                            dp[i] = dp[i - 1] + ((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                        }
+                        res = Math.Max(res, dp[i]);
+                    }
+                }
+                return res;
+            }
+
+            // #45
+            public int Jump_2(int[] nums) {
+                int length = nums.Length;
+                int end = 0;
+                int farthest = 0;
+                int steps = 0;
+                for (int i = 0; i < length - 1; i++) {
+                    farthest = Math.Max(farthest, i + nums[i]);
+                    if (i == end) {
+                        end = farthest;
+                        steps++;
+                    }
+                }
+                return steps;
+            }
         }
 
         public class DataStructure {
@@ -9191,12 +9226,7 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
-            algorithm.MaximalRectangle(new[]{
-                new[] { '1', '0', '1', '0', '0' },
-                new[] { '1', '0', '1', '1', '1' },
-                new[] { '1', '1', '1', '1', '1' },
-                new[] { '1', '0', '0', '1', '0' }
-            });
+            algorithm.Jump_2(new[] { 2, 3, 1, 2, 4, 2, 3 });
         }
     }
 }
