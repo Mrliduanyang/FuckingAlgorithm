@@ -2660,6 +2660,8 @@ namespace FuckingAlgorithm {
                 }
                 return dp[m - 1, n - 1];
             }
+
+            // #64
             public int MinPathSum(int[][] grid) {
                 if (grid == null || grid.Length == 0 || grid[0].Length == 0) {
                     return 0;
@@ -8698,24 +8700,19 @@ namespace FuckingAlgorithm {
                 int n = heights.Length;
                 int[] left = new int[n];
                 int[] right = new int[n];
+                Array.Fill(right, n);
 
                 var monoStack = new Stack<int>();
                 for (int i = 0; i < n; ++i) {
                     while (monoStack.Count != 0 && heights[monoStack.Peek()] >= heights[i]) {
+                        // 单调递增栈，出栈时获得栈顶元素右边第一个比自己小的元素
+                        right[monoStack.Peek()] = i;
                         monoStack.Pop();
                     }
+                    // 单调递增栈，入栈时获得入栈元素左边第一个比子集小的元素
                     left[i] = (monoStack.Count == 0 ? -1 : monoStack.Peek());
                     monoStack.Push(i);
                 }
-                monoStack.Clear();
-                for (int i = n - 1; i >= 0; --i) {
-                    while (monoStack.Count != 0 && heights[monoStack.Peek()] >= heights[i]) {
-                        monoStack.Pop();
-                    }
-                    right[i] = (monoStack.Count == 0 ? n : monoStack.Peek());
-                    monoStack.Push(i);
-                }
-
                 int ans = 0;
                 for (int i = 0; i < n; ++i) {
                     ans = Math.Max(ans, (right[i] - left[i] - 1) * heights[i]);
@@ -8723,6 +8720,49 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #85
+            public int MaximalRectangle(char[][] matrix) {
+                if (matrix.Length == 0) return 0;
+                var heights = new int[matrix[0].Length];
+                int res = 0;
+                for (int i = 0; i < matrix.Length; ++i) {
+                    for (int j = 0; j < matrix[0].Length; ++j) {
+                        if (matrix[i][j] == '1') {
+                            heights[j] += 1;
+                        } else {
+                            heights[j] = 0;
+                        }
+                    }
+                    res = Math.Max(res, LargestRectangleArea(heights));
+                }
+                return res;
+            }
+
+            // #191
+            public int HammingWeight(int n) {
+                int ret = 0;
+                while (n != 0) {
+                    n &= n - 1;
+                    ret++;
+                }
+                return ret;
+            }
+
+            // #1448
+            public int GoodNodes(TreeNode root) {
+                var res = 0;
+                void Helper(TreeNode node, int max) {
+                    if (node == null) return;
+                    if (node.val >= max) {
+                        ++res;
+                        max = node.val;
+                    }
+                    Helper(node.left, max);
+                    Helper(node.right, max);
+                }
+                Helper(root, root.val);
+                return res;
+            }
         }
 
         public class DataStructure {
@@ -9151,6 +9191,12 @@ namespace FuckingAlgorithm {
 
         static void Main(string[] args) {
             var algorithm = new Algorithm();
+            algorithm.MaximalRectangle(new[]{
+                new[] { '1', '0', '1', '0', '0' },
+                new[] { '1', '0', '1', '1', '1' },
+                new[] { '1', '1', '1', '1', '1' },
+                new[] { '1', '0', '0', '1', '0' }
+            });
         }
     }
 }
