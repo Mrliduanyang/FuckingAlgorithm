@@ -1027,6 +1027,7 @@ namespace FuckingAlgorithm {
                 return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
             }
 
+            // #104
             public int MaxDepth(TreeNode root) {
                 if (root == null) return 0;
                 var queue = new Queue<TreeNode>();
@@ -2965,21 +2966,18 @@ namespace FuckingAlgorithm {
                 return slow + 1;
             }
 
+            // #83
             public ListNode DeleteDuplicates_1(ListNode head) {
                 if (head == null || head.next == null) return head;
                 var slow = head;
                 var fast = head.next;
 
                 while (fast != null) {
-                    if (slow.val == fast.val) {
-                        // 如果fast 和 slow相等，fast前进
-                        fast = fast.next;
-                    } else {
-                        // 如果fast 和 slow 不等，都要前进
+                    if (slow.val != fast.val) {
                         slow.next = fast;
                         slow = slow.next;
-                        fast = fast.next;
                     }
+                    fast = fast.next;
                 }
                 slow.next = null;
                 return head;
@@ -3501,6 +3499,7 @@ namespace FuckingAlgorithm {
                 return Helper(head, null);
             }
 
+            // #118
             public List<List<int>> Generate(int numRows) {
                 var res = new List<List<int>>();
                 if (numRows == 0) {
@@ -6173,6 +6172,7 @@ namespace FuckingAlgorithm {
                 }
                 return new int[0];
             }
+
             // #456
             public bool Find132pattern(int[] nums) {
                 if (nums.Length < 3)
@@ -7627,7 +7627,7 @@ namespace FuckingAlgorithm {
                 }
 
                 public TreeNode deserialize(string data) {
-                    if (string.IsNullOrEmpty(data)) return null;
+                    if (data == "") return null;
 
                     string[] nodes = data.Split(',');
                     var root = new TreeNode(int.Parse(nodes[0]));
@@ -7640,15 +7640,53 @@ namespace FuckingAlgorithm {
                         if (node.left != null) {
                             queue.Enqueue(node.left);
                         }
-                        idx++;
+                        ++idx;
 
                         node.right = nodes[idx] == "null" ? null : new TreeNode(int.Parse(nodes[idx]));
                         if (node.right != null) {
                             queue.Enqueue(node.right);
                         }
-                        idx++;
+                        ++idx;
                     }
                     return root;
+                }
+            }
+
+            public class Codec_2 {
+                public string serialize(TreeNode root) {
+                    if (root == null) return string.Empty;
+
+                    var res = new List<string>();
+                    void Helper(TreeNode node) {
+                        if (node == null) {
+                            res.Add("null");
+                            return;
+                        }
+                        res.Add(node.val.ToString());
+                        Helper(node.left);
+                        Helper(node.right);
+
+                    }
+                    Helper(root);
+                    return string.Join(",", res);
+                }
+
+                public TreeNode deserialize(string data) {
+                    if (data == "") return null;
+                    string[] nodes = data.Split(',');
+                    int idx = 0;
+                    TreeNode Helper() {
+                        if (nodes[idx] == "null") {
+                            return null;
+                        }
+                        var root = new TreeNode(int.Parse(nodes[idx]));
+                        ++idx;
+                        root.left = Helper();
+                        ++idx;
+                        root.right = Helper();
+                        return root;
+                    }
+                    return Helper();
                 }
             }
 
@@ -8798,6 +8836,22 @@ namespace FuckingAlgorithm {
                 }
                 return steps;
             }
+
+            // #108
+            public TreeNode SortedArrayToBST(int[] nums) {
+                TreeNode Helper(int[] nums, int left, int right) {
+                    if (left > right) return null;
+
+                    // 总是选择中间位置右边的数字作为根节点
+                    int mid = (left + right + 1) / 2;
+                    TreeNode root = new TreeNode(nums[mid]);
+                    root.left = Helper(nums, left, mid - 1);
+                    root.right = Helper(nums, mid + 1, right);
+                    return root;
+                }
+                return Helper(nums, 0, nums.Length - 1);
+            }
+
         }
 
         public class DataStructure {
@@ -9228,7 +9282,7 @@ namespace FuckingAlgorithm {
             class MovingAverage {
                 int size, windowSum = 0, count = 0;
                 LinkedList<int> deque = new LinkedList<int>();
-                
+
                 public MovingAverage(int size) {
                     this.size = size;
                 }
