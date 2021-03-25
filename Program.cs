@@ -3311,6 +3311,7 @@ namespace FuckingAlgorithm {
                 return lenght;
             }
 
+            // #82
             public ListNode DeleteDuplicates_2(ListNode head) {
                 var dummy = new ListNode();
                 dummy.next = head;
@@ -7690,6 +7691,49 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            public class Codec_3 {
+                public string serialize(TreeNode root) {
+                    if (root == null) return string.Empty;
+
+                    var res = new List<string>();
+                    void Helper(TreeNode node) {
+                        if (node == null) {
+                            res.Add("null");
+                            return;
+                        }
+                        res.Add(node.val.ToString());
+                        res.Add(node.children.Count.ToString());
+                        foreach (var child in node.children) {
+                            Helper(child);
+                        }
+
+                    }
+                    Helper(root);
+                    return string.Join(",", res);
+                }
+
+                public TreeNode deserialize(string data) {
+                    if (data == "") return null;
+                    string[] nodes = data.Split(',');
+                    int idx = 0;
+                    TreeNode Helper() {
+                        if (nodes[idx] == "null") {
+                            return null;
+                        }
+                        var root = new TreeNode(int.Parse(nodes[idx]), new List<TreeNode>());
+                        var num = int.Parse(nodes[++idx]);
+                        for (int i = 0; i < num; ++i) {
+                            ++idx;
+                            root.children.Add(Helper());
+
+                        }
+                        return root;
+                    }
+                    return Helper();
+                }
+            }
+
+
             // #23
             public class ListNodeIndex {
                 public ListNode Node { get; set; }
@@ -8841,7 +8885,6 @@ namespace FuckingAlgorithm {
             public TreeNode SortedArrayToBST(int[] nums) {
                 TreeNode Helper(int[] nums, int left, int right) {
                     if (left > right) return null;
-
                     // 总是选择中间位置右边的数字作为根节点
                     int mid = (left + right + 1) / 2;
                     TreeNode root = new TreeNode(nums[mid]);
@@ -8850,6 +8893,30 @@ namespace FuckingAlgorithm {
                     return root;
                 }
                 return Helper(nums, 0, nums.Length - 1);
+            }
+
+            // #636
+            public int[] ExclusiveTime(int n, IList<string> logs) {
+                var stack = new Stack<int>();
+                var res = new int[n];
+                var s = logs[0].Split(":");
+                stack.Push(int.Parse(s[0]));
+                int i = 0, prev = int.Parse(s[2]);
+                while (i < logs.Count) {
+                    s = logs[i].Split(":");
+                    if (s[1] == "start") {
+                        if (stack.Count != 0)
+                            res[stack.Peek()] += int.Parse(s[2]) - prev;
+                        stack.Push(int.Parse(s[0]));
+                        prev = int.Parse(s[2]);
+                    } else {
+                        res[stack.Peek()] += int.Parse(s[2]) - prev + 1;
+                        stack.Pop();
+                        prev = int.Parse(s[2]) + 1;
+                    }
+                    i++;
+                }
+                return res;
             }
 
         }
