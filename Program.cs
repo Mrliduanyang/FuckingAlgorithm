@@ -179,6 +179,7 @@ namespace FuckingAlgorithm {
                 return dp[n, sum];
             }
 
+            // #518
             public int Change(int amount, int[] coins) {
                 int n = coins.Length;
                 int[,] dp = new int[n + 1, amount + 1];
@@ -1844,6 +1845,7 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // #230
             public int KthSmallest(TreeNode root, int k) {
                 var stack = new Stack<TreeNode>();
 
@@ -4120,6 +4122,7 @@ namespace FuckingAlgorithm {
                 return ans;
             }
 
+            // #223
             public int ComputeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
                 int area1 = (C - A) * (D - B);
                 int area2 = (G - E) * (H - F);
@@ -4215,6 +4218,7 @@ namespace FuckingAlgorithm {
                 return candidate;
             }
 
+            // #229
             public List<int> MajorityElement_2(int[] nums) {
                 var res = new List<int>();
                 if (nums.Length == 0) {
@@ -4418,12 +4422,13 @@ namespace FuckingAlgorithm {
                 return "";
             }
 
+            // #34
             public int[] SearchRange(int[] nums, int target) {
                 if (nums.Length == 0) {
                     return new int[] { -1, -1 };
                 }
-                int left = 0, right = nums.Length - 1;
-                while (left <= right) {
+                int left = 0, right = nums.Length;
+                while (left < right) {
                     int mid = left + (right - left) / 2;
                     if (nums[mid] == target) {
                         int l = mid, r = mid;
@@ -4437,7 +4442,7 @@ namespace FuckingAlgorithm {
                     } else if (nums[mid] < target) {
                         left = mid + 1;
                     } else {
-                        right = mid - 1;
+                        right = mid;
                     }
                 }
                 return new int[] { -1, -1 };
@@ -6217,12 +6222,8 @@ namespace FuckingAlgorithm {
             public bool IsSubtree(TreeNode s, TreeNode t) {
                 // 返回t是否是s的子树
                 bool Check(TreeNode s, TreeNode t) {
-                    if (s == null && t == null) {
-                        return true;
-                    }
-                    if (s == null || t == null || s.val != t.val) {
-                        return false;
-                    }
+                    if (s == null && t == null) return true;
+                    if (s == null || t == null || s.val != t.val) return false;
                     return Check(s.left, t.left) && Check(s.right, t.right);
                 }
                 bool Helper(TreeNode s, TreeNode t) {
@@ -6231,7 +6232,6 @@ namespace FuckingAlgorithm {
                     }
                     return Check(s, t) || Helper(s.left, t) || Helper(s.right, t);
                 }
-
                 return Helper(s, t);
             }
 
@@ -8919,6 +8919,69 @@ namespace FuckingAlgorithm {
                 return res;
             }
 
+            // #403
+            public bool CanCross(int[] stones) {
+                var dict = new Dictionary<int, HashSet<int>>();
+                for (int i = 0; i < stones.Length; ++i) {
+                    dict[stones[i]] = new HashSet<int>();
+                }
+                dict[0].Add(0);
+                for (int i = 0; i < stones.Length; ++i) {
+                    foreach (var step in dict[stones[i]]) {
+                        for (int newStep = step - 1; newStep <= step + 1; ++newStep) {
+                            if (newStep > 0 && dict.ContainsKey(stones[i] + newStep)) {
+                                dict[stones[i] + newStep].Add(newStep);
+                            }
+                        }
+                    }
+                }
+                return dict[stones.Last()].Count > 0;
+            }
+
+            // #112
+            public bool HasPathSum(TreeNode root, int sum) {
+                bool Helper(TreeNode node, int sum) {
+                    if (node == null) return false;
+                    if (node.left == null && node.right == null) {
+                        return sum == node.val;
+                    }
+                    return Helper(node.left, sum - node.val) || Helper(node.right, sum - node.val);
+                }
+                return Helper(root, sum);
+            }
+
+            // #994
+            public int OrangesRotting(int[][] grid) {
+                int m = grid.Length, n = grid[0].Length;
+                var directions = new int[][] { new int[] { 0, 1 }, new int[] { 0, -1 }, new int[] { 1, 0 }, new int[] { -1, 0 } };
+                var queue = new Queue<Tuple<int, int>>();
+                int num = 0, res = 0;
+                for (int i = 0; i < m; ++i) {
+                    for (int j = 0; j < n; ++j) {
+                        if (grid[i][j] == 1) {
+                            ++num;
+                        } else if (grid[i][j] == 2) {
+                            queue.Enqueue(new Tuple<int, int>(i, j));
+                        }
+                    }
+                }
+                while (num > 0 && queue.Count != 0) {
+                    ++res;
+                    int count = queue.Count;
+                    for (int i = 0; i < count; ++i) {
+                        var (row, col) = queue.Dequeue();
+                        foreach (var direction in directions) {
+                            int tx = row + direction[0], ty = col + direction[1];
+                            if (tx >= 0 && tx < m && ty >= 0 && ty < n && grid[tx][ty] == 1) {
+                                grid[tx][ty] = 2;
+                                num--;
+                                queue.Enqueue(new Tuple<int, int>(tx, ty));
+                            }
+                        }
+                    }
+                }
+                return num > 0 ? -1 : res;
+            }
         }
 
         public class DataStructure {
