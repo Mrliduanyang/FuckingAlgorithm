@@ -8982,6 +8982,24 @@ namespace FuckingAlgorithm {
                 }
                 return num > 0 ? -1 : res;
             }
+
+            // #987
+            // public List<List<int>> VerticalTraversal(TreeNode root) {
+
+            // }
+            // #214
+            public string ShortestPalindrome(string s) {
+
+            }
+
+            // #252
+            public bool CanAttendMeetings(int[][] intervals) {
+                Array.Sort(intervals, (x, y) => x[0] - y[0]);
+                for (int i = 0; i < intervals.Length - 1; ++i) {
+                    if (intervals[i][1] > intervals[i + 1][0]) return false;
+                }
+                return true;
+            }
         }
 
         public class DataStructure {
