@@ -8988,9 +8988,9 @@ namespace FuckingAlgorithm {
 
             // }
             // #214
-            public string ShortestPalindrome(string s) {
+            // public string ShortestPalindrome(string s) {
 
-            }
+            // }
 
             // #252
             public bool CanAttendMeetings(int[][] intervals) {
@@ -8999,6 +8999,39 @@ namespace FuckingAlgorithm {
                     if (intervals[i][1] > intervals[i + 1][0]) return false;
                 }
                 return true;
+            }
+
+            // #340
+            public int LengthOfLongestSubstringKDistinct(string s, int k) {
+                int n = s.Length;
+                if (n * k == 0) return 0;
+                int left = 0, right = 0;
+                var dict = new Dictionary<char, int>();
+                int res = 1;
+                while (right < n) {
+                    dict[s[right]] = right++;
+                    if (dict.Count == k + 1) {
+                        int delIdx = dict.Values.Min();
+                        dict.Remove(s[delIdx]);
+                        left = delIdx + 1;
+                    }
+                    res = Math.Max(res, right - left);
+                }
+                return res;
+            }
+
+            // #647
+            public int CountSubstrings(string s) {
+                int n = s.Length, res = 0;
+                for (int i = 0; i < 2 * n - 1; ++i) {
+                    int l = i / 2, r = i / 2 + i % 2;
+                    while (l >= 0 && r < n && s[l] == s[r]) {
+                        --l;
+                        ++r;
+                        ++res;
+                    }
+                }
+                return res;
             }
         }
 
