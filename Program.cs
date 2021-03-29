@@ -27,6 +27,18 @@ namespace FuckingAlgorithm {
                 }
             }
 
+            // 双向链表节点类
+            public class Node {
+                public int val;
+                public Node prev;
+                public Node next;
+                public Node child;
+
+                public Node(int val, Node prev, Node next, Node child) {
+
+                }
+            }
+
             // 树节点类
             public class TreeNode {
                 public int val;
@@ -9081,13 +9093,39 @@ namespace FuckingAlgorithm {
                 for (int i = 0; i < n; ++i) {
                     carry += i < a.Length ? (a[a.Length - 1 - i] - '0') : 0;
                     carry += i < b.Length ? (b[b.Length - 1 - i] - '0') : 0;
-                    res.Insert(0,(char)(carry % 2 + '0'));
+                    res.Insert(0, (char)(carry % 2 + '0'));
                     carry /= 2;
                 }
                 if (carry > 0) {
-                    res.Insert(0,'1');
+                    res.Insert(0, '1');
                 }
                 return res.ToString();
+            }
+
+            // #430
+            public Node Flatten(Node head) {
+                if (head == null) return head;
+
+                var dummy = new Node(0, null, head, null);
+                Node curr, prev = dummy;
+
+                var stack = new Stack<Node>();
+                stack.Push(head);
+
+                while (stack.Count != 0) {
+                    curr = stack.Pop();
+                    prev.next = curr;
+                    curr.prev = prev;
+
+                    if (curr.next != null) stack.Push(curr.next);
+                    if (curr.child != null) {
+                        stack.Push(curr.child);
+                        curr.child = null;
+                    }
+                    prev = curr;
+                }
+                dummy.next.prev = null;
+                return dummy.next;
             }
         }
 
