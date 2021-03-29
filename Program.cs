@@ -9048,6 +9048,47 @@ namespace FuckingAlgorithm {
                 }
                 return res;
             }
+
+            // #97
+            public bool IsInterleave(string s1, string s2, string s3) {
+                int n = s1.Length, m = s2.Length, t = s3.Length;
+                if (n + m != t) {
+                    return false;
+                }
+
+                bool[,] dp = new bool[n + 1, m + 1];
+                dp[0, 0] = true;
+                for (int i = 0; i <= n; ++i) {
+                    for (int j = 0; j <= m; ++j) {
+                        int p = i + j - 1;
+                        if (i > 0) {
+                            dp[i, j] = dp[i, j] || (dp[i - 1, j] && s1[i - 1] == s3[p]);
+                        }
+
+                        if (j > 0) {
+                            dp[i, j] = dp[i, j] || (dp[i, j - 1] && s2[j - 1] == s3[p]);
+                        }
+                    }
+                }
+
+                return dp[n, m];
+            }
+
+            // #67
+            public string AddBinary(string a, string b) {
+                var res = new StringBuilder();
+                int n = Math.Max(a.Length, b.Length), carry = 0;
+                for (int i = 0; i < n; ++i) {
+                    carry += i < a.Length ? (a[a.Length - 1 - i] - '0') : 0;
+                    carry += i < b.Length ? (b[b.Length - 1 - i] - '0') : 0;
+                    res.Insert(0,(char)(carry % 2 + '0'));
+                    carry /= 2;
+                }
+                if (carry > 0) {
+                    res.Insert(0,'1');
+                }
+                return res.ToString();
+            }
         }
 
         public class DataStructure {
