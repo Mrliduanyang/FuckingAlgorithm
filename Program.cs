@@ -9139,6 +9139,43 @@ namespace FuckingAlgorithm {
                 root.right = TrimBST(root.right, low, high);
                 return root;
             }
+
+            // #863
+            public List<int> DistanceK(TreeNode root, TreeNode target, int K) {
+                var res = new List<int>();
+                void SubtreeAdd(TreeNode node, int dist) {
+                    if (node == null) return;
+                    if (dist == K)
+                        res.Add(node.val);
+                    else {
+                        SubtreeAdd(node.left, dist + 1);
+                        SubtreeAdd(node.right, dist + 1);
+                    }
+                }
+
+                int Helper(TreeNode node) {
+                    if (node == null) return -1;
+                    else if (node == target) {
+                        SubtreeAdd(node, 0);
+                        return 1;
+                    } else {
+                        int leftDis = Helper(node.left), rightDis = Helper(node.right);
+                        if (leftDis != -1) {
+                            if (leftDis == K) res.Add(node.val);
+                            SubtreeAdd(node.right, leftDis + 1);
+                            return leftDis + 1;
+                        } else if (rightDis != -1) {
+                            if (rightDis == K) res.Add(node.val);
+                            SubtreeAdd(node.left, rightDis + 1);
+                            return rightDis + 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                }
+                Helper(root);
+                return res;
+            }
         }
 
         public class DataStructure {
