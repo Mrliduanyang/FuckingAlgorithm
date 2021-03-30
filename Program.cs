@@ -9127,6 +9127,18 @@ namespace FuckingAlgorithm {
                 dummy.next.prev = null;
                 return dummy.next;
             }
+
+            // #669
+            public TreeNode TrimBST(TreeNode root, int low, int high) {
+                if (root == null) return root;
+                // 两个剪枝的结束条件
+                if (root.val > high) return TrimBST(root.left, low, high);
+                if (root.val < low) return TrimBST(root.right, low, high);
+
+                root.left = TrimBST(root.left, low, high);
+                root.right = TrimBST(root.right, low, high);
+                return root;
+            }
         }
 
         public class DataStructure {
@@ -9574,6 +9586,33 @@ namespace FuckingAlgorithm {
                     }
                     windowSum = windowSum - tail + val;
                     return windowSum * 1.0 / Math.Min(size, count);
+                }
+            }
+
+            // #362
+            public class HitCounter {
+                Queue<int[]> queue;
+                int count;
+                public HitCounter() {
+                    queue = new Queue<int[]>();
+                    count = 0;
+                }
+
+                public void Hit(int timestamp) {
+                    if (queue.Count != 0 && queue.First()[0] == timestamp) {
+                        queue.First()[1]++;
+                    } else {
+                        queue.Enqueue(new[] { timestamp, 1 });
+                    }
+                    ++count;
+                }
+
+                public int GetHits(int timestamp) {
+                    while (queue.Count != 0 && timestamp - queue.First()[0] >= 300) {
+                        count -= queue.First()[1];
+                        queue.Dequeue();
+                    }
+                    return count;
                 }
             }
 
