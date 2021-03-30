@@ -796,29 +796,6 @@ namespace FuckingAlgorithm {
                 return res.ToArray();
             }
 
-            public List<int[]> IntervalIntersection(int[][] a, int[][] b) {
-                int i = 0, j = 0;
-                List<int[]> res = new List<int[]>();
-                while (i < a.Length && j < b.Length) {
-                    int a1 = a[i][0];
-                    int a2 = a[i][1];
-                    int b1 = a[j][0];
-                    int b2 = a[j][1];
-                    // 两个区间存在交集。两个区间不存在交集的情况为：a1 > b2 或者b1 > a2。否命题就是存在交集的情况。
-                    if (b2 >= a1 && a2 >= b1) {
-                        // 交集为大的start-小的end
-                        res.Add(new int[] { Math.Max(a1, b1), Math.Min(a2, b2) });
-                    }
-                    // 指针前进，如果a2比较大，b中选择下一个；反之
-                    if (b2 < a2) {
-                        j++;
-                    } else {
-                        i++;
-                    }
-                }
-                return res;
-            }
-
             // 理论证明，从n个元素中选择1个，要保证每个元素被选择的概率都是1/n。对于1-i个元素，选择第i个元素的概率是1/i，
             // 为保证在n个元素中第i个元素被选择的概率不变，需要保证i后面的元素，都不被选择。概率连乘完的结果表明，第i个元素被选择的概率是1/n。
             public int GetRandom(ListNode head) {
@@ -9143,30 +9120,30 @@ namespace FuckingAlgorithm {
             // #863
             public List<int> DistanceK(TreeNode root, TreeNode target, int K) {
                 var res = new List<int>();
-                void SubtreeAdd(TreeNode node, int dist) {
+                void AddSubtree(TreeNode node, int dist) {
                     if (node == null) return;
                     if (dist == K)
                         res.Add(node.val);
                     else {
-                        SubtreeAdd(node.left, dist + 1);
-                        SubtreeAdd(node.right, dist + 1);
+                        AddSubtree(node.left, dist + 1);
+                        AddSubtree(node.right, dist + 1);
                     }
                 }
 
                 int Helper(TreeNode node) {
                     if (node == null) return -1;
                     else if (node == target) {
-                        SubtreeAdd(node, 0);
+                        AddSubtree(node, 0);
                         return 1;
                     } else {
                         int leftDis = Helper(node.left), rightDis = Helper(node.right);
                         if (leftDis != -1) {
                             if (leftDis == K) res.Add(node.val);
-                            SubtreeAdd(node.right, leftDis + 1);
+                            AddSubtree(node.right, leftDis + 1);
                             return leftDis + 1;
                         } else if (rightDis != -1) {
                             if (rightDis == K) res.Add(node.val);
-                            SubtreeAdd(node.left, rightDis + 1);
+                            AddSubtree(node.left, rightDis + 1);
                             return rightDis + 1;
                         } else {
                             return -1;
@@ -9175,6 +9152,23 @@ namespace FuckingAlgorithm {
                 }
                 Helper(root);
                 return res;
+            }
+
+            // #986
+            public int[][] IntervalIntersection(int[][] firstList, int[][] secondList) {
+                var res = new List<int[]>();
+                int i = 0, j = 0;
+                while (i < firstList.Length && j < secondList.Length) {
+                    int left = Math.Max(firstList[i][0], secondList[j][0]);
+                    int right = Math.Min(firstList[i][1], secondList[j][1]);
+                    if (left <= right) res.Add(new int[] { left, right });
+                    if (firstList[i][1] < secondList[j][1]) {
+                        ++i;
+                    } else {
+                        ++j;
+                    };
+                }
+                return res.ToArray();
             }
         }
 
