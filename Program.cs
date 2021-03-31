@@ -8972,10 +8972,6 @@ namespace FuckingAlgorithm {
                 return num > 0 ? -1 : res;
             }
 
-            // #987
-            // public List<List<int>> VerticalTraversal(TreeNode root) {
-
-            // }
             // #214
             public string ShortestPalindrome(string s) {
                 int n = s.Length;
@@ -9169,6 +9165,60 @@ namespace FuckingAlgorithm {
                     };
                 }
                 return res.ToArray();
+            }
+
+            // #426
+            public TreeNode TreeToDoublyList(TreeNode root) {
+                TreeNode first = null, last = null;
+                void Helper(TreeNode node) {
+                    if (node == null) return;
+                    Helper(node.left);
+                    if (last != null) {
+                        last.right = node;
+                        node.left = last;
+                    } else {
+                        first = node;
+                    }
+                    last = node;
+                    Helper(node.right);
+                }
+                if (root == null) return null;
+                Helper(root);
+                last.right = first;
+                first.left = last;
+                return first;
+            }
+
+            // #468
+            public string ValidIPAddress(string IP) {
+                string ValidateIPv4(string IP) {
+                    var nums = IP.Split(".");
+                    foreach (var num in nums) {
+                        if (num.Length == 0 || num.Length > 3) return "Neither";
+                        if (num[0] == '0' && num.Length != 1) return "Neither";
+                        foreach (var ch in num) {
+                            if (!char.IsDigit(ch)) return "Neither";
+                        }
+                        if (int.Parse(num) > 255) return "Neither";
+                    }
+                    return "IPv4";
+                }
+                string ValidateIPv6(String IP) {
+                    var nums = IP.Split(":");
+                    var hexdigits = "0123456789abcdefABCDEF";
+                    foreach (var num in nums) {
+                        if (num.Length == 0 || num.Length > 4) return "Neither";
+                        foreach (var ch in num) {
+                            if (hexdigits.IndexOf(ch) == -1) return "Neither";
+                        }
+                    }
+                    return "IPv6";
+                }
+                if (IP.Where(ch => ch == '.').Count() == 3) {
+                    return ValidateIPv4(IP);
+                } else if (IP.Where(ch => ch == ':').Count() == 7) {
+                    return ValidateIPv6(IP);
+                } else return "Neither";
             }
         }
 
