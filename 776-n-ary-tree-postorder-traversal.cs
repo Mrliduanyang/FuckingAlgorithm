@@ -23,13 +23,12 @@ public class Solution {
         if (root == null) return res;
         var stack = new Stack<Node>();
         stack.Push(root);
-        while(stack.Count != 0){
+        while (stack.Count != 0) {
             var tmp = stack.Pop();
             res.Insert(0, tmp.val);
-            foreach(var child in tmp.children){
-                stack.Push(child);
-            }
+            foreach (var child in tmp.children) stack.Push(child);
         }
+
         return res;
     }
 }

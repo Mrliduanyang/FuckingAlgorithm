@@ -1,10 +1,10 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     public int val;
- *     public TreeNode left;
- *     public TreeNode right;
- *     public TreeNode(int x) { val = x; }
+ * public int val;
+ * public TreeNode left;
+ * public TreeNode right;
+ * public TreeNode(int x) { val = x; }
  * }
  */
 //  class Solution {
@@ -44,37 +44,32 @@
 //         return sum;
 //     }
 // }
-
-
 public class Solution {
-    Dictionary<int, int> map = new Dictionary<int, int>();
-    int max = 0;
+    private Dictionary<int, int> map = new Dictionary<int, int>();
+    private int max;
+
     public int[] FindFrequentTreeSum(TreeNode root) {
         if (root == null) return new int[] { };
 
-                Helper(root);
+        Helper(root);
 
-                var tmp = new List<int>();
-                foreach (var key in map.Keys) {
-                    if (map[key] == max) {
-                        tmp.Add(key);
-                    }
-                }
-                return tmp.ToArray();
+        var tmp = new List<int>();
+        foreach (var key in map.Keys)
+            if (map[key] == max)
+                tmp.Add(key);
+        return tmp.ToArray();
     }
-    public int Helper(TreeNode root) {
-                    if (root == null) return 0;
-                    int left = Helper(root.left);
-                    int right = Helper(root.right);
-                    int sum = root.val + left + right;
-                                        if (!map.ContainsKey(sum)) {
-                        map.Add(sum, 0);
-                    } else {
-                        map[sum] += 1;
-                    }
-                    max = Math.Max(max, map[sum]);
-                    return sum;
-                }
-    
 
+    public int Helper(TreeNode root) {
+        if (root == null) return 0;
+        var left = Helper(root.left);
+        var right = Helper(root.right);
+        var sum = root.val + left + right;
+        if (!map.ContainsKey(sum))
+            map.Add(sum, 0);
+        else
+            map[sum] += 1;
+        max = Math.Max(max, map[sum]);
+        return sum;
+    }
 }

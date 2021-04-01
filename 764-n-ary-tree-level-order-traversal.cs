@@ -16,30 +16,28 @@ public class Node {
     }
 }
 */
-using System.Collections;
+
 public class Solution {
     public IList<IList<int>> LevelOrder(Node root) {
         var res = new List<IList<int>>();
-        if (root == null) {
-            return res;
-        }
-        Queue<Node> queue = new Queue<Node>();
+        if (root == null) return res;
+        var queue = new Queue<Node>();
         queue.Enqueue(root);
 
         while (queue.Count > 0) {
             var count = queue.Count;
             var tmp = new List<int>();
-            for (int i = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 var node = queue.Dequeue();
                 tmp.Add(node.val);
-                if (node.children != null && node.children.Any()) {
-                    foreach (var child in node.children) {
+                if (node.children != null && node.children.Any())
+                    foreach (var child in node.children)
                         queue.Enqueue(child);
-                    }
-                }
             }
+
             res.Add(tmp);
         }
+
         return res;
     }
 }

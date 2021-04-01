@@ -1,39 +1,37 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     public int val;
- *     public TreeNode left;
- *     public TreeNode right;
- *     public TreeNode(int x) { val = x; }
+ * public int val;
+ * public TreeNode left;
+ * public TreeNode right;
+ * public TreeNode(int x) { val = x; }
  * }
  */
 public class BSTIterator {
-                List<int> nodesSorted;
-                int index;
+    private int index;
+    private List<int> nodesSorted;
 
-                public BSTIterator(TreeNode root) {
-                    this.nodesSorted = new List<int>();
-                    this.index = -1;
-                    this._inorder(root);
-                }
+    public BSTIterator(TreeNode root) {
+        nodesSorted = new List<int>();
+        index = -1;
+        _inorder(root);
+    }
 
-                private void _inorder(TreeNode root) {
-                    if (root == null) {
-                        return;
-                    }
-                    this._inorder(root.left);
-                    this.nodesSorted.Add(root.val);
-                    this._inorder(root.right);
-                }
+    private void _inorder(TreeNode root) {
+        if (root == null) return;
+        _inorder(root.left);
+        nodesSorted.Add(root.val);
+        _inorder(root.right);
+    }
 
-                public int Next() {
-                    return this.nodesSorted[(++this.index)];
-                }
+    public int Next() {
+        return nodesSorted[++index];
+    }
 
-                public bool HasNext() {
-                    return this.index + 1 < this.nodesSorted.Count;
-                }
-            }
+    public bool HasNext() {
+        return index + 1 < nodesSorted.Count;
+    }
+}
 
 /**
  * Your BSTIterator object will be instantiated and called as such:

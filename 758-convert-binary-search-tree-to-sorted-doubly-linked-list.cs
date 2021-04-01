@@ -23,24 +23,28 @@ public class Node {
 
 public class Solution {
     public Node TreeToDoublyList(Node root) {
-                        Node first = null, last = null;
-                void Helper(Node node) {
-                    if (node != null) {
-                        Helper(node.left);
-                        if (last != null) {
-                            last.right = node;
-                            node.left = last;
-                        } else {
-                            first = node;
-                        }
-                        last = node;
-                        Helper(node.right);
-                    }
+        Node first = null, last = null;
+
+        void Helper(Node node) {
+            if (node != null) {
+                Helper(node.left);
+                if (last != null) {
+                    last.right = node;
+                    node.left = last;
                 }
-                if (root == null) return null;
-                Helper(root);
-                last.right = first;
-                first.left = last;
-                return first;
+                else {
+                    first = node;
+                }
+
+                last = node;
+                Helper(node.right);
+            }
+        }
+
+        if (root == null) return null;
+        Helper(root);
+        last.right = first;
+        first.left = last;
+        return first;
     }
 }

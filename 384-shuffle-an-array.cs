@@ -1,26 +1,28 @@
 public class Solution {
+    private readonly int[] _nums;
+    private readonly int[] _shuffle;
+    private Random r = new Random();
 
-                int[] _nums;
-                int[] _shuffle;
-                Random r = new Random();
-                public Solution(int[] nums) {
-                    _nums = nums;
-                    _shuffle = nums.Clone() as int[];
-                }
-                public int[] Reset() {
-                    return _nums;
-                }
+    public Solution(int[] nums) {
+        _nums = nums;
+        _shuffle = nums.Clone() as int[];
+    }
 
-                public int[] Shuffle() {
-                    for (int i = 0; i < _nums.Length; i++) {
-                        // var index = r.Next(_nums.Length);
-                        var index = r.Next(i, _nums.Length);
-                        var tmp = _shuffle[i];
-                        _shuffle[i] = _shuffle[index];
-                        _shuffle[index] = tmp;
-                    }
-                    return _shuffle;
-                }
+    public int[] Reset() {
+        return _nums;
+    }
+
+    public int[] Shuffle() {
+        for (var i = 0; i < _nums.Length; i++) {
+            // var index = r.Next(_nums.Length);
+            var index = r.Next(i, _nums.Length);
+            var tmp = _shuffle[i];
+            _shuffle[i] = _shuffle[index];
+            _shuffle[index] = tmp;
+        }
+
+        return _shuffle;
+    }
 }
 
 /**

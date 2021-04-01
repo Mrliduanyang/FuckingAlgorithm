@@ -1,44 +1,41 @@
 public class Solution {
     public int LadderLength(string beginWord, string endWord, IList<string> wordList) {
-         if(!wordList.Contains(endWord)) return 0;
+        if (!wordList.Contains(endWord)) return 0;
 
-            int Len = beginWord.Length;
+        var Len = beginWord.Length;
 
-            var dic = new Dictionary<string,List<string>>(wordList.Count); 
+        var dic = new Dictionary<string, List<string>>(wordList.Count);
 
-            foreach(var item in wordList){
-                for(int i=0;i<Len;++i){
+        foreach (var item in wordList)
+            for (var i = 0; i < Len; ++i) {
+                var ch = $"{item.Substring(0, i)}*{item.Substring(i + 1)}";
 
-                    string ch = $"{item.Substring(0,i)}*{item.Substring(i+1)}";
-
-                    if(dic.ContainsKey(ch)) dic[ch].Add(item);
-                    else dic.Add(ch,new List<string>{item});
-                }
+                if (dic.ContainsKey(ch)) dic[ch].Add(item);
+                else dic.Add(ch, new List<string> {item});
             }
-            
-            Queue<KeyValuePair<string,int>> queue = new Queue<KeyValuePair<string, int>>(wordList.Count);
-            queue.Enqueue(new KeyValuePair<string, int>(beginWord,1));
 
-            while(queue.Count!=0){
-                var point = queue.Dequeue();
-                string word = point.Key;
-                int count = point.Value;
+        Queue<KeyValuePair<string, int>> queue = new Queue<KeyValuePair<string, int>>(wordList.Count);
+        queue.Enqueue(new KeyValuePair<string, int>(beginWord, 1));
 
-                for(int i=0;i<Len;++i){
+        while (queue.Count != 0) {
+            var point = queue.Dequeue();
+            string word = point.Key;
+            int count = point.Value;
 
-                    string ch = $"{word.Substring(0,i)}*{word.Substring(i+1,Len-i-1)}";
+            for (var i = 0; i < Len; ++i) {
+                var ch = $"{word.Substring(0, i)}*{word.Substring(i + 1, Len - i - 1)}";
 
-                    if(dic.ContainsKey(ch)) {
-                        foreach(var item in dic[ch]){
-                            if(item==endWord)return ++count;
-                            queue.Enqueue(new KeyValuePair<string, int>(item,count+1));
-                        }
-                        dic.Remove(ch);
+                if (dic.ContainsKey(ch)) {
+                    foreach (var item in dic[ch]) {
+                        if (item == endWord) return ++count;
+                        queue.Enqueue(new KeyValuePair<string, int>(item, count + 1));
                     }
+
+                    dic.Remove(ch);
                 }
             }
+        }
 
-            return 0;
-
+        return 0;
     }
 }

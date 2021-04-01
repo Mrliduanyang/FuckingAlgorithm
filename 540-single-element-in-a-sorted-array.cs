@@ -1,27 +1,27 @@
 public class Solution {
     public int SingleNonDuplicate(int[] nums) {
-int lo = 0;
-        int hi = nums.Length - 1;
+        var lo = 0;
+        var hi = nums.Length - 1;
         while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            bool halvesAreEven = (hi - mid) % 2 == 0;
+            var mid = lo + (hi - lo) / 2;
+            var halvesAreEven = (hi - mid) % 2 == 0;
             if (nums[mid + 1] == nums[mid]) {
-                if (halvesAreEven) {
+                if (halvesAreEven)
                     lo = mid + 2;
-                } else {
+                else
                     hi = mid - 1;
-                }
-            } else if (nums[mid - 1] == nums[mid]) {
-                if (halvesAreEven) {
+            }
+            else if (nums[mid - 1] == nums[mid]) {
+                if (halvesAreEven)
                     hi = mid - 2;
-                } else {
+                else
                     lo = mid + 1;
-                }
-            } else {
+            }
+            else {
                 return nums[mid];
             }
         }
-        return nums[lo];
 
+        return nums[lo];
     }
 }

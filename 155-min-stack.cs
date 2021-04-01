@@ -1,33 +1,36 @@
 public class MinStack {
+    private Stack<int> minStack;
 
-    /** initialize your data structure here. */
-                                Stack<int> stack;
-                Stack<int> minStack;
+    private int minVal;
 
-                int minVal;
-                public MinStack() {
-                    stack = new Stack<int>();
-                    minStack = new Stack<int>();
-                    minStack.Push(int.MaxValue);
-                }
+    /**
+     * initialize your data structure here.
+     */
+    private Stack<int> stack;
 
-                public void Push(int x) {
-                    stack.Push(x);
-                    minStack.Push(Math.Min(x, minStack.Peek()));
-                }
+    public MinStack() {
+        stack = new Stack<int>();
+        minStack = new Stack<int>();
+        minStack.Push(int.MaxValue);
+    }
 
-                public void Pop() {
-                    stack.Pop();
-                    minStack.Pop();
-                }
+    public void Push(int x) {
+        stack.Push(x);
+        minStack.Push(Math.Min(x, minStack.Peek()));
+    }
 
-                public int Top() {
-                    return stack.Peek();
-                }
+    public void Pop() {
+        stack.Pop();
+        minStack.Pop();
+    }
 
-                public int GetMin() {
-                    return minStack.Peek();
-                }
+    public int Top() {
+        return stack.Peek();
+    }
+
+    public int GetMin() {
+        return minStack.Peek();
+    }
 }
 
 /**

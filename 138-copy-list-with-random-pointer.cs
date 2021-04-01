@@ -15,30 +15,28 @@ public class Node {
 
 public class Solution {
     public Node CopyRandomList(Node head) {
-                        if (head == null) {
-                    return null;
-                }
-                var vis = new Dictionary<Node, Node>();
+        if (head == null) return null;
+        var vis = new Dictionary<Node, Node>();
 
-                Node CloneNode(Node node) {
-                    if (node != null) {
-                        if (!vis.ContainsKey(node)) {
-                            vis[node] = new Node(node.val, null, null);
-                        }
-                        return vis[node];
-                    }
-                    return null;
-                }
+        Node CloneNode(Node node) {
+            if (node != null) {
+                if (!vis.ContainsKey(node)) vis[node] = new Node(node.val, null, null);
+                return vis[node];
+            }
 
-                var old = head;
-                var newNode = new Node(old.val);
-                vis[old] = newNode;
-                while (old != null) {
-                    newNode.next = CloneNode(old.next);
-                    newNode.random = CloneNode(old.random);
-                    old = old.next;
-                    newNode = newNode.next;
-                }
-                return vis[head];
+            return null;
+        }
+
+        var old = head;
+        var newNode = new Node(old.val);
+        vis[old] = newNode;
+        while (old != null) {
+            newNode.next = CloneNode(old.next);
+            newNode.random = CloneNode(old.random);
+            old = old.next;
+            newNode = newNode.next;
+        }
+
+        return vis[head];
     }
 }

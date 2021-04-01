@@ -1,17 +1,18 @@
 public class Solution {
     public int MinPatches(int[] nums, int n) {
-int patches = 0;
+        var patches = 0;
         long x = 1;
         int length = nums.Length, index = 0;
-        while (x <= n) {
+        while (x <= n)
             if (index < length && nums[index] <= x) {
                 x += nums[index];
                 index++;
-            } else {
+            }
+            else {
                 x *= 2;
                 patches++;
             }
-        }
+
         return patches;
     }
 }

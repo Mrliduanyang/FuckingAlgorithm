@@ -1,15 +1,13 @@
 public class Solution {
     public bool SearchMatrix(int[][] matrix, int target) {
         int row = matrix.Length - 1, col = 0;
-        while(row >= 0 && col < matrix[0].Length){
-            if(matrix[row][col] > target){
+        while (row >= 0 && col < matrix[0].Length)
+            if (matrix[row][col] > target)
                 row--;
-            }else if(matrix[row][col] < target){
+            else if (matrix[row][col] < target)
                 col++;
-            }else{
+            else
                 return true;
-            }
-        }
         return false;
     }
 }

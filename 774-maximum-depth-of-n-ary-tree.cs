@@ -19,20 +19,19 @@ public class Node {
 
 public class Solution {
     public int MaxDepth(Node root) {
-        if(root == null) return 0;
+        if (root == null) return 0;
         var queue = new Queue<Node>();
         queue.Enqueue(root);
-        int height = 0;
-        while(queue.Count != 0){
+        var height = 0;
+        while (queue.Count != 0) {
             var count = queue.Count;
             height++;
-            for(int i = 0; i < count; i++){
+            for (var i = 0; i < count; i++) {
                 var tmp = queue.Dequeue();
-                foreach(var child in tmp.children){
-                    queue.Enqueue(child);
-                }
+                foreach (var child in tmp.children) queue.Enqueue(child);
             }
         }
+
         return height;
     }
 }

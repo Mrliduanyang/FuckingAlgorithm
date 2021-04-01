@@ -1,9 +1,7 @@
 public class Solution {
     public int SingleNumber(int[] nums) {
-        int single = 0;
-        foreach (int num in nums) {
-            single ^= num;
-        }
+        var single = 0;
+        foreach (var num in nums) single ^= num;
         return single;
     }
 }

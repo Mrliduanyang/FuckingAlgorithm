@@ -1,28 +1,29 @@
 public class HitCounter {
+    private int count;
 
-                Queue<int[]> queue;
-                int count;
-                public HitCounter() {
-                    queue = new Queue<int[]>();
-                    count = 0;
-                }
+    private Queue<int[]> queue;
 
-                public void Hit(int timestamp) {
-                    if (queue.Count != 0 && queue.First()[0] == timestamp) {
-                        queue.First()[1]++;
-                    } else {
-                        queue.Enqueue(new[] { timestamp, 1 });
-                    }
-                    ++count;
-                }
+    public HitCounter() {
+        queue = new Queue<int[]>();
+        count = 0;
+    }
 
-                public int GetHits(int timestamp) {
-                    while(queue.Count != 0 && timestamp - queue.First()[0] >= 300){
-                        count -= queue.First()[1];
-                        queue.Dequeue();
-                    }
-                    return count;
-                }
+    public void Hit(int timestamp) {
+        if (queue.Count != 0 && queue.First()[0] == timestamp)
+            queue.First()[1]++;
+        else
+            queue.Enqueue(new[] {timestamp, 1});
+        ++count;
+    }
+
+    public int GetHits(int timestamp) {
+        while (queue.Count != 0 && timestamp - queue.First()[0] >= 300) {
+            count -= queue.First()[1];
+            queue.Dequeue();
+        }
+
+        return count;
+    }
 }
 
 /**

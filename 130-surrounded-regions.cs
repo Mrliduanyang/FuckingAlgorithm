@@ -1,34 +1,21 @@
 public class Solution {
     public void Solve(char[][] board) {
-        int rows = board.Length;
+        var rows = board.Length;
         if (rows == 0) return;
-        int cols = board[0].Length;
+        var cols = board[0].Length;
         // 先把四周的点及跟他们相连的换成特殊字符。
         // 第一行
-        for (int j = 0; j < cols; j++) {
-            Helper(board, 0, j, rows, cols);
-        }
+        for (var j = 0; j < cols; j++) Helper(board, 0, j, rows, cols);
         // 最后一行
-        for (int j = 0; j < cols; j++) {
-            Helper(board, rows - 1, j, rows, cols);
-        }
+        for (var j = 0; j < cols; j++) Helper(board, rows - 1, j, rows, cols);
         // 第一列
-        for (int i = 0; i < rows; i++) {
-            Helper(board, i, 0, rows, cols);
-        }
+        for (var i = 0; i < rows; i++) Helper(board, i, 0, rows, cols);
         // 最后一列
-        for (int i = 0; i < rows; i++) {
-            Helper(board, i, cols - 1, rows, cols);
-        }
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (board[i][j] == 'O') {
-                    board[i][j] = 'X';
-                }
-                if (board[i][j] == '#') {
-                    board[i][j] = 'O';
-                }
-            }
+        for (var i = 0; i < rows; i++) Helper(board, i, cols - 1, rows, cols);
+        for (var i = 0; i < rows; i++)
+        for (var j = 0; j < cols; j++) {
+            if (board[i][j] == 'O') board[i][j] = 'X';
+            if (board[i][j] == '#') board[i][j] = 'O';
         }
     }
 
@@ -40,8 +27,8 @@ public class Solution {
             Helper(board, x + 1, y, rows, cols);
             Helper(board, x, y - 1, rows, cols);
             Helper(board, x, y + 1, rows, cols);
-        } else {
-            return;
+        }
+        else {
         }
     }
 }

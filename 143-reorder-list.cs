@@ -1,19 +1,17 @@
 /**
  * Definition for singly-linked list.
  * public class ListNode {
- *     public int val;
- *     public ListNode next;
- *     public ListNode(int val=0, ListNode next=null) {
- *         this.val = val;
- *         this.next = next;
- *     }
+ * public int val;
+ * public ListNode next;
+ * public ListNode(int val=0, ListNode next=null) {
+ * this.val = val;
+ * this.next = next;
+ * }
  * }
  */
 public class Solution {
-public void ReorderList(ListNode head) {
-        if (head == null) {
-            return;
-        }
+    public void ReorderList(ListNode head) {
+        if (head == null) return;
         ListNode mid = middleNode(head);
         ListNode l1 = head;
         ListNode l2 = mid.next;
@@ -29,6 +27,7 @@ public void ReorderList(ListNode head) {
             slow = slow.next;
             fast = fast.next.next;
         }
+
         return slow;
     }
 
@@ -41,6 +40,7 @@ public void ReorderList(ListNode head) {
             prev = curr;
             curr = nextTemp;
         }
+
         return prev;
     }
 
@@ -58,5 +58,4 @@ public void ReorderList(ListNode head) {
             l2 = l2_tmp;
         }
     }
-
 }

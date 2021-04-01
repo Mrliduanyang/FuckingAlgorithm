@@ -1,51 +1,49 @@
 public class Trie {
+    private readonly TireNode root;
 
-                class TireNode {
-                    public bool isEnd;
-                    public TireNode[] next;
-                    public TireNode() {
-                        isEnd = false;
-                        next = new TireNode[26];
-                    }
-                }
+    public Trie() {
+        root = new TireNode();
+    }
 
-                TireNode root;
-                public Trie() {
-                    root = new TireNode();
-                }
+    public void Insert(string word) {
+        var node = root;
+        foreach (var ch in word) {
+            if (node.next[ch - 'a'] == null) node.next[ch - 'a'] = new TireNode();
+            node = node.next[ch - 'a'];
+        }
 
-                public void Insert(string word) {
-                    var node = root;
-                    foreach (var ch in word) {
-                        if (node.next[ch - 'a'] == null) {
-                            node.next[ch - 'a'] = new TireNode();
-                        }
-                        node = node.next[ch - 'a'];
-                    }
-                    node.isEnd = true;
-                }
+        node.isEnd = true;
+    }
 
-                public bool Search(string word) {
-                    var node = root;
-                    foreach (var ch in word) {
-                        node = node.next[ch - 'a'];
-                        if (node == null) {
-                            return false;
-                        }
-                    }
-                    return node.isEnd;
-                }
+    public bool Search(string word) {
+        var node = root;
+        foreach (var ch in word) {
+            node = node.next[ch - 'a'];
+            if (node == null) return false;
+        }
 
-                public bool StartsWith(string prefix) {
-                    TireNode node = root;
-                    foreach (var ch in prefix) {
-                        node = node.next[ch - 'a'];
-                        if (node == null) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
+        return node.isEnd;
+    }
+
+    public bool StartsWith(string prefix) {
+        var node = root;
+        foreach (var ch in prefix) {
+            node = node.next[ch - 'a'];
+            if (node == null) return false;
+        }
+
+        return true;
+    }
+
+    private class TireNode {
+        public bool isEnd;
+        public readonly TireNode[] next;
+
+        public TireNode() {
+            isEnd = false;
+            next = new TireNode[26];
+        }
+    }
 }
 
 /**

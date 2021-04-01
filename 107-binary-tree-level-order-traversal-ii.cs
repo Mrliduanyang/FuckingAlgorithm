@@ -1,10 +1,10 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     public int val;
- *     public TreeNode left;
- *     public TreeNode right;
- *     public TreeNode(int x) { val = x; }
+ * public int val;
+ * public TreeNode left;
+ * public TreeNode right;
+ * public TreeNode(int x) { val = x; }
  * }
  */
 //  using System.Collections.Generic;
@@ -18,18 +18,16 @@ public class Solution {
         while (queue.Count != 0) {
             int count = queue.Count;
             var tmp = new List<int>();
-            for (int i = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 var node = queue.Dequeue();
                 tmp.Add(node.val);
-                if (node.left != null) {
-                    queue.Enqueue(node.left);
-                }
-                if (node.right != null) {
-                    queue.Enqueue(node.right);
-                }
+                if (node.left != null) queue.Enqueue(node.left);
+                if (node.right != null) queue.Enqueue(node.right);
             }
+
             res.Insert(0, tmp);
         }
+
         return res;
     }
 }

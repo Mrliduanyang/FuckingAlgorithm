@@ -1,23 +1,22 @@
 public class MyHashSet {
+    private readonly int[] data;
 
-                int[] data;
-                public MyHashSet() {
-                    data = new int[1000001];
-                    Array.Fill(data, -1);
+    public MyHashSet() {
+        data = new int[1000001];
+        Array.Fill(data, -1);
+    }
 
-                }
+    public void Add(int key) {
+        data[key] = key;
+    }
 
-                public void Add(int key) {
-                    data[key] = key;
-                }
+    public void Remove(int key) {
+        data[key] = -1;
+    }
 
-                public void Remove(int key) {
-                    data[key] = -1;
-                }
-
-                public bool Contains(int key) {
-                    return data[key] != -1;
-                }
+    public bool Contains(int key) {
+        return data[key] != -1;
+    }
 }
 
 /**

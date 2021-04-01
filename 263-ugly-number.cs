@@ -6,6 +6,5 @@ public class Solution {
         while (num % 3 == 0) num /= 3;
         while (num % 5 == 0) num /= 5;
         return num == 1;
-
     }
 }

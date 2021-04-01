@@ -1,22 +1,21 @@
 public class Solution {
     public void Rotate(int[][] matrix) {
-                int n = matrix.Length;
+        var n = matrix.Length;
 
-                // transpose matrix
-                for (int i = 0; i < n; i++) {
-                    for (int j = i; j < n; j++) {
-                        int tmp = matrix[j][i];
-                        matrix[j][i] = matrix[i][j];
-                        matrix[i][j] = tmp;
-                    }
-                }
-                // reverse each row
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n / 2; j++) {
-                        int tmp = matrix[i][j];
-                        matrix[i][j] = matrix[i][n - j - 1];
-                        matrix[i][n - j - 1] = tmp;
-                    }
-                }
+        // transpose matrix
+        for (var i = 0; i < n; i++)
+        for (var j = i; j < n; j++) {
+            var tmp = matrix[j][i];
+            matrix[j][i] = matrix[i][j];
+            matrix[i][j] = tmp;
+        }
+
+        // reverse each row
+        for (var i = 0; i < n; i++)
+        for (var j = 0; j < n / 2; j++) {
+            var tmp = matrix[i][j];
+            matrix[i][j] = matrix[i][n - j - 1];
+            matrix[i][n - j - 1] = tmp;
+        }
     }
 }

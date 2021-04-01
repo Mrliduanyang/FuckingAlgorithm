@@ -1,29 +1,28 @@
 public class MyStack {
-                public Queue<int> queue;
-                public MyStack() {
-                    queue = new Queue<int>();
-                }
+    public Queue<int> queue;
 
-                public void Push(int x) {
-                    int n = queue.Count;
-                    queue.Enqueue(x);
+    public MyStack() {
+        queue = new Queue<int>();
+    }
 
-                    for (int i = 0; i < n; i++) {
-                        queue.Enqueue(queue.Dequeue());
-                    }
-                }
+    public void Push(int x) {
+        int n = queue.Count;
+        queue.Enqueue(x);
 
-                public int Pop() {
-                    return queue.Dequeue();
-                }
+        for (var i = 0; i < n; i++) queue.Enqueue(queue.Dequeue());
+    }
 
-                public int Top() {
-                    return queue.First();
-                }
+    public int Pop() {
+        return queue.Dequeue();
+    }
 
-                public bool Empty() {
-                    return queue.Count == 0;
-                }
+    public int Top() {
+        return queue.First();
+    }
+
+    public bool Empty() {
+        return queue.Count == 0;
+    }
 }
 
 /**
