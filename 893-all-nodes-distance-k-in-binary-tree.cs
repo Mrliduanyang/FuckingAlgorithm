@@ -11,14 +11,14 @@ public class Solution {
     public IList<int> DistanceK(TreeNode root, TreeNode target, int K) {
         var res = new List<int>();
 
-        void SubtreeAdd(TreeNode node, int dist) {
+        void AddSubtree(TreeNode node, int dist) {
             if (node == null) return;
             if (dist == K) {
                 res.Add(node.val);
             }
             else {
-                SubtreeAdd(node.left, dist + 1);
-                SubtreeAdd(node.right, dist + 1);
+                AddSubtree(node.left, dist + 1);
+                AddSubtree(node.right, dist + 1);
             }
         }
 
@@ -26,21 +26,31 @@ public class Solution {
             if (node == null) return -1;
 
             if (node == target) {
-                SubtreeAdd(node, 0);
+                AddSubtree(node, 0);
                 return 1;
             }
 
-            int L = Helper(node.left), R = Helper(node.right);
-            if (L != -1) {
-                if (L == K) res.Add(node.val);
-                SubtreeAdd(node.right, L + 1);
-                return L + 1;
+            int leftDis = Helper(node.left), rightDis = Helper(node.right);
+            if (leftDis != -1) {
+                if (leftDis == K) {
+                    res.Add(node.val);
+                }
+                else if (leftDis < K) {
+                    AddSubtree(node.right, leftDis + 1);
+                }
+
+                return leftDis + 1;
             }
 
-            if (R != -1) {
-                if (R == K) res.Add(node.val);
-                SubtreeAdd(node.left, R + 1);
-                return R + 1;
+            if (rightDis != -1) {
+                if (rightDis == K) {
+                    res.Add(node.val);
+                }
+                else if (rightDis < K) {
+                    AddSubtree(node.left, rightDis + 1);
+                }
+
+                return rightDis + 1;
             }
 
             return -1;
