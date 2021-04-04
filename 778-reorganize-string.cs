@@ -1,3 +1,5 @@
+using System;
+
 public class Solution {
     public string ReorganizeString(string S) {
         // 出现次数最多的字母有没有超过一半
@@ -14,6 +16,9 @@ public class Solution {
                 arr[i] = key;
                 dict[key]--;
                 if (dict[key] <= 0) dict.Remove(key);
+            };
+            Func<int, int, int> a = (x, y) => {
+                return 0;
             };
             // 交替生成
             for (var i = 0; i < arr.Length; i += 2) action(i);
