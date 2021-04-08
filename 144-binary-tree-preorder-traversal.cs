@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -14,12 +16,15 @@ public class Solution {
         if (root == null) return new List<int>();
         var stack = new Stack<TreeNode>();
         var res = new List<int>();
-        stack.Push(root);
-        while (stack.Count != 0) {
-            var node = stack.Pop();
-            res.Add(node.val);
-            if (node.right != null) stack.Push(node.right);
-            if (node.left != null) stack.Push(node.left);
+        while (true) {
+            while (root != null) {
+                res.Add(root.val);
+                stack.Push(root.right);
+                root = root.left;
+            }
+
+            if (stack.Count == 0) break;
+            root = stack.Pop();
         }
 
         return res;
