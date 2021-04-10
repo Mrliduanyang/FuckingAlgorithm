@@ -9,11 +9,11 @@
  */
 public class Solution {
     public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        TreeNode Helper(TreeNode root, TreeNode p, TreeNode q) {
-            if (root == null || root == p || root == q) return root;
-            var l = Helper(root.left, p, q);
-            var r = Helper(root.right, p, q);
-            if (l != null && r != null) return root;
+        TreeNode Helper(TreeNode node, TreeNode p, TreeNode q) {
+            if (node == null || node == p || node == q) return node;
+            var l = Helper(node.left, p, q);
+            var r = Helper(node.right, p, q);
+            if (l != null && r != null) return node;
             return l == null ? r : l;
         }
 
