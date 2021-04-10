@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class Solution {
     public int LengthOfLongestSubstring(string s) {
         var window = new Dictionary<char, int>();
@@ -6,10 +9,7 @@ public class Solution {
         while (right < s.Length) {
             var ch = s[right];
             right++;
-            if (window.ContainsKey(ch))
-                window[ch]++;
-            else
-                window[ch] = 1;
+            window[ch] = window.GetValueOrDefault(ch, 0) + 1;
             while (window[ch] > 1) {
                 var tmp = s[left];
                 left++;
