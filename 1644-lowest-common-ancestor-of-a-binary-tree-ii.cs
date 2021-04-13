@@ -13,13 +13,13 @@ public class Solution {
 
         bool Helper(TreeNode node, TreeNode p, TreeNode q) {
             if (node == null) return false;
-            var l = Helper(node.left, p, q);
-            var r = Helper(node.right, p, q);
-            if ((l && r) || ((node.val == p.val || node.val == q.val) && (l || r))) {
+            var left = Helper(node.left, p, q);
+            var right = Helper(node.right, p, q);
+            if ((left && right) || ((node.val == p.val || node.val == q.val) && (left || right))) {
                 ans = node;
             }
 
-            return l || r || (node.val == p.val || node.val == q.val);
+            return left || right || (node.val == p.val || node.val == q.val);
         }
 
         Helper(root, p, q);

@@ -12,16 +12,19 @@
  * }
  */
 public class Solution {
-    private int sum;
-
     public TreeNode ConvertBST(TreeNode root) {
-        if (root != null) {
-            ConvertBST(root.right);
-            sum += root.val;
-            root.val = sum;
-            ConvertBST(root.left);
+        int sum = 0;
+
+        void Helper(TreeNode node) {
+            if (node != null) {
+                Helper(node.right);
+                sum += node.val;
+                node.val = sum;
+                Helper(node.left);
+            }
         }
 
+        Helper(root);
         return root;
     }
 }
