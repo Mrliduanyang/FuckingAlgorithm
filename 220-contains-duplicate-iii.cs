@@ -3,36 +3,34 @@ using System.Collections.Generic;
 
 public class Solution {
     public bool ContainsNearbyAlmostDuplicate(int[] nums, int k, int t) {
-        if (nums.Length == 0)
-            return false;
+        int GetId(int i, int w) {
+            if (i >= 0)
+                return i / w;
+            return (i + 1) / w - 1;
+        }
 
-        if (t < 0 || k <= 0)
-            return false;
-
-        int bulk = t + 1;
-        Dictionary<long, long> dict = new Dictionary<long, long>();
-        for (int i = 0; i < nums.Length; i++) {
-            if (i > k) {
-                dict.Remove(getID(nums[i - k - 1], bulk));
-                Console.WriteLine("remove:" + (i - k - 1));
+        var dict = new Dictionary<long, long>();
+        var bulk = t + 1;
+        for (var i = 0; i < nums.Length; i++) {
+            var id = GetId(nums[i], bulk);
+            if (dict.ContainsKey(id)) {
+                return true;
             }
 
-            int id = getID(nums[i], bulk);
-            if (dict.ContainsKey(id))
+            if (dict.ContainsKey(id - 1) && Math.Abs(nums[i] - dict[id - 1]) < bulk) {
                 return true;
-            dict[id] = nums[i];
-            if (dict.ContainsKey(id - 1) && Math.Abs(dict[id - 1] - dict[id]) <= t)
+            }
+
+            if (dict.ContainsKey(id + 1) && Math.Abs(nums[i] - dict[id + 1]) < bulk) {
                 return true;
-            if (dict.ContainsKey(id + 1) && Math.Abs(dict[id + 1] - dict[id]) <= t)
-                return true;
+            }
+
+            dict[id] = (long) nums[i];
+            if (i >= k) {
+                dict.Remove(GetId(nums[i - k], bulk));
+            }
         }
 
         return false;
-    }
-
-    int getID(int i, int w) {
-        if (i >= 0)
-            return i / w;
-        return (i + 1) / w - 1;
     }
 }
