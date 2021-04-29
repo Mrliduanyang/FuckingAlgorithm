@@ -1,13 +1,21 @@
 public class Solution {
     public bool CanCross(int[] stones) {
-        var dict = new Dictionary<int, HashSet<int>>();
-        for (var i = 0; i < stones.Length; ++i) dict[stones[i]] = new HashSet<int>();
-        dict[0].Add(0);
-        for (var i = 0; i < stones.Length; ++i)
-            foreach (var step in dict[stones[i]])
-                for (var newStep = step - 1; newStep <= step + 1; ++newStep)
-                    if (newStep > 0 && dict.ContainsKey(stones[i] + newStep))
-                        dict[stones[i] + newStep].Add(newStep);
-        return dict[stones.Last()].Count > 0;
+        var n = stones.Length;
+        var dp = new bool[n, n];
+        dp[0, 0] = true;
+        for (var i = 1; i < n; ++i) {
+            if (stones[i] - stones[i - 1] > i) return false;
+        }
+
+        for (var i = 1; i < n; ++i) {
+            for (var j = i - 1; j >= 0; --j) {
+                var k = stones[i] - stones[j];
+                if (k > j + 1) break;
+                dp[i, k] = dp[j, k - 1] || dp[j, k] || dp[j, k + 1];
+                if (i == n - 1 && dp[i, k]) return true;
+            }
+        }
+
+        return false;
     }
 }
