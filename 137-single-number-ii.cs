@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class Solution {
     public int SingleNumber(int[] nums) {
         var set = new SortedSet<int>(nums);
