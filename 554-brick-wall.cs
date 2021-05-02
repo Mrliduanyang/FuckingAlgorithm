@@ -3,7 +3,7 @@ public class Solution {
         var dict = new Dictionary<int, int>();
         foreach (var row in wall) {
             var sum = 0;
-            for (var i = 0; i < row.Count - 1; i++) {
+            for (var i = 0; i < row.Count - 1; ++i) {
                 sum += row[i];
                 dict[sum] = dict.GetValueOrDefault(sum, 0) + 1;
             }
