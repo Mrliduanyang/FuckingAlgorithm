@@ -3,12 +3,6 @@ using System.Linq;
 
 public class Solution {
     public int[] BubbleSort(int[] nums) {
-        void Swap(int i, int j) {
-            var tmp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = tmp;
-        }
-
         for (var i = 0; i < nums.Length - 1; ++i) {
             for (var j = 0; j < nums.Length - 1 - i; ++j) {
                 if (nums[j] > nums[j + 1]) {
@@ -40,6 +34,36 @@ public class Solution {
         }
 
         return nums;
+    }
+
+    public void SelectionSort(int[] nums) {
+        for (var i = 0; i < nums.Length - 1; i++) {
+            var minIndex = i;
+            for (var j = i + 1; j < nums.Length; j++) {
+                if (nums[minIndex] > nums[j]) {
+                    minIndex = j;
+                }
+            }
+
+            Swap(nums, i, minIndex);
+        }
+    }
+
+    public void SelectionSort2(int[] nums) {
+        for (var i = 0; i < nums.Length / 2; i++) {
+            var minIndex = i;
+            var maxIndex = i;
+            for (var j = i + 1; j < nums.Length - i; j++) {
+                if (nums[minIndex] > nums[j]) minIndex = j;
+                if (nums[maxIndex] < nums[j]) maxIndex = j;
+            }
+
+            if (minIndex == maxIndex) break;
+            Swap(nums, i, minIndex);
+            if (maxIndex == i) maxIndex = minIndex;
+            var lastIndex = nums.Length - 1 - i;
+            Swap(nums, lastIndex, maxIndex);
+        }
     }
 
     public int[] InsertSort(int[] nums) {
