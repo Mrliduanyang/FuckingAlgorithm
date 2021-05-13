@@ -1,6 +1,5 @@
 public class Solution {
     public void SetZeroes(int[][] matrix) {
-// 用特殊值做标记
         var rows = matrix.Length;
         var cols = matrix[0].Length;
 
