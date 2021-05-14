@@ -9,14 +9,14 @@
  */
 public class Solution {
     public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        TreeNode Helper(TreeNode node, TreeNode p, TreeNode q) {
+        TreeNode Helper(TreeNode node) {
             if (p.val < node.val && q.val < node.val)
-                return Helper(node.left, p, q);
+                return Helper(node.left);
             if (p.val > node.val && q.val > node.val)
-                return Helper(node.right, p, q);
+                return Helper(node.right);
             return node;
         }
 
-        return Helper(root, p, q);
+        return Helper(root);
     }
 }

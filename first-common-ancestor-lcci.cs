@@ -9,20 +9,14 @@
  */
 public class Solution {
     public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        TreeNode ans = null;
-
-        bool Helper(TreeNode node) {
-            if (node == null) return false;
+        TreeNode Helper(TreeNode node) {
+            if (node == null || node == p || node == q) return node;
             var left = Helper(node.left);
             var right = Helper(node.right);
-            if ((left && right) || ((node.val == p.val || node.val == q.val) && (left || right))) {
-                ans = node;
-            }
-
-            return left || right || (node.val == p.val || node.val == q.val);
+            if (left != null && right != null) return node;
+            return left == null ? right : left;
         }
 
-        Helper(root);
-        return ans;
+        return Helper(root);
     }
 }

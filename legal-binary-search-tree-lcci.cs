@@ -1,10 +1,10 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- * public int val;
- * public TreeNode left;
- * public TreeNode right;
- * public TreeNode(int x) { val = x; }
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int x) { val = x; }
  * }
  */
 public class Solution {
@@ -16,7 +16,7 @@ public class Solution {
             return false;
         if (!Helper(node.right, node.val, up)) //当前为右子树时，无上限，下限为根节点
             return false;
-
+        
         if (low != -1 && node.val <= low)
             return false;
         if (up != -1 && node.val >= up)

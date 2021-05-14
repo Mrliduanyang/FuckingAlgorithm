@@ -1,32 +1,34 @@
+using System;
+using System.Linq;
+
 public class Solution {
     public bool Search(int[] nums, int target) {
-        if (nums == null || nums.Length == 0) return false;
-        var left = 0;
-        var right = nums.Length - 1;
-        int mid;
-        while (left <= right) {
-            mid = left + (right - left) / 2;
+        int l = 0, r = nums.Length;
+        if (r == 1) {
+            return nums[0] == target;
+        }
+
+        while (l < r) {
+            var mid = l + (r - l) / 2;
             if (nums[mid] == target) return true;
 
-            if (nums[left] == nums[mid]) {
-                ++left;
-                continue;
+            if (nums[l] == nums[mid]) {
+                ++l;
             }
-
-            if (nums[left] < nums[mid]) {
-                if (nums[left] <= target && nums[mid] > target) {
-                    right = mid - 1;
+            else if (nums[l] < nums[mid]) {
+                if (nums[l] <= target && nums[mid] > target) {
+                    r = mid;
                 }
                 else {
-                    left = mid + 1;
+                    l = mid + 1;
                 }
             }
             else {
-                if (nums[mid] < target && target <= nums[right]) {
-                    left = mid + 1;
+                if (nums[mid] < target && target <= nums.Last()) {
+                    l = mid + 1;
                 }
                 else {
-                    right = mid - 1;
+                    r = mid;
                 }
             }
         }
