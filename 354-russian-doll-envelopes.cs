@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 public class Solution {
     public int MaxEnvelopes(int[][] envelopes) {
         Array.Sort(envelopes, (x, y) => {

@@ -1,13 +1,15 @@
+using System.Collections.Generic;
+
 public class Solution {
     public int LadderLength(string beginWord, string endWord, IList<string> wordList) {
         if (!wordList.Contains(endWord)) return 0;
 
-        var Len = beginWord.Length;
+        var len = beginWord.Length;
 
         var dic = new Dictionary<string, List<string>>(wordList.Count);
 
         foreach (var item in wordList)
-            for (var i = 0; i < Len; ++i) {
+            for (var i = 0; i < len; ++i) {
                 var ch = $"{item.Substring(0, i)}*{item.Substring(i + 1)}";
 
                 if (dic.ContainsKey(ch)) dic[ch].Add(item);
@@ -19,11 +21,11 @@ public class Solution {
 
         while (queue.Count != 0) {
             var point = queue.Dequeue();
-            string word = point.Key;
-            int count = point.Value;
+            var word = point.Key;
+            var count = point.Value;
 
-            for (var i = 0; i < Len; ++i) {
-                var ch = $"{word.Substring(0, i)}*{word.Substring(i + 1, Len - i - 1)}";
+            for (var i = 0; i < len; ++i) {
+                var ch = $"{word.Substring(0, i)}*{word.Substring(i + 1, len - i - 1)}";
 
                 if (dic.ContainsKey(ch)) {
                     foreach (var item in dic[ch]) {
