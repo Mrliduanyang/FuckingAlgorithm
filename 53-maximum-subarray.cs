@@ -1,3 +1,5 @@
+using System;
+
 public class Solution {
     public int MaxSubArray(int[] nums) {
         int pre = 0, maxAns = nums[0];

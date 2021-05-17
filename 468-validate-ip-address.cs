@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 public class Solution {
     public string ValidIPAddress(string IP) {
         string ValidateIPv4(string IP) {

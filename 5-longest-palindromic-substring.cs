@@ -25,7 +25,7 @@ public class Solution {
         return s.Substring(l + 1, r - l - 1);
     }
 
-    public string LongestPalindrome_Manahcer(string s) {
+    public string LongestPalindrome_Manacher(string s) {
         int ExpandAroundCenter(int left, int right) {
             while (left >= 0 && right < s.Length && s[left] == s[right]) {
                 --left;

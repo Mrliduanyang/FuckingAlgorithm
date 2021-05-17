@@ -7,7 +7,6 @@ public class Solution {
         var res = new List<IList<string>>();
 
         bool IsValid(char[][] board, int row, int col) {
-            var n = board.GetLength(0);
             // 判断列上是否有皇后
             for (var i = 0; i < n; i++)
                 if (board[i][col] == 'Q')
@@ -23,18 +22,17 @@ public class Solution {
             return true;
         }
 
-        void Backtrack(char[][] board, int row) {
-            if (row == board.GetLength(0)) {
-                var tmp = board.Select(item => String.Join("", item)).ToList();
+        void Helper(char[][] board, int row) {
+            if (row == n) {
+                var tmp = board.Select(item => string.Join("", item)).ToList();
                 res.Add(tmp);
                 return;
             }
 
-            var cols = board.GetLength(0);
-            for (var col = 0; col < cols; col++) {
+            for (var col = 0; col < n; col++) {
                 if (!IsValid(board, row, col)) continue;
                 board[row][col] = 'Q';
-                Backtrack(board, row + 1);
+                Helper(board, row + 1);
                 board[row][col] = '.';
             }
         }
@@ -46,7 +44,7 @@ public class Solution {
             board[i] = tmp;
         }
 
-        Backtrack(board, 0);
+        Helper(board, 0);
 
         return res;
     }
