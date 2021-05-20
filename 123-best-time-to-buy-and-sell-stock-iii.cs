@@ -1,3 +1,5 @@
+using System;
+
 public class Solution {
     public int MaxProfit(int[] prices) {
         var n = prices.Length;

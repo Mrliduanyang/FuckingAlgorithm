@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class Solution {
     public int LargestRectangleArea(int[] heights) {
         var n = heights.Length;

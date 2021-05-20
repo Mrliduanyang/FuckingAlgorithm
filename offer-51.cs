@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Solution {
-    private int[] c;
+    private int[] tree;
 
-    private int[] a;
+    private int[] nums;
 
     private void Init(int length) {
-        c = new int[length];
-        Array.Fill(c, 0);
+        tree = new int[length];
+        Array.Fill(tree, 0);
     }
 
     private int LowBit(int x) {
@@ -17,8 +17,8 @@ public class Solution {
     }
 
     private void Update(int idx) {
-        while (idx < c.Length) {
-            c[idx] += 1;
+        while (idx < tree.Length) {
+            tree[idx] += 1;
             idx += LowBit(idx);
         }
     }
@@ -26,7 +26,7 @@ public class Solution {
     private int Query(int idx) {
         int ret = 0;
         while (idx > 0) {
-            ret += c[idx];
+            ret += tree[idx];
             idx -= LowBit(idx);
         }
 
@@ -34,14 +34,13 @@ public class Solution {
     }
 
     private void Discretization(int[] nums) {
-        a = (int[]) nums.Clone();
-        var hashSet = new HashSet<int>(a);
-        a = hashSet.ToArray();
-        Array.Sort(a);
+        var hashSet = new HashSet<int>(nums);
+        this.nums = hashSet.ToArray();
+        Array.Sort(this.nums);
     }
 
     private int GetId(int x) {
-        return Array.BinarySearch(a, x) + 1;
+        return Array.BinarySearch(nums, x) + 1;
     }
 
     public int ReversePairs(int[] nums) {
