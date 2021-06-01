@@ -37,7 +37,6 @@ namespace FuckingAlgorithm {
         static void Main(string[] args) {
             var res = Test("一万零八十一亿零一万二千三百四十一一");
             System.Console.WriteLine(res);
-            
         }
     }
 }
