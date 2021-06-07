@@ -1,21 +1,18 @@
 public class Solution {
     public int FindTargetSumWays(int[] nums, int S) {
-        Dictionary<string, int> memo = new Dictionary<string, int>();
+        var res = 0;
 
-        int dp(int i, int rest) {
-            if (i == nums.Length) {
-                if (rest == 0) return 1;
-                return 0;
+        void Helper(int idx, int sum) {
+            if (idx == nums.Length) {
+                if (sum == S) ++res;
             }
-
-            var key = i + "," + rest;
-            if (memo.ContainsKey(key)) return memo[key];
-            // 加上或者减去当前元素后，有多少种方案能凑出新的target
-            var result = dp(i + 1, rest - nums[i]) + dp(i + 1, rest + nums[i]);
-            memo.Add(key, result);
-            return result;
+            else {
+                Helper(idx + 1, sum + nums[idx]);
+                Helper(idx + 1, sum - nums[idx]);
+            }
         }
 
-        return dp(0, S);
+        Helper(0, 0);
+        return res;
     }
 }
