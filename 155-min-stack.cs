@@ -1,12 +1,13 @@
-public class MinStack {
-    private Stack<int> minStack;
+using System;
+using System.Collections.Generic;
 
-    private int minVal;
+public class MinStack {
 
     /**
      * initialize your data structure here.
      */
     private Stack<int> stack;
+    private Stack<int> minStack;
 
     public MinStack() {
         stack = new Stack<int>();
