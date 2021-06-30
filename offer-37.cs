@@ -13,20 +13,21 @@ public class Codec {
     // Encodes a tree to a single string.
     public string serialize(TreeNode root) {
         if (root == null) return "";
+
         var res = new List<string>();
-
-        void Helper(TreeNode node) {
-            if (node == null) {
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+        while (queue.Count != 0) {
+            var cur = queue.Dequeue();
+            if (cur == null) {
                 res.Add("null");
-                return;
+                continue;
             }
-
-            res.Add(node.val.ToString());
-            Helper(node.left);
-            Helper(node.right);
+            res.Add(cur.val.ToString());
+            queue.Enqueue(cur.left);
+            queue.Enqueue(cur.right);
         }
 
-        Helper(root);
         return string.Join(",", res);
     }
 
@@ -35,16 +36,20 @@ public class Codec {
         if (data == "") return null;
         var nodes = new Queue<string>(data.Split(","));
 
-        TreeNode Helper() {
-            var node = nodes.Dequeue();
-            if (node == "null") return null;
-            var root = new TreeNode(int.Parse(node));
-            root.left = Helper();
-            root.right = Helper();
-            return root;
+        var queue = new Queue<TreeNode>();
+        var root = new TreeNode(int.Parse(nodes.Dequeue()));
+        queue.Enqueue(root);
+        while (queue.Count != 0) {
+            var cur = queue.Dequeue();
+            var left = nodes.Dequeue();
+            cur.left = left == "null" ? null : new TreeNode(int.Parse(left));
+            if (cur.left != null) queue.Enqueue(cur.left);
+            var right = nodes.Dequeue();
+            cur.right = right == "null" ? null : new TreeNode(int.Parse(right));
+            if (cur.right != null) queue.Enqueue(cur.right);
         }
 
-        return Helper();
+        return root;
     }
 }
 
