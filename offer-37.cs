@@ -23,6 +23,7 @@ public class Codec {
                 res.Add("null");
                 continue;
             }
+
             res.Add(cur.val.ToString());
             queue.Enqueue(cur.left);
             queue.Enqueue(cur.right);
