@@ -46,7 +46,8 @@ public class Solution {
                 foreach (var (key, val) in pop) {
                     if (peek.ContainsKey(key)) {
                         peek[key] += val * num;
-                    } else {
+                    }
+                    else {
                         peek.Add(key, val * num);
                     }
                 }
