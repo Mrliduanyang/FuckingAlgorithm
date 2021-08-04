@@ -12,13 +12,16 @@ public class Solution {
                     if (nums[mid] < nums[i] + nums[j]) {
                         k = mid;
                         left = mid + 1;
-                    } else {
+                    }
+                    else {
                         right = mid;
                     }
                 }
+
                 res += k - j;
             }
         }
+
         return res;
     }
 }
